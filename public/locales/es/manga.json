@@ -1,0 +1,37 @@
+{
+  "detail": {
+    "showMore": "Mostrar más",
+    "hide": "Ocultar",
+    "download": "Descarga",
+    "checking": "Comprobando",
+    "from": "desde",
+    "status": "Estado",
+    "summary": "Resumen",
+    "noSummary": "Sin resumen disponible...",
+    "genres": "Géneros",
+    "tags": "Etiquetas"
+  },
+  "sources": {
+    "title": "Fuentes del Manga",
+    "active": "Activa",
+    "inactive": "Inactiva",
+    "priority": "Prioridad",
+    "noSources": "No hay fuentes configuradas para este manga"
+  },
+  "chapters": {
+    "title": "Capítulos",
+    "total": "Total de capítulos",
+    "outOfSync": "Desincronizados",
+    "table": {
+      "index": "Nº",
+      "name": "Nombre",
+      "size": "Tamaño",
+      "date": "Fecha"
+    },
+    "actions": {
+      "read": "Leer",
+      "download": "Descargar",
+      "delete": "Eliminar"
+    }
+  }
+}

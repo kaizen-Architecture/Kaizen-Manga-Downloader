@@ -1,0 +1,32 @@
+{
+  "title": "Biblioteca",
+  "stats": {
+    "mangas": "Mangas",
+    "chapters": "Capítulos",
+    "sources": "Fuentes"
+  },
+  "sync": {
+    "all": "Sincronizar Todo",
+    "source": "Sincronizar {{source}}",
+    "startedTitle": "Sincronización Iniciada",
+    "startedMessageAll": "Se ha puesto en cola una comprobación de toda la biblioteca.",
+    "startedMessageSource": "Comprobando nuevos capítulos en todos los mangas de {{source}}.",
+    "error": "Error al iniciar la sincronización"
+  },
+  "controls": {
+    "search": "Buscar",
+    "searchPlaceholder": "Título del manga...",
+    "sourcePlaceholder": "Todas las fuentes",
+    "sortBy": {
+      "label": "Ordenar por",
+      "title": "Título",
+      "chapters": "Capítulos",
+      "recent": "Reciente"
+    },
+    "viewMode": {
+      "grid": "Cuadrícula",
+      "list": "Lista"
+    }
+  },
+  "noMangas": "No se han encontrado mangas"
+}

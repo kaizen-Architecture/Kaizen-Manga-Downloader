@@ -1,0 +1,141 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["orderByNulls"]
+  engineType      = "binary"
+  binaryTargets   = ["native", "debian-openssl-3.0.x", "linux-musl"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Library {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  path        String   @unique
+  name        String?
+  description String?
+  mangas      Manga[]
+  users       User[]   @relation("UserLibraries")
+}
+
+model Manga {
+  id                Int                @id @default(autoincrement())
+  createdAt         DateTime           @default(now())
+  title             String             @unique
+  interval          String
+  source            String
+  sources           MangaSource[]
+  library           Library            @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  libraryId         Int
+  chapters          Chapter[]
+  metadata          Metadata           @relation(fields: [metadataId], references: [id])
+  metadataId        Int                @unique
+  outOfSyncChapters OutOfSyncChapter[]
+  isLocked          Boolean            @default(false)
+}
+
+model MangaSource {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  manga     Manga    @relation(fields: [mangaId], references: [id], onDelete: Cascade)
+  mangaId   Int
+  source    String
+  title     String
+  priority  Int      @default(0)
+
+  @@unique([mangaId, source])
+}
+
+model Chapter {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  index     Int
+  fileName  String
+  size      Int
+  manga     Manga    @relation(fields: [mangaId], references: [id], onDelete: Cascade)
+  mangaId   Int
+
+  @@unique([mangaId, fileName])
+}
+
+model OutOfSyncChapter {
+  id      Int   @id
+  manga   Manga @relation(fields: [mangaId], references: [id], onDelete: Cascade)
+  mangaId Int
+
+  @@index([mangaId])
+}
+
+model Metadata {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  manga      Manga?
+  genres     String[]  @default([])
+  summary    String    @default("")
+  authors    String[]  @default([])
+  cover      String    @default("/cover-not-found.jpg")
+  tags       String[]  @default([])
+  characters String[]  @default([])
+  status     String    @default("UNKNOWN")
+  startDate  DateTime?
+  endDate    DateTime?
+  synonyms   String[]  @default([])
+  urls       String[]  @default([])
+}
+
+model Settings {
+  id                   Int      @id @default(autoincrement())
+  telegramEnabled      Boolean  @default(false)
+  telegramToken        String?
+  telegramChatId       String?
+  telegramSendSilently Boolean  @default(false)
+  appriseEnabled       Boolean  @default(false)
+  appriseHost          String?
+  appriseUrls          String[] @default([])
+  komgaEnabled         Boolean  @default(false)
+  komgaHost            String?
+  komgaUser            String?
+  komgaPassword        String?
+  kavitaEnabled        Boolean  @default(false)
+  kavitaHost           String?
+  kavitaUser           String?
+  kavitaPassword       String?
+  kavitaLibraries      String[] @default([])
+  githubRepo           String?
+  githubToken          String?
+  retryDelayMs         Int      @default(2000)
+  metadataProviders         String[] @default(["anilist", "mangadex"])
+  alternativeSourceMatching String   @default("exact")
+  refreshStatusInterval     String   @default("weekly")
+  refreshStatusWindow       String   @default("night")
+  authEnabled               Boolean  @default(false)
+}
+
+model LuaSource {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  origin    String   @default("LOCAL") // "GITHUB" or "LOCAL"
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  username  String    @unique
+  password  String
+  role      String    @default("SUPERADMIN") // "SUPERADMIN", "MANAGER", "READER"
+  libraries Library[] @relation("UserLibraries")
+}
+
+model SourceRepository {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  url       String   @unique // e.g. "owner/repo"
+  token     String?  // personal access token if private
+  isPrivate Boolean  @default(false)
+}

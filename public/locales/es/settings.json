@@ -1,0 +1,31 @@
+{
+  "title": "Ajustes",
+  "description": "Configura los ajustes de la aplicación",
+  "tabs": {
+    "appearance": "Apariencia",
+    "notifications": "Notificaciones",
+    "integrations": "Integraciones",
+    "sourceRepository": "Repositorio de Fuentes",
+    "mangalCore": "Núcleo Mangal",
+    "downloads": "Descargas"
+  },
+  "downloads": {
+    "retryDelay": {
+      "label": "Retardo entre reintentos masivos",
+      "description": "Tiempo de espera entre cada tarea al reintentar todas las descargas fallidas. Ayuda a evitar bloqueos por límite de peticiones (rate-limit) en fuentes como MangaDex.",
+      "current": "Retardo actual: {{delay}}s"
+    }
+  },
+  "github": {
+    "repositoryLabel": "Repositorio GitHub",
+    "repositoryDescription": "Formato: usuario/repositorio",
+    "tokenLabel": "Token de Acceso Personal (PAT)",
+    "tokenDescription": "Necesario para repositorios privados",
+    "saveButton": "Guardar Ajustes",
+    "notifications": {
+      "successTitle": "Ajustes Guardados",
+      "successMessage": "Credenciales de GitHub actualizadas correctamente",
+      "error": "Error al guardar los ajustes"
+    }
+  }
+}

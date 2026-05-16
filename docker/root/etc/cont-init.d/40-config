@@ -1,0 +1,27 @@
+#!/usr/bin/with-contenv bash
+
+echo "[Kaizen] Starting configuration..."
+
+cd /app
+
+# Run migrations only if needed or keep it fast
+echo "[Kaizen] Running database migrations..."
+./node_modules/.bin/prisma migrate deploy
+
+# Setup mangal data
+echo "[Kaizen] Syncing mangal configuration..."
+mkdir -p /config/.local/share
+cp -r /mangal /config/.local/share 2>/dev/null || true
+
+# Cleanup cache
+rm -f /config/.cache/mangal/Mangasee_custom_mangas.json
+
+# Optimized permissions: only touch top-level if needed
+# We avoid recursive chown on /app and /data because it's extremely slow
+echo "[Kaizen] Ensuring directory existence..."
+mkdir -p /config /logs /data
+
+# Only chown the directories themselves, not contents (unless needed)
+chown abc:abc /config /logs /data
+
+echo "[Kaizen] Configuration complete. Starting app..."

@@ -1,0 +1,4 @@
+FROM alpine
+WORKDIR /app
+COPY src/pages/index.tsx .
+RUN cat index.tsx | grep "onClick"

@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manga Raw Search</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<style>
+    html{line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,footer,header,nav,section{display:block}h1{font-size:2em;margin:.67em 0}figcaption,figure,main{display:block}figure{margin:1em 40px}hr{box-sizing:content-box;height:0;overflow:visible}pre{font-family:monospace,monospace;font-size:1em}a{background-color:transparent;-webkit-text-decoration-skip:objects}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:inherit}b,strong{font-weight:bolder}code,kbd,samp{font-family:monospace,monospace;font-size:1em}dfn{font-style:italic}mark{background-color:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}audio,video{display:inline-block}audio:not([controls]){display:none;height:0}img{border-style:none}svg:not(:root){overflow:hidden}button,input,optgroup,select,textarea{font-family:sans-serif;font-size:100%;line-height:1.15;margin:0}button,input{overflow:visible}button,select{text-transform:none}button,html [type=button],[type=reset],[type=submit]{-webkit-appearance:button}button::-moz-focus-inner,[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner{border-style:none;padding:0}button:-moz-focusring,[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[type=submit]:-moz-focusring{outline:1px dotted ButtonText}fieldset{padding:.35em .75em .625em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{display:inline-block;vertical-align:baseline}textarea{overflow:auto}[type=checkbox],[type=radio]{box-sizing:border-box;padding:0}[type=number]::-webkit-inner-spin-button,[type=number]::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}[type=search]::-webkit-search-cancel-button,[type=search]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}details,menu{display:block}summary{display:list-item}canvas{display:inline-block}template{display:none}[hidden]{display:none}html{height:100%}fieldset{margin:0;padding:0;-webkit-margin-start:0;-webkit-margin-end:0;-webkit-padding-before:0;-webkit-padding-start:0;-webkit-padding-end:0;-webkit-padding-after:0;border:0}legend{margin:0;padding:0;display:block;-webkit-padding-start:0;-webkit-padding-end:0}.choices{position:relative;margin-bottom:24px;font-size:16px}.choices:focus{outline:none}.choices:last-child{margin-bottom:0}.choices.is-disabled .choices__inner,.choices.is-disabled .choices__input{background-color:#eaeaea;cursor:not-allowed;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.choices.is-disabled .choices__item{cursor:not-allowed}.choices[data-type*=select-one]{cursor:pointer}.choices[data-type*=select-one] .choices__inner{padding-bottom:7.5px}.choices[data-type*=select-one] .choices__input{display:block;width:100%;padding:10px;border-bottom:1px solid #ddd;background-color:#fff;margin:0}.choices[data-type*=select-one] .choices__button{background-image:url(../../icons/cross-inverse.svg);padding:0;background-size:8px;height:100%;position:absolute;top:50%;right:0;margin-top:-10px;margin-right:25px;height:20px;width:20px;border-radius:10em;opacity:.5}.choices[data-type*=select-one] .choices__button:hover,.choices[data-type*=select-one] .choices__button:focus{opacity:1}.choices[data-type*=select-one] .choices__button:focus{box-shadow:0 0 0 2px #00bcd4}.choices[data-type*=select-one]:after{content:"";height:0;width:0;border-style:solid;border-color:#333 transparent transparent transparent;border-width:5px;position:absolute;right:11.5px;top:50%;margin-top:-2.5px;pointer-events:none}.choices[data-type*=select-one].is-open:after{border-color:transparent transparent #333 transparent;margin-top:-7.5px}.choices[data-type*=select-one][dir=rtl]:after{left:11.5px;right:auto}.choices[data-type*=select-one][dir=rtl] .choices__button{right:auto;left:0;margin-left:25px;margin-right:0}.choices[data-type*=select-multiple] .choices__inner,.choices[data-type*=text] .choices__inner{cursor:text}.choices[data-type*=select-multiple] .choices__button,.choices[data-type*=text] .choices__button{position:relative;display:inline-block;margin-top:0;margin-right:-4px;margin-bottom:0;margin-left:8px;padding-left:16px;border-left:1px solid #008fa1;background-image:url(../../icons/cross.svg);background-size:8px;width:8px;line-height:1;opacity:.75}.choices[data-type*=select-multiple] .choices__button:hover,.choices[data-type*=select-multiple] .choices__button:focus,.choices[data-type*=text] .choices__button:hover,.choices[data-type*=text] .choices__button:focus{opacity:1}.choices__inner{display:inline-block;vertical-align:top;width:100%;background-color:#f9f9f9;padding:7.5px 7.5px 3.75px;border:1px solid #ddd;border-radius:2.5px;font-size:14px;min-height:44px;overflow:hidden}.is-focused .choices__inner,.is-open .choices__inner{border-color:#b7b7b7}.is-open .choices__inner{border-radius:2.5px 2.5px 0 0}.is-flipped.is-open .choices__inner{border-radius:0 0 2.5px 2.5px}.choices__list{margin:0;padding-left:0;list-style:none}.choices__list--single{display:inline-block;padding:4px 16px 4px 4px;width:100%}[dir=rtl] .choices__list--single{padding-right:4px;padding-left:16px}.choices__list--single .choices__item{width:100%}.choices__list--multiple{display:inline}.choices__list--multiple .choices__item{display:inline-block;vertical-align:middle;border-radius:20px;padding:4px 10px;font-size:12px;font-weight:500;margin-right:3.75px;margin-bottom:3.75px;background-color:#00bcd4;border:1px solid #00a5bb;color:#fff;word-break:break-all}.choices__list--multiple .choices__item[data-deletable]{padding-right:5px}[dir=rtl] .choices__list--multiple .choices__item{margin-right:0;margin-left:3.75px}.choices__list--multiple .choices__item.is-highlighted{background-color:#00a5bb;border:1px solid #008fa1}.is-disabled .choices__list--multiple .choices__item{background-color:#aaa;border:1px solid #919191}.choices__list--dropdown{display:none;z-index:1;position:absolute;width:100%;background-color:#fff;border:1px solid #ddd;top:100%;margin-top:-1px;border-bottom-left-radius:2.5px;border-bottom-right-radius:2.5px;overflow:hidden;word-break:break-all}.choices__list--dropdown.is-active{display:block}.is-open .choices__list--dropdown{border-color:#b7b7b7}.is-flipped .choices__list--dropdown{top:auto;bottom:100%;margin-top:0;margin-bottom:-1px;border-radius:.25rem .25rem 0 0}.choices__list--dropdown .choices__list{position:relative;max-height:300px;overflow:auto;-webkit-overflow-scrolling:touch;will-change:scroll-position}.choices__list--dropdown .choices__item{position:relative;padding:10px;font-size:14px}[dir=rtl] .choices__list--dropdown .choices__item{text-align:right}@media(min-width:640px){.choices__list--dropdown .choices__item--selectable{padding-right:100px}.choices__list--dropdown .choices__item--selectable:after{content:attr(data-select-text);font-size:12px;opacity:0;position:absolute;right:10px;top:50%;transform:translateY(-50%)}[dir=rtl] .choices__list--dropdown .choices__item--selectable{text-align:right;padding-left:100px;padding-right:10px}[dir=rtl] .choices__list--dropdown .choices__item--selectable:after{right:auto;left:10px}}.choices__list--dropdown .choices__item--selectable.is-highlighted{background-color:#f2f2f2}.choices__list--dropdown .choices__item--selectable.is-highlighted:after{opacity:.5}.choices__item{cursor:default}.choices__item--selectable{cursor:pointer}.choices__item--disabled{cursor:not-allowed;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;opacity:.5}.choices__heading{font-weight:600;font-size:12px;padding:10px;border-bottom:1px solid #f7f7f7;color:gray}.choices__button{text-indent:-9999px;-webkit-appearance:none;-moz-appearance:none;appearance:none;border:0;background-color:transparent;background-repeat:no-repeat;background-position:center;cursor:pointer}.choices__button:focus{outline:none}.choices__input{display:inline-block;vertical-align:baseline;background-color:#f9f9f9;font-size:14px;margin-bottom:5px;border:0;border-radius:0;max-width:100%;padding:4px 0 4px 2px}.choices__input:focus{outline:0}[dir=rtl] .choices__input{padding-right:2px;padding-left:0}.choices__placeholder{opacity:.5}*{box-sizing:border-box}.s008{min-height:100vh;display:-ms-flexbox;display:flex;-ms-flex-pack:center;justify-content:center;-ms-flex-align:center;align-items:center;background:url(https://steamuserimages-a.akamaihd.net/ugc/992388073545342697/CFDC3BBA61409457E799DE0946791C6EAA9F9D2A/);background-size:cover;padding:15px;font-family:roboto,sans-serif}.s008 form{width:100%;max-width:790px;margin:0}.s008 form .inner-form{width:100%}.s008 form .inner-form .input-field{position:relative}.s008 form .inner-form .input-field input{height:100%;border:0;background:#fff;display:block;width:100%;padding:10px 32px 10px 70px;font-size:18px;color:#666;border-radius:3px;height:70px;color:#555}.s008 form .inner-form .input-field input.placeholder{color:#999;font-size:18px}.s008 form .inner-form .input-field input:-moz-placeholder{color:#999;font-size:18px}.s008 form .inner-form .input-field input::-webkit-input-placeholder{color:#999;font-size:18px}.s008 form .inner-form .input-field input:hover,.s008 form .inner-form .input-field input:focus{box-shadow:none;outline:0}.s008 form .inner-form .input-field .btn-search{min-width:100px;height:40px;padding:0 15px;background:#e45c27;white-space:nowrap;border-radius:3px;font-size:14px;color:#fff;transition:all .2s ease-out,color .2s ease-out;border:0;cursor:pointer;font-weight:700}.s008 form .inner-form .input-field .btn-search:hover{background:#d7501b}.s008 form .inner-form .input-field .btn-delete{min-width:100px;height:40px;padding:0 15px;background:0 0;white-space:nowrap;border-radius:3px;font-size:14px;color:#fff;transition:all .2s ease-out,color .2s ease-out;border:0;cursor:pointer;font-weight:700}.s008 form .inner-form .input-field .btn-delete:hover{color:#fff}.s008 form .inner-form .basic-search{margin-bottom:5px;box-shadow:0 8px 20px 0 rgba(0,0,0,.15)}.s008 form .inner-form .basic-search .input-field{width:100%}.s008 form .inner-form .basic-search .input-field input{padding:10px 80px 10px 40px}.s008 form .inner-form .basic-search .input-field .icon-wrap{position:absolute;top:0;right:0;display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center;width:60px;height:100%}.s008 form .inner-form .basic-search .input-field .icon-wrap svg{width:34px;height:34px;fill:#ccc}.s008 form .inner-form .advance-search{background:#000;padding:40px;border-radius:3px;box-shadow:0 8px 20px 0 rgba(0,0,0,.15)}.s008 form .inner-form .advance-search .desc{font-size:15px;color:#999;display:block;margin-bottom:26px}.s008 form .inner-form .advance-search .row{display:-ms-flexbox;display:flex;-ms-flex-pack:justify;justify-content:space-between;-ms-flex-align:center;align-items:center;margin-bottom:20px}.s008 form .inner-form .advance-search .row.second{margin-bottom:46px}.s008 form .inner-form .advance-search .row.third{margin-bottom:0}.s008 form .inner-form .advance-search .row.third .input-field{width:100%;display:-ms-flexbox;display:flex;-ms-flex-pack:justify;justify-content:space-between;-ms-flex-align:center;align-items:center}.s008 form .inner-form .advance-search .row.third .input-field .result-count{display:-ms-flexbox;display:flex;-ms-flex-pack:start;justify-content:flex-start;-ms-flex-align:center;align-items:center;width:110px;font-weight:700;color:#fff;font-size:14px}.s008 form .inner-form .advance-search .row.third .input-field .result-count span{color:#e45c27;padding-right:5px}.s008 form .inner-form .advance-search .input-field{width:calc(33.3333% - 30px)}.s008 form .inner-form .advance-search .input-select{height:40px}.s008 form .inner-form .advance-search .choices__inner{background:0 0;border-radius:0;border:0;border-bottom:2px solid #ccc;height:100%;color:#fff;display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center;padding:0;padding-right:30px;font-size:14px}.s008 form .inner-form .advance-search .choices__inner .choices__list.choices__list--single{display:-ms-flexbox;display:flex;padding:0;-ms-flex-align:center;align-items:center;height:100%;padding-top:10px}.s008 form .inner-form .advance-search .choices__inner .choices__item.choices__item--selectable.choices__placeholder{display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center;height:100%;opacity:1;color:#666}.s008 form .inner-form .advance-search .choices__inner .choices__list--single .choices__item{display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center;height:100%;color:#fff}.s008 form .inner-form .advance-search .choices__list.choices__list--dropdown{border:0;background:#000;padding:20px 30px;margin-top:2px;border-radius:4px;box-shadow:0 8px 20px 0 rgba(0,0,0,.15)}.s008 form .inner-form .advance-search .choices__list.choices__list--dropdown .choices__item--selectable{padding-right:0}.s008 form .inner-form .advance-search .choices__list--dropdown .choices__item--selectable.is-highlighted{background:0 0;color:#e45c27}.s008 form .inner-form .advance-search .choices__list--dropdown .choices__item{color:#555;min-height:24px}.s008 form .inner-form .advance-search .choices[data-type*=select-one]:after{border:0;width:32px;height:32px;margin:0;transform:none;opacity:1;right:0;top:10px;background-size:18px 18px;background-position:right center;background-image:url(data:image/svg+xml;charset=UTF-8;base64,PHN2ZyBmaWxsPScjOTk5JyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyNCcgaGVpZ2h0PScyNCcgdmlld0JveD0nMCAwIDI0IDI0Jz48cGF0aCBkPSdNMTYuNTkgOC41OUwxMiAxMy4xNyA3LjQxIDguNTkgNiAxMGw2IDYgNi02eicvPjwvc3ZnPg==);background-repeat:no-repeat}.s008 form .inner-form .advance-search .choices[data-type*=select-one] .choices__button{background-image:url(data:image/svg+xml;charset=UTF-8;base64,PHN2ZyBmaWxsPScjZTQ1YzI3JyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyNCcgaGVpZ2h0PScyNCcgdmlld0JveD0nMCAwIDI0IDI0Jz48cGF0aCBkPSdNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptLTIgMTVsLTUtNSAxLjQxLTEuNDFMMTAgMTQuMTdsNy41OS03LjU5TDE5IDhsLTkgOXonLz48L3N2Zz4=);background-size:16px 16px;background-position:right center;width:32px;height:32px;opacity:1;display:none;top:10px;right:0;transform:none;margin:0}.s008 form .inner-form .advance-search .choices[data-type*=select-one].valid .choices__button{display:block}.s008 form .inner-form .advance-search .choices[data-type*=select-one].valid .choices__button:hover{background-image:url(data:image/svg+xml;charset=UTF-8;base64,PHN2ZyBmaWxsPScjY2NjJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyNCcgaGVpZ2h0PScyNCcgdmlld0JveD0nMCAwIDI0IDI0Jz48cGF0aCBkPSdNMTIgMkM2LjQ3IDIgMiA2LjQ3IDIgMTJzNC40NyAxMCAxMCAxMCAxMC00LjQ3IDEwLTEwUzE3LjUzIDIgMTIgMnptNSAxMy41OUwxNS41OSAxNyAxMiAxMy40MSA4LjQxIDE3IDcgMTUuNTkgMTAuNTkgMTIgNyA4LjQxIDguNDEgNyAxMiAxMC41OSAxNS41OSA3IDE3IDguNDEgMTMuNDEgMTIgMTcgMTUuNTl6Jy8+PC9zdmc+)}.s008 form .inner-form .advance-search .choices[data-type*=select-one].valid:after{display:none}.s008 form .inner-form .advance-search .choices[data-type*=select-one].is-open:after{background-image:url(data:image/svg+xml;charset=UTF-8;base64,PHN2ZyBmaWxsPScjOTk5JyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyNCcgaGVpZ2h0PScyNCcgdmlld0JveD0nMCAwIDI0IDI0Jz48cGF0aCBkPSdNMTIgOGwtNiA2IDEuNDEgMS40MUwxMiAxMC44M2w0LjU5IDQuNThMMTggMTR6Jy8+PC9zdmc+)}@media screen and (max-width:767px){.s008 form .inner-form .basic-search .input-field input{padding:10px 60px 10px 40px}.s008 form .inner-form .basic-search .input-field .icon-wrap{width:60px;-ms-flex-pack:center;justify-content:center}.s008 form .inner-form .basic-search .input-field .icon-wrap svg{width:26px;height:26px}.s008 form .inner-form .advance-search .row{display:block}.s008 form .inner-form .advance-search .input-field{width:100%;margin-bottom:20px}}
+</style>
+
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://colorlib.com/etc/searchf/colorlib-search-8/js/extention/choices.js" ></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+
+    <style>
+       .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: auto;
+            /* prevent horizontal scrollbar */
+            overflow-x: hidden;
+            /* add padding to account for vertical scrollbar */
+            padding-right: 20px;
+        }
+</style>
+  <script>
+  $( function() {
+
+    $( "#tags" ).autocomplete({
+      source: '/autocomplete'
+    });
+  } );
+  </script>
+
+</head>
+<body>
+ 
+<div class="s008">
+<script>
+ function checkTerms() {
+     if(document.formname.checkboxname.checked)
+     {
+         document.formname.submitname.disabled=false;
+     }
+     else
+     {
+         document.formname.submitname.disabled=true;
+     }
+ }
+</script>
+<form id="search" method="get" action="/search/">
+<div class="inner-form">
+<div class="basic-search">
+<div class="input-field">
+<input id="tags" name="search" type="text" placeholder="Type Manga Keywords" />
+<div class="icon-wrap">
+<svg onclick="javascript:{document.getElementById('search').submit()}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" viewBox="0 0 20 20">
+<path d="M18.869 19.162l-5.943-6.484c1.339-1.401 2.075-3.233 2.075-5.178 0-2.003-0.78-3.887-2.197-5.303s-3.3-2.197-5.303-2.197-3.887 0.78-5.303 2.197-2.197 3.3-2.197 5.303 0.78 3.887 2.197 5.303 3.3 2.197 5.303 2.197c1.726 0 3.362-0.579 4.688-1.645l5.943 6.483c0.099 0.108 0.233 0.162 0.369 0.162 0.121 0 0.242-0.043 0.338-0.131 0.204-0.187 0.217-0.503 0.031-0.706zM1 7.5c0-3.584 2.916-6.5 6.5-6.5s6.5 2.916 6.5 6.5-2.916 6.5-6.5 6.5-6.5-2.916-6.5-6.5z"></path>
+</svg>
+</div>
+</div>
+</div>
+
+
+</form>
+
+
+ <form action="/search/" method="post">
+<div class="advance-search">
+<span class="desc">Advanced Search</span>
+<div class="row">
+<div class="input-field">
+<div class="input-select">
+
+
+        <input type="hidden" name="csrfmiddlewaretoken" value="wsbUdHciPk6PGNsblPkOHJvdStvj4u4akJttIzoCcW5Hi3O7ojleaR6lEGeRvSEc">
+<select data-trigger="" name="status">
+<option placeholder="" value="">Status</option>
+<option value="Ongoing">Ongoing</option>
+<option value="Completed">Completed</option>
+</select>
+</div>
+
+</div>
+<div class="input-field">
+<div class="input-select">
+<select data-trigger="" name="action">
+<option placeholder="" value="">Action</option>
+<option value="include">Include</option>
+<option value="exclude">Exclude</option>
+</select>
+</div>
+</div>
+
+
+</div>
+<div class="row second">
+
+
+<div class="container">
+
+
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Action"> Action
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Adventure"> Adventure
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Comedy"> Comedy
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Cooking"> Cooking
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Manga"> Manga
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Drama"> Drama
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Fantasy"> Fantasy
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Gender bender"> Gender bender
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Harem"> Harem
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Historical"> Historical
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Horror"> Horror
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Isekai"> Isekai
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Josei"> Josei
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Manhua"> Manhua
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Manhwa"> Manhwa
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Martial arts"> Martial arts
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Mature"> Mature
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Mecha"> Mecha
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Medical"> Medical
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Mystery"> Mystery
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="One shot"> One shot
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Psychological"> Psychological
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Romance"> Romance
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="School life"> School life
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Sci fi"> Sci fi
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Seinen"> Seinen
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Shoujo"> Shoujo
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Shounen"> Shounen
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Slice of life"> Slice of life
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Sports"> Sports
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Supernatural"> Supernatural
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Tragedy"> Tragedy
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="Webtoons"> Webtoons
+    </label>
+
+    <label class="checkbox-inline" style="color: #D8D8D8">
+      <input name="options[]"  type="checkbox" onclick="checkTerms();" value="ladies"> ladies
+    </label>
+
+
+
+</div>
+
+</div>
+<div class="row third">
+<div class="input-field">
+<div class="result-count">
+<span style="color: blue">7441 </span>MANGA In DB</div>
+<div class="group-btn">
+    <a href="/">Go Back</a>
+<button style="background-color: blue" class="btn-search">Search</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+
+</form>
+
+
+<script src="js/extention/choices.js"></script>
+<script>
+      const customSelects = document.querySelectorAll("select");
+      const deleteBtn = document.getElementById('delete')
+      const choices = new Choices('select',
+      {
+        searchEnabled: false,
+        removeItemButton: true,
+        itemSelectText: '',
+      });
+      for (let i = 0; i < customSelects.length; i++)
+      {
+        customSelects[i].addEventListener('addItem', function(event)
+        {
+          if (event.detail.value)
+          {
+            let parent = this.parentNode.parentNode
+            parent.classList.add('valid')
+            parent.classList.remove('invalid')
+          }
+          else
+          {
+            let parent = this.parentNode.parentNode
+            parent.classList.add('invalid')
+            parent.classList.remove('valid')
+          }
+        }, false);
+      }
+      deleteBtn.addEventListener("click", function(e)
+      {
+        e.preventDefault()
+        const deleteAll = document.querySelectorAll('.choices__button')
+        for (let i = 0; i < deleteAll.length; i++)
+        {
+          deleteAll[i].click();
+        }
+      });
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-23581568-13');
+</script>
+ 
+ 
+</body>
+</html>

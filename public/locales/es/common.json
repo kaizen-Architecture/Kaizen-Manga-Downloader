@@ -1,0 +1,127 @@
+{
+  "app": {
+    "title": "Kaizen Descargador de Manga",
+    "shortTitle": "Kaizen"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "library": "Biblioteca",
+    "planner": "Planificador",
+    "sources": "Fuentes",
+    "settings": "Ajustes",
+    "logs": "Registros"
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "search": "Buscar",
+    "cleanup": "Limpiar",
+    "filter": "Filtro",
+    "manga": "Manga",
+    "source": "Fuente",
+    "status": "Estado",
+    "actions": "Acciones",
+    "at": "a las",
+    "jobs": "tareas",
+    "hour": "Hora",
+    "to": "a",
+    "simple": "Simple",
+    "advanced": "Avanzado",
+    "minute": "Minuto",
+    "result": "Resultado",
+    "error": "Error",
+    "comingSoon": "Próximamente",
+    "frequencies": {
+      "hourly": "Cada hora",
+      "daily": "Diario",
+      "weekly": "Semanal"
+    },
+    "days": {
+      "sun": "Dom",
+      "mon": "Lun",
+      "tue": "Mar",
+      "wed": "Mié",
+      "thu": "Jue",
+      "fri": "Vie",
+      "sat": "Sáb"
+    }
+  },
+  "header": {
+    "searchPlaceholder": "Buscar manga...",
+    "tooltip": {
+      "planner": "Planificador",
+      "settings": "Ajustes"
+    }
+  },
+  "scheduler": {
+    "title": "Planificador Inteligente",
+    "description": "Gestiona cuándo se comprueban las actualizaciones de tus mangas",
+    "serverTime": "Hora del Servidor",
+    "autoStaggerWindow": "Ventana de Optimización",
+    "autoStaggerTooltip": "Distribuye las tareas automáticamente para evitar bloqueos por parte de los proveedores (como MangaDex)",
+    "autoStaggerAll": "Optimizar Todo",
+    "jobDistribution": "Distribución de Tareas",
+    "clearFilter": "Limpiar Filtro",
+    "currentSchedule": "Programación Actual",
+    "editSchedule": "Editar Programación",
+    "frequency": "Frecuencia",
+    "cronExpression": "Expresión Cron",
+    "invalidCron": "Expresión Cron no válida",
+    "notifications": {
+      "optimizing": "Optimizando programación",
+      "rescheduling": "Reorganizando tareas...",
+      "processing": "Procesando",
+      "optimizationComplete": "Optimización completada",
+      "optimizationMessage": "Se han reprogramado {{count}} mangas correctamente",
+      "staggerError": "Error al optimizar la programación",
+      "updatedTitle": "Programación actualizada",
+      "updatedMessage": "El manga se ha reprogramado correctamente",
+      "updateError": "Error al actualizar la programación",
+      "cleaningTitle": "Limpiando duplicados",
+      "cleaningMessage": "Buscando capítulos duplicados...",
+      "cleanupCompleteTitle": "Limpieza completada",
+      "cleanupCompleteMessage": "Se han eliminado {{count}} capítulos duplicados",
+      "cleanupError": "Error al limpiar duplicados"
+    }
+  },
+  "dashboard": {
+    "title": "Panel de Control",
+    "description": "Resumen de actividad y estado de las descargas",
+    "stats": {
+      "downloading": "Descargando",
+      "queued": "En cola",
+      "scheduled": "Programado",
+      "failed": "Fallido",
+      "completed": "Completado"
+    },
+    "queue": {
+      "title": "Cola de Descargas",
+      "noJobs": "No hay descargas activas ni en cola",
+      "tab": {
+        "active": "Activo y En Cola",
+        "recent": "Recientes"
+      },
+      "col": {
+        "manga": "Manga",
+        "chapter": "Capítulo",
+        "source": "Fuente",
+        "status": "Estado",
+        "progress": "Progreso",
+        "time": "Tiempo",
+        "reason": "Motivo",
+        "actions": "Acciones"
+      },
+      "action": {
+        "retry": "Reintentar Descarga",
+        "clean": "Limpiar Historial"
+      },
+      "status": {
+        "active": "Descargando",
+        "waiting": "En cola",
+        "completed": "Completado",
+        "failed": "Fallido"
+      }
+    }
+  }
+}

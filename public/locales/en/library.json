@@ -1,0 +1,32 @@
+{
+  "title": "Library",
+  "stats": {
+    "mangas": "Mangas",
+    "chapters": "Chapters",
+    "sources": "Sources"
+  },
+  "sync": {
+    "all": "Sync All",
+    "source": "Sync {{source}}",
+    "startedTitle": "Sync Started",
+    "startedMessageAll": "A library-wide check for new chapters has been queued.",
+    "startedMessageSource": "Checking for new chapters in all {{source}} mangas.",
+    "error": "Failed to start library sync"
+  },
+  "controls": {
+    "search": "Search",
+    "searchPlaceholder": "Manga title...",
+    "sourcePlaceholder": "All sources",
+    "sortBy": {
+      "label": "Sort by",
+      "title": "Title",
+      "chapters": "Chapters",
+      "recent": "Recent"
+    },
+    "viewMode": {
+      "grid": "Grid",
+      "list": "List"
+    }
+  },
+  "noMangas": "No mangas found"
+}

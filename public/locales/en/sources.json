@@ -1,0 +1,23 @@
+{
+  "title": "Source Management",
+  "description": "Enable or disable manga scrapers (.lua)",
+  "activeSources": "Active Sources",
+  "disabledSources": "Disabled Sources",
+  "noSources": "No sources found.",
+  "toggle": {
+    "activate": "Activate",
+    "deactivate": "Deactivate"
+  },
+  "notifications": {
+    "activated": "Source activated successfully",
+    "deactivated": "Source deactivated successfully",
+    "removed": "Source removed successfully",
+    "error": "Failed to process source"
+  },
+  "sync": {
+    "title": "Sync with GitHub",
+    "description": "Download your private scrapers directly from your repository",
+    "button": "Sync Scrapers",
+    "status": "Sync Status"
+  }
+}

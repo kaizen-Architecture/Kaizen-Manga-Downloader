@@ -1,0 +1,279 @@
+/* eslint-disable react/require-default-props */
+import {
+  ActionIcon,
+  Badge,
+  Box,
+  Group,
+  LoadingOverlay,
+  Loader,
+  ScrollArea,
+  Stack,
+  Text,
+  TextInput,
+} from '@mantine/core';
+import { getHotkeyHandler } from '@mantine/hooks';
+import { IconArrowRight, IconCheck, IconSearch, IconX } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
+import { trpc } from '../../../utils/trpc';
+import { MangaSearchResult } from '../mangaSearchResult';
+
+export interface SearchStepForm {
+  values: {
+    source: string[];
+    query: string;
+    mangaTitle: string;
+  };
+  setFieldValue: (path: string, value: any) => void;
+  validateField: (path: string) => void;
+  getInputProps: (path: string) => any;
+  isValid: (path?: string) => boolean;
+}
+
+export function SearchStep({
+  form,
+  onSelect,
+  initialTitle,
+}: {
+  form: SearchStepForm;
+  onSelect?: (selected: { title: string; source: string }) => void;
+  initialTitle?: string;
+}) {
+  const ctx = trpc.useContext();
+  type SearchResult = Awaited<ReturnType<typeof ctx.manga.search.fetch>>;
+
+  const [loading, setLoading] = useState(false);
+  const [searchResult, setSearchResult] = useState<SearchResult>([]);
+  const [isEmptyResult, setIsEmptyResult] = useState(false);
+
+  const sourcesQuery = trpc.manga.sources.useQuery(undefined, {
+    staleTime: Infinity,
+  });
+
+  const [selectedSources, setSelectedSources] = useState<string[]>(form.values.source || ['all']);
+  const [sourceStatuses, setSourceStatuses] = useState<
+    Record<string, { status: 'idle' | 'searching' | 'done' | 'error'; count: number }>
+  >({});
+
+  useEffect(() => {
+    if (form.values.source) {
+      setSelectedSources(form.values.source);
+    }
+  }, [form.values.source]);
+
+  useEffect(() => {
+    if (initialTitle && initialTitle !== '') {
+      form.setFieldValue('query', initialTitle);
+      setTimeout(() => {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        handleSearch(initialTitle);
+      }, 500);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialTitle]);
+
+  const handleSearch = async (overrideQuery?: string) => {
+    const rawQuery = overrideQuery || form.values.query;
+    const queryToSearch = typeof rawQuery === 'string' ? rawQuery : String(rawQuery || '');
+
+    if (!queryToSearch || queryToSearch.trim() === '') {
+      form.validateField('query');
+      return;
+    }
+
+    form.setFieldValue('mangaTitle', '');
+    setLoading(true);
+    setSearchResult([]);
+    setIsEmptyResult(false);
+
+    let actualSources = selectedSources;
+    if (selectedSources.includes('all')) {
+      actualSources = sourcesQuery.data || [];
+    }
+
+    const newStatuses: typeof sourceStatuses = {};
+    actualSources.forEach((s) => {
+      newStatuses[s] = { status: 'searching', count: 0 };
+    });
+    setSourceStatuses(newStatuses);
+
+    const searchPromises = actualSources.map(async (s) => {
+      try {
+        const result = await ctx.manga.search.fetch({
+          keyword: queryToSearch,
+          source: [s],
+        });
+
+        setSourceStatuses((prev) => ({
+          ...prev,
+          [s]: { status: 'done', count: result.length },
+        }));
+
+        if (result && result.length > 0) {
+          setSearchResult((prev) => {
+            const combined = [...prev, ...result];
+            // Remove duplicates based on title and source
+            return combined.filter((v, i, a) => a.findIndex((t) => t.title === v.title && t.source === v.source) === i);
+          });
+        }
+      } catch (err) {
+        setSourceStatuses((prev) => ({
+          ...prev,
+          [s]: { status: 'error', count: 0 },
+        }));
+      }
+    });
+
+    await Promise.all(searchPromises);
+    setLoading(false);
+
+    // Check if overall results are empty after all searches
+    setSearchResult((prev) => {
+      if (prev.length === 0) setIsEmptyResult(true);
+      return prev;
+    });
+  };
+
+  const isAllSelected = selectedSources.includes('all');
+
+  return (
+    <Stack spacing="md">
+      {/* Banner resumen de orígenes con diseño compacto premium */}
+      <Box
+        p="xs"
+        sx={(theme) => ({
+          backgroundColor: theme.colorScheme === 'dark' ? 'rgba(99, 102, 241, 0.05)' : 'rgba(99, 102, 241, 0.05)',
+          borderRadius: theme.radius.md,
+          border: `1px solid ${theme.colorScheme === 'dark' ? 'rgba(99, 102, 241, 0.15)' : 'rgba(99, 102, 241, 0.2)'}`,
+        })}
+      >
+        <Group position="apart" align="center" mb={4}>
+          <Text size="xs" weight={600} color="indigo">
+            🎯 Orígenes de búsqueda activos
+          </Text>
+          <Text size="xs" color="dimmed" sx={{ fontSize: 10 }}>
+            {isAllSelected ? 'Búsqueda global' : `${selectedSources.length} orígenes`}
+          </Text>
+        </Group>
+
+        <ScrollArea sx={{ maxHeight: 65 }} offsetScrollbars>
+          <Group spacing={6}>
+            {isAllSelected ? (
+              <Badge color="indigo" variant="light" size="xs">
+                🌐 Todos los orígenes disponibles
+              </Badge>
+            ) : (
+              selectedSources.map((s) => (
+                <Badge key={s} color="indigo" variant="outline" size="xs" sx={{ textTransform: 'none' }}>
+                  {s}
+                </Badge>
+              ))
+            )}
+          </Group>
+        </ScrollArea>
+      </Box>
+
+      {/* Input de Búsqueda Premium */}
+      <TextInput
+        data-autofocus
+        size="md"
+        radius="xl"
+        onKeyDown={getHotkeyHandler([['Enter', () => handleSearch()]])}
+        icon={<IconSearch size={18} strokeWidth={1.5} />}
+        rightSection={
+          <ActionIcon
+            size={32}
+            radius="xl"
+            color="indigo"
+            variant="filled"
+            aria-label="Search"
+            onClick={() => handleSearch()}
+            sx={{ transition: 'transform 0.1s ease', '&:active': { transform: 'scale(0.95)' } }}
+          >
+            <IconArrowRight size={18} strokeWidth={1.5} />
+          </ActionIcon>
+        }
+        rightSectionWidth={42}
+        label="Término de búsqueda del manga"
+        placeholder="Escribe el título (ej. Bleach, One Piece...)"
+        {...form.getInputProps('query')}
+        defaultValue={initialTitle}
+        sx={{
+          boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+        }}
+      />
+
+      {/* Riel de Estado de Búsqueda Clampeado para evitar deformación */}
+      {Object.keys(sourceStatuses).length > 0 && (
+        <Box>
+          <Text size="xs" weight={500} color="dimmed" mb={4}>
+            Progreso por origen:
+          </Text>
+          <ScrollArea sx={{ maxHeight: 90 }} offsetScrollbars>
+            <Group spacing={6} pb={4}>
+              {Object.entries(sourceStatuses).map(([s, status]) => (
+                <Badge
+                  key={s}
+                  variant="dot"
+                  size="xs"
+                  sx={{ textTransform: 'none' }}
+                  color={
+                    status.status === 'searching'
+                      ? 'indigo'
+                      : status.status === 'error'
+                      ? 'red'
+                      : status.count > 0
+                      ? 'teal'
+                      : 'gray'
+                  }
+                  leftSection={
+                    status.status === 'searching' ? (
+                      <Loader size={8} />
+                    ) : status.status === 'error' ? (
+                      <IconX size={8} />
+                    ) : status.count > 0 ? (
+                      <IconCheck size={8} />
+                    ) : null
+                  }
+                >
+                  {s} {status.status === 'done' ? `(${status.count})` : ''}
+                </Badge>
+              ))}
+            </Group>
+          </ScrollArea>
+        </Box>
+      )}
+
+      <TextInput hidden {...form.getInputProps('mangaTitle')} />
+
+      {isEmptyResult ? (
+        <Text color="red" align="center" mt="xl" size="sm" weight={500}>
+          No se encontró ningún resultado en las fuentes seleccionadas.
+        </Text>
+      ) : (
+        <Box sx={{ position: 'relative', minHeight: searchResult.length > 0 ? 200 : undefined }}>
+          <LoadingOverlay visible={loading} overlayBlur={1} />
+          <MangaSearchResult
+            items={searchResult}
+            onSelect={(selected) => {
+              if (selected) {
+                form.setFieldValue('mangaTitle', selected.title);
+                form.setFieldValue('source', [selected.source]);
+                if (onSelect) {
+                  onSelect(selected);
+                }
+              } else {
+                form.setFieldValue('mangaTitle', '');
+              }
+            }}
+            onMultiSelect={(selectedList) => {
+              form.setFieldValue(
+                'selectedResults',
+                selectedList.map((s) => ({ source: s.source, title: s.title })),
+              );
+            }}
+          />
+        </Box>
+      )}
+    </Stack>
+  );
+}

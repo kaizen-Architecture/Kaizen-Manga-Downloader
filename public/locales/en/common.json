@@ -1,0 +1,127 @@
+{
+  "app": {
+    "title": "Kaizen Manga Downloader",
+    "shortTitle": "Kaizen"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "library": "Library",
+    "planner": "Planner",
+    "sources": "Sources",
+    "settings": "Settings",
+    "logs": "Logs"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "search": "Search",
+    "cleanup": "Cleanup",
+    "filter": "Filter",
+    "manga": "Manga",
+    "source": "Source",
+    "status": "Status",
+    "actions": "Actions",
+    "at": "at",
+    "jobs": "jobs",
+    "hour": "Hour",
+    "to": "to",
+    "simple": "Simple",
+    "advanced": "Advanced",
+    "minute": "Minute",
+    "result": "Result",
+    "error": "Error",
+    "comingSoon": "Coming Soon",
+    "frequencies": {
+      "hourly": "Hourly",
+      "daily": "Daily",
+      "weekly": "Weekly"
+    },
+    "days": {
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat"
+    }
+  },
+  "header": {
+    "searchPlaceholder": "Search manga...",
+    "tooltip": {
+      "planner": "Planner",
+      "settings": "Settings"
+    }
+  },
+  "scheduler": {
+    "title": "Smart Planner",
+    "description": "Manage when your mangas are checked for updates",
+    "serverTime": "Server Time",
+    "autoStaggerWindow": "Optimization Window",
+    "autoStaggerTooltip": "Automatically distribute jobs to prevent provider rate limits (like MangaDex)",
+    "autoStaggerAll": "Optimize All",
+    "jobDistribution": "Job Distribution",
+    "clearFilter": "Clear Filter",
+    "currentSchedule": "Current Schedule",
+    "editSchedule": "Edit Schedule",
+    "frequency": "Frequency",
+    "cronExpression": "Cron Expression",
+    "invalidCron": "Invalid Cron Expression",
+    "notifications": {
+      "optimizing": "Optimizing schedule",
+      "rescheduling": "Rescheduling jobs...",
+      "processing": "Processing",
+      "optimizationComplete": "Optimization complete",
+      "optimizationMessage": "Successfully rescheduled {{count}} mangas",
+      "staggerError": "Failed to optimize schedule",
+      "updatedTitle": "Schedule updated",
+      "updatedMessage": "Manga has been rescheduled successfully",
+      "updateError": "Failed to update schedule",
+      "cleaningTitle": "Cleaning duplicates",
+      "cleaningMessage": "Looking for duplicate chapters...",
+      "cleanupCompleteTitle": "Cleanup complete",
+      "cleanupCompleteMessage": "Deleted {{count}} duplicate chapters",
+      "cleanupError": "Failed to cleanup duplicates"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "Summary of activity and download status",
+    "stats": {
+      "downloading": "Downloading",
+      "queued": "Queued",
+      "scheduled": "Scheduled",
+      "failed": "Failed",
+      "completed": "Completed"
+    },
+    "queue": {
+      "title": "Download Queue",
+      "noJobs": "No active or queued downloads",
+      "tab": {
+        "active": "Active & Queued",
+        "recent": "Recent"
+      },
+      "col": {
+        "manga": "Manga",
+        "chapter": "Chapter",
+        "source": "Source",
+        "status": "Status",
+        "progress": "Progress",
+        "time": "Time",
+        "reason": "Reason",
+        "actions": "Actions"
+      },
+      "action": {
+        "retry": "Retry Download",
+        "clean": "Clear Finished"
+      },
+      "status": {
+        "active": "Downloading",
+        "waiting": "Queued",
+        "completed": "Completed",
+        "failed": "Failed"
+      }
+    }
+  }
+}

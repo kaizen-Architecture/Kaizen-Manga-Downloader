@@ -1,0 +1,6 @@
+# Force LF line endings for scripts used in Docker
+docker/root/etc/services.d/kaizoku/run text eol=lf
+docker/root/etc/cont-init.d/40-config text eol=lf
+
+# Optional: Force LF for all shell scripts
+*.sh text eol=lf

@@ -1,0 +1,31 @@
+{
+  "title": "Settings",
+  "description": "Configure application settings",
+  "tabs": {
+    "appearance": "Appearance",
+    "notifications": "Notifications",
+    "integrations": "Integrations",
+    "sourceRepository": "Source Repository",
+    "mangalCore": "Mangal Core",
+    "downloads": "Downloads"
+  },
+  "downloads": {
+    "retryDelay": {
+      "label": "Bulk Retry Delay",
+      "description": "Delay between each job when retrying all failed downloads. Helps avoid rate-limiting from sources like MangaDex.",
+      "current": "Current delay: {{delay}}s"
+    }
+  },
+  "github": {
+    "repositoryLabel": "GitHub Repository",
+    "repositoryDescription": "Format: username/repository",
+    "tokenLabel": "Personal Access Token",
+    "tokenDescription": "Needed for private repositories",
+    "saveButton": "Save Settings",
+    "notifications": {
+      "successTitle": "Settings Saved",
+      "successMessage": "GitHub credentials updated successfully",
+      "error": "Failed to save settings"
+    }
+  }
+}

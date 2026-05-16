@@ -1,0 +1,37 @@
+{
+  "detail": {
+    "showMore": "Show More",
+    "hide": "Hide",
+    "download": "Download",
+    "checking": "Checking",
+    "from": "from",
+    "status": "Status",
+    "summary": "Summary",
+    "noSummary": "No summary...",
+    "genres": "Genres",
+    "tags": "Tags"
+  },
+  "sources": {
+    "title": "Manga Sources",
+    "active": "Active",
+    "inactive": "Inactive",
+    "priority": "Priority",
+    "noSources": "No sources configured for this manga"
+  },
+  "chapters": {
+    "title": "Chapters",
+    "total": "Total chapters",
+    "outOfSync": "Out of sync",
+    "table": {
+      "index": "Index",
+      "name": "Name",
+      "size": "Size",
+      "date": "Date"
+    },
+    "actions": {
+      "read": "Read",
+      "download": "Download",
+      "delete": "Delete"
+    }
+  }
+}
