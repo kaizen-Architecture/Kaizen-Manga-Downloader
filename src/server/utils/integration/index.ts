@@ -1,7 +1,7 @@
 import * as komga from './komga';
 import * as kavita from './kavita';
 import { prisma } from '../../db/client';
-import { logger } from '../logging';
+import { logger } from '../../../utils/logging';
 
 export const scanLibrary = async () => {
   // 1. Process pending metadata injections first

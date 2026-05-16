@@ -2,7 +2,7 @@ import { prisma } from '../../db/client';
 import { getCachedSettings } from '../settings-cache';
 import AdmZip from 'adm-zip';
 import path from 'path';
-import { logger } from '../logging';
+import { logger } from '../../../utils/logging';
 
 interface Library {
   name: string;
