@@ -42,7 +42,7 @@ const getFavicon = (name: string) => {
   return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
 };
 
-const KAIZEN_FALLBACK_LOGO = 'https://raw.githubusercontent.com/kaizen-Architecture/kaizoku/main/public/logo.png';
+const KAIZEN_FALLBACK_LOGO = 'https://raw.githubusercontent.com/kaizen-Architecture/Kaizen-Manga-Downloader/main/public/logo.png';
 
 export default function SourcesPage() {
   const { t } = useTranslation(['common', 'sources']);
