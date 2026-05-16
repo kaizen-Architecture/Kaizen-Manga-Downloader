@@ -17,10 +17,10 @@ jobs:
         with:
           node-version: 18
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
         name: Install pnpm
         with:
-          version: latest
+          version: 8
           run_install: false
 
       - name: Install dependencies
