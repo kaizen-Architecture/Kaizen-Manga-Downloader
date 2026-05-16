@@ -61,6 +61,9 @@ export const mangaRouter = t.router({
       orderBy: { title: 'asc' },
     });
   }),
+  scanLibrary: t.procedure.mutation(async () => {
+    await scanLibrary();
+  }),
   sources: t.procedure.query(async () => {
     return getAvailableSources();
   }),

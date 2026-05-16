@@ -3,8 +3,15 @@ import { IntegrationHealthCard } from './IntegrationHealthCard';
 import { trpc } from '../../utils/trpc';
 
 export function IntegrationStatusGrid() {
+  const utils = trpc.useContext();
   const settingsQuery = trpc.settings.query.useQuery();
   const mangaQuery = trpc.manga.query.useQuery();
+  
+  const scanMutation = trpc.manga.scanLibrary.useMutation({
+    onSuccess: () => {
+      utils.manga.query.invalidate();
+    },
+  });
   
   if (!settingsQuery.data) return null;
   
@@ -27,7 +34,7 @@ export function IntegrationStatusGrid() {
               status="healthy"
               syncedCount={syncedMangas}
               totalCount={totalMangas}
-              onSync={() => console.log('Syncing Kavita...')}
+              onSync={() => scanMutation.mutate()}
             />
           </Grid.Col>
         )}
@@ -39,7 +46,7 @@ export function IntegrationStatusGrid() {
               status="healthy"
               syncedCount={0}
               totalCount={totalMangas}
-              onSync={() => console.log('Syncing Komga...')}
+              onSync={() => scanMutation.mutate()}
             />
           </Grid.Col>
         )}

@@ -70,6 +70,8 @@ export const injectMetadata = async (chapterId: number) => {
   const mangaPath = path.join(chapter.manga.library.path, chapter.manga.title);
   const filePath = path.join(mangaPath, chapter.fileName);
 
+  logger.debug(`Kavita: Attempting to inject metadata into ${filePath}`);
+
   try {
     const zip = new AdmZip(filePath);
     const comicInfo = `<?xml version="1.0"?>
@@ -92,9 +94,9 @@ export const injectMetadata = async (chapterId: number) => {
       data: { metadataInjected: true },
     });
 
-    logger.info(`Kavita: Injected metadata into ${chapter.fileName}`);
+    logger.info(`Kavita: Successfully injected metadata into ${chapter.fileName}`);
   } catch (err) {
-    logger.error(`Kavita: Failed to inject metadata into ${chapter.fileName}: ${err}`);
+    logger.error(`Kavita: Failed to inject metadata into ${filePath}. Error: ${err}`);
   }
 };
 
