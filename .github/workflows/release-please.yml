@@ -117,8 +117,6 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:staging-latest
             ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:staging-v1.7.0
-            ghcr.io/kaizen-architecture/kaizen-manga-downloader:staging-latest
-            ghcr.io/kaizen-architecture/kaizen-manga-downloader:staging-v1.7.0
 
       - name: Build Production Images
         uses: docker/build-push-action@v4
@@ -134,8 +132,6 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:v1.7.0
             ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:v25-kaizen
-            ghcr.io/kaizen-architecture/kaizen-manga-downloader:latest
-            ghcr.io/kaizen-architecture/kaizen-manga-downloader:v1.7.0
 
       - name: Move cache
         run: |
