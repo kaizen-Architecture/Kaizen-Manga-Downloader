@@ -436,16 +436,33 @@ export const downloadChapter = async (
 
     // Find the chapter in the list. Mangal chapters are usually 1-indexed in the name/index field
     // but the CLI expects the position in the array (0-indexed) or the string representation.
+    const targetIdxStr = String(chapterIndex);
+    
     let chapterPos = manga.chapters.findIndex(
       (c: any) =>
-        String(c.index) === String(chapterIndex) ||
-        c.name.includes(`#${chapterIndex}`) ||
-        c.name.includes(` ${chapterIndex} `) ||
-        c.name.endsWith(` ${chapterIndex}`),
+        String(c.index) === targetIdxStr ||
+        c.name === targetIdxStr ||
+        c.name.includes(`#${targetIdxStr}`) ||
+        c.name.includes(` ${targetIdxStr} `) ||
+        c.name.endsWith(` ${targetIdxStr}`) ||
+        c.name.startsWith(`${targetIdxStr} `),
     );
 
+    // Fallback: Try removing leading zeros if search failed (e.g. searching for "05" instead of "5")
+    if (chapterPos === -1 && targetIdxStr.startsWith('0')) {
+      const strippedIdx = targetIdxStr.replace(/^0+/, '');
+      logger.debug(`Chapter #${targetIdxStr} not found. Trying stripped version: #${strippedIdx}`);
+      chapterPos = manga.chapters.findIndex(
+        (c: any) =>
+          String(c.index) === strippedIdx ||
+          c.name.includes(`#${strippedIdx}`) ||
+          c.name.includes(` ${strippedIdx} `) ||
+          c.name.endsWith(` ${strippedIdx}`),
+      );
+    }
+
     // Fallback: If chapter #0 is requested but not found, check if chapter #1 exists instead (common 1-based indexing mismatch)
-    if (chapterPos === -1 && String(chapterIndex) === '0') {
+    if (chapterPos === -1 && targetIdxStr === '0') {
       logger.warn(`Chapter #0 requested but not found on ${source}. Falling back to check for chapter #1...`);
       chapterPos = manga.chapters.findIndex(
         (c: any) =>
@@ -473,14 +490,26 @@ export const downloadChapter = async (
       '--query',
       currentQuery,
       '--chapters',
-      `${chapterPos}`, // Use the 0-indexed position (no brackets - mangal rejects [N] format)
+      `${chapterPos}`, // Use the 0-indexed position
       '-d',
     ];
 
+    // CRITICAL: Always include --manga flag to prevent "required flag(s) 'manga' not set"
     if (usedExact) {
       downloadArgs.splice(5, 0, '--manga', 'exact');
     } else if (manga?.name) {
-      downloadArgs.splice(5, 0, '--manga', manga.name);
+      // Use index 1 as a safer fallback if the name has special characters that might break the picker
+      // but try name first if it looks clean
+      const cleanName = manga.name.replace(/[^\w\s-]/g, '');
+      if (cleanName === manga.name) {
+        downloadArgs.splice(5, 0, '--manga', manga.name);
+      } else {
+        logger.warn(`Manga name "${manga.name}" contains special characters. Using index picker "1" for stability.`);
+        downloadArgs.splice(5, 0, '--manga', '1');
+      }
+    } else {
+      // Last resort fallback to ensure flag is present
+      downloadArgs.splice(5, 0, '--manga', '1');
     }
 
     const { stdout, stderr, escapedCommand } = await mangalExec(downloadArgs, {
