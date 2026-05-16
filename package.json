@@ -57,6 +57,8 @@
     "@trpc/next": "10.10.0",
     "@trpc/react-query": "10.10.0",
     "@trpc/server": "10.10.0",
+    "@types/adm-zip": "^0.5.8",
+    "adm-zip": "^0.5.17",
     "bullmq": "^3.6.2",
     "contrast-color": "^1.0.1",
     "cookies-next": "^2.1.1",

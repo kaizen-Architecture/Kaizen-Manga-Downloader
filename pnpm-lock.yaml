@@ -37,7 +37,7 @@ importers:
         version: 5.10.5(@mantine/core@5.10.5(@emotion/react@11.14.0(@types/react@18.0.27)(react@18.2.0))(@mantine/hooks@5.10.5(react@18.2.0))(@types/react@18.0.27)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@mantine/hooks@5.10.5(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@mantine/next':
         specifier: ^5.10.3
-        version: 5.10.5(@emotion/react@11.14.0(@types/react@18.0.27)(react@18.2.0))(@emotion/server@11.11.0)(next@12.3.1(@babel/core@7.29.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: 5.10.5(@emotion/react@11.14.0(@types/react@18.0.27)(react@18.2.0))(@emotion/server@11.11.0)(next@12.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@mantine/notifications':
         specifier: ^5.10.3
         version: 5.10.5(@mantine/core@5.10.5(@emotion/react@11.14.0(@types/react@18.0.27)(react@18.2.0))(@mantine/hooks@5.10.5(react@18.2.0))(@types/react@18.0.27)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@mantine/hooks@5.10.5(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -58,13 +58,19 @@ importers:
         version: 10.10.0(@trpc/server@10.10.0)
       '@trpc/next':
         specifier: 10.10.0
-        version: 10.10.0(@tanstack/react-query@4.44.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.10.0(@trpc/server@10.10.0))(@trpc/react-query@10.10.0(@tanstack/react-query@4.44.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.10.0(@trpc/server@10.10.0))(@trpc/server@10.10.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/server@10.10.0)(next@12.3.1(@babel/core@7.29.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: 10.10.0(@tanstack/react-query@4.44.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.10.0(@trpc/server@10.10.0))(@trpc/react-query@10.10.0(@tanstack/react-query@4.44.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.10.0(@trpc/server@10.10.0))(@trpc/server@10.10.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/server@10.10.0)(next@12.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@trpc/react-query':
         specifier: 10.10.0
         version: 10.10.0(@tanstack/react-query@4.44.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.10.0(@trpc/server@10.10.0))(@trpc/server@10.10.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@trpc/server':
         specifier: 10.10.0
         version: 10.10.0
+      '@types/adm-zip':
+        specifier: ^0.5.8
+        version: 0.5.8
+      adm-zip:
+        specifier: ^0.5.17
+        version: 0.5.17
       bullmq:
         specifier: ^3.6.2
         version: 3.16.2
@@ -103,10 +109,10 @@ importers:
         version: 3.3.4
       next:
         specifier: 12.3.1
-        version: 12.3.1(@babel/core@7.29.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: 12.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       next-i18next:
         specifier: ^13.3.0
-        version: 13.3.0(@types/react@18.0.27)(i18next@22.5.1)(next@12.3.1(@babel/core@7.29.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-i18next@12.3.1(i18next@22.5.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
+        version: 13.3.0(@types/react@18.0.27)(i18next@22.5.1)(next@12.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-i18next@12.3.1(i18next@22.5.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
       node-telegram-bot-api:
         specifier: ^0.61.0
         version: 0.61.0
@@ -881,6 +887,9 @@ packages:
   '@tsconfig/node16@1.0.4':
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
 
+  '@types/adm-zip@0.5.8':
+    resolution: {integrity: sha512-RVVH7QvZYbN+ihqZ4kX/dMiowf6o+Jk1fNwiSdx0NahBJLU787zkULhGhJM8mf/obmLGmgdMM0bXsQTmyfbR7Q==}
+
   '@types/body-parser@1.19.6':
     resolution: {integrity: sha512-HLFeCYgz89uk22N5Qg3dvGvsv46B8GLvKKo1zKG4NybA8U2DiEO3w9lqGg29t/tfLRJpJ6iQxnVw4OnB7MoM9g==}
 
@@ -1092,6 +1101,10 @@ packages:
     resolution: {integrity: sha512-UVJyE9MttOsBQIDKw1skb9nAwQuR5wuGD3+82K6JgJlm/Y+KI92oNsMNGZCYdDsVtRHSak0pcV5Dno5+4jh9sw==}
     engines: {node: '>=0.4.0'}
     hasBin: true
+
+  adm-zip@0.5.17:
+    resolution: {integrity: sha512-+Ut8d9LLqwEvHHJl1+PIHqoyDxFgVN847JTVM3Izi3xHDWPE4UtzzXysMZQs64DMcrJfBeS/uoEP4AD3HQHnQQ==}
+    engines: {node: '>=12.0'}
 
   ajv@6.15.0:
     resolution: {integrity: sha512-fgFx7Hfoq60ytK2c7DhnF8jIvzYgOMxfugjLOSMHjLIPgenqa7S7oaagATUq99mV6IYvN2tRmC0wnTYX6iPbMw==}
@@ -4671,11 +4684,11 @@ snapshots:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  '@mantine/next@5.10.5(@emotion/react@11.14.0(@types/react@18.0.27)(react@18.2.0))(@emotion/server@11.11.0)(next@12.3.1(@babel/core@7.29.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@mantine/next@5.10.5(@emotion/react@11.14.0(@types/react@18.0.27)(react@18.2.0))(@emotion/server@11.11.0)(next@12.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@mantine/ssr': 5.10.5(@emotion/react@11.14.0(@types/react@18.0.27)(react@18.2.0))(@emotion/server@11.11.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@mantine/styles': 5.10.5(@emotion/react@11.14.0(@types/react@18.0.27)(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      next: 12.3.1(@babel/core@7.29.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      next: 12.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     transitivePeerDependencies:
@@ -4920,13 +4933,13 @@ snapshots:
     dependencies:
       '@trpc/server': 10.10.0
 
-  '@trpc/next@10.10.0(@tanstack/react-query@4.44.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.10.0(@trpc/server@10.10.0))(@trpc/react-query@10.10.0(@tanstack/react-query@4.44.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.10.0(@trpc/server@10.10.0))(@trpc/server@10.10.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/server@10.10.0)(next@12.3.1(@babel/core@7.29.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@trpc/next@10.10.0(@tanstack/react-query@4.44.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.10.0(@trpc/server@10.10.0))(@trpc/react-query@10.10.0(@tanstack/react-query@4.44.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.10.0(@trpc/server@10.10.0))(@trpc/server@10.10.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/server@10.10.0)(next@12.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@tanstack/react-query': 4.44.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@trpc/client': 10.10.0(@trpc/server@10.10.0)
       '@trpc/react-query': 10.10.0(@tanstack/react-query@4.44.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.10.0(@trpc/server@10.10.0))(@trpc/server@10.10.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@trpc/server': 10.10.0
-      next: 12.3.1(@babel/core@7.29.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      next: 12.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-ssr-prepass: 1.6.0(react@18.2.0)
@@ -4948,6 +4961,10 @@ snapshots:
   '@tsconfig/node14@1.0.3': {}
 
   '@tsconfig/node16@1.0.4': {}
+
+  '@types/adm-zip@0.5.8':
+    dependencies:
+      '@types/node': 18.11.19
 
   '@types/body-parser@1.19.6':
     dependencies:
@@ -5189,6 +5206,8 @@ snapshots:
       acorn: 8.16.0
 
   acorn@8.16.0: {}
+
+  adm-zip@0.5.17: {}
 
   ajv@6.15.0:
     dependencies:
@@ -7252,7 +7271,7 @@ snapshots:
 
   negotiator@0.6.3: {}
 
-  next-i18next@13.3.0(@types/react@18.0.27)(i18next@22.5.1)(next@12.3.1(@babel/core@7.29.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-i18next@12.3.1(i18next@22.5.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0):
+  next-i18next@13.3.0(@types/react@18.0.27)(i18next@22.5.1)(next@12.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-i18next@12.3.1(i18next@22.5.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0):
     dependencies:
       '@babel/runtime': 7.29.2
       '@types/hoist-non-react-statics': 3.3.7(@types/react@18.0.27)
@@ -7260,13 +7279,13 @@ snapshots:
       hoist-non-react-statics: 3.3.2
       i18next: 22.5.1
       i18next-fs-backend: 2.6.5
-      next: 12.3.1(@babel/core@7.29.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      next: 12.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
       react-i18next: 12.3.1(i18next@22.5.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
     transitivePeerDependencies:
       - '@types/react'
 
-  next@12.3.1(@babel/core@7.29.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+  next@12.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@next/env': 12.3.1
       '@swc/helpers': 0.4.11
@@ -7274,7 +7293,7 @@ snapshots:
       postcss: 8.4.14
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      styled-jsx: 5.0.7(@babel/core@7.29.0)(react@18.2.0)
+      styled-jsx: 5.0.7(react@18.2.0)
       use-sync-external-store: 1.2.0(react@18.2.0)
     optionalDependencies:
       '@next/swc-android-arm-eabi': 12.3.1
@@ -8297,11 +8316,9 @@ snapshots:
     dependencies:
       inline-style-parser: 0.1.1
 
-  styled-jsx@5.0.7(@babel/core@7.29.0)(react@18.2.0):
+  styled-jsx@5.0.7(react@18.2.0):
     dependencies:
       react: 18.2.0
-    optionalDependencies:
-      '@babel/core': 7.29.0
 
   stylis@4.2.0: {}
 

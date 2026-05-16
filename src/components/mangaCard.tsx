@@ -1,6 +1,6 @@
-import { ActionIcon, Badge, Box, createStyles, Paper, Skeleton, Title, Tooltip } from '@mantine/core';
+import { ActionIcon, Badge, Box, createStyles, Paper, Skeleton, Title, Tooltip, Group, ThemeIcon } from '@mantine/core';
 import { Prisma } from '@prisma/client';
-import { IconEdit, IconExclamationMark, IconRefresh, IconX } from '@tabler/icons-react';
+import { IconEdit, IconExclamationMark, IconRefresh, IconX, IconCircleCheck } from '@tabler/icons-react';
 import { contrastColor } from 'contrast-color';
 import { motion } from 'framer-motion';
 import stc from 'string-to-color';
@@ -226,19 +226,33 @@ interface MangaCardContentProps {
   classes: Record<string, string>;
 }
 
-function MangaCardContent({ source, chaptersCount, title, classes }: MangaCardContentProps) {
+function MangaCardContent({ source, chaptersCount, title, classes, integrationStatus }: MangaCardContentProps & { integrationStatus?: 'ready' | 'pending' | 'error' }) {
   return (
     <div>
-      <Badge
-        sx={{ backgroundColor: stc(source), color: contrastColor({ bgColor: stc(source) }) }}
-        className={classes.badge}
-        size="xs"
-      >
-        <Box className="h-3">{source}</Box>
-      </Badge>
-      <Badge color="indigo" size="xs" variant="filled" ml={5}>
-        <Box className="h-3">{chaptersCount} chapters</Box>
-      </Badge>
+      <Group spacing={5} mb={5}>
+        <Badge
+          sx={{ backgroundColor: stc(source), color: contrastColor({ bgColor: stc(source) }) }}
+          className={classes.badge}
+          size="xs"
+        >
+          <Box className="h-3">{source}</Box>
+        </Badge>
+        <Badge color="indigo" size="xs" variant="filled">
+          <Box className="h-3">{chaptersCount} chapters</Box>
+        </Badge>
+        {integrationStatus && (
+          <Tooltip label={`Integration Status: ${integrationStatus}`} withinPortal>
+            <ThemeIcon 
+              size="xs" 
+              radius="xl" 
+              color={integrationStatus === 'ready' ? 'teal' : integrationStatus === 'error' ? 'red' : 'yellow'}
+              variant="filled"
+            >
+              {integrationStatus === 'ready' ? <IconCircleCheck size={10} /> : integrationStatus === 'error' ? <IconX size={10} /> : <IconRefresh size={10} />}
+            </ThemeIcon>
+          </Tooltip>
+        )}
+      </Group>
       <Title order={5} className={classes.title}>
         {title}
       </Title>
@@ -272,6 +286,11 @@ export function MangaCard({ manga, onRemove, onUpdate, onRefresh, onClick }: Man
         chaptersCount={manga._count?.chapters || 0}
         title={manga.title}
         classes={classes}
+        integrationStatus={
+          manga._count?.chapters > 0 && manga.chapters?.every((c: any) => c.metadataInjected)
+            ? 'ready'
+            : 'pending'
+        }
       />
     </Paper>
   );

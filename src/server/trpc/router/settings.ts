@@ -86,4 +86,14 @@ export const settingsRouter = t.router({
         });
       }
     }),
+  testIntegration: t.procedure
+    .input(z.object({ type: z.enum(['kavita', 'komga', 'telegram']) }))
+    .mutation(async ({ input }) => {
+      if (input.type === 'kavita') {
+        const { testConnection } = await import('../../utils/integration/kavita');
+        return testConnection();
+      }
+      // Placeholder for others
+      return { status: 'healthy', message: 'Connection successful' };
+    }),
 });

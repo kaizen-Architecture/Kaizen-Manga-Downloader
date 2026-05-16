@@ -1,22 +1,21 @@
-import { Container, Grid, Text, Title, Stack, ScrollArea } from '@mantine/core';
+import { Container, Text, Title, ScrollArea, Tabs, Paper } from '@mantine/core';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { IconDashboard, IconPlug, IconUsers } from '@tabler/icons-react';
 import { trpc } from '../utils/trpc';
 import { FailedJobsModal } from '../components/kaizen/FailedJobsModal';
-import { SourceFailureChart } from '../components/kaizen/SourceFailureChart';
 import { DownloadQueueModal } from '../components/kaizen/DownloadQueueModal';
-import { DashboardStats } from '../components/kaizen/DashboardStats';
-import { DownloadsChart } from '../components/kaizen/DownloadsChart';
-import { RecentActivityFeed } from '../components/kaizen/RecentActivityFeed';
-import { SourceStatsChart } from '../components/kaizen/SourceStatsChart';
+import { OverviewTab } from '../components/kaizen/dashboard/OverviewTab';
+import { IntegrationsTab } from '../components/kaizen/dashboard/IntegrationsTab';
 
-// ─── Main Page ─────────────────────────────────────────────
+// ─── Main Page (Entry Point) ──────────────────────────────────
 export default function DashboardPage() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['common', 'dashboard']);
   const [isFailedModalOpen, setIsFailedModalOpen] = useState(false);
   const [isQueueModalOpen, setIsQueueModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<string | null>('overview');
 
   const activityQuery = trpc.manga.activity.useQuery(undefined, {
     refetchInterval: 5 * 1000,
@@ -25,8 +24,10 @@ export default function DashboardPage() {
     refetchInterval: 10 * 1000,
   });
   const activityHistoryQuery = trpc.manga.activityHistory.useQuery();
+  const settingsQuery = trpc.settings.query.useQuery();
 
   const activity = activityQuery.data;
+  const isAuthEnabled = settingsQuery.data?.appConfig.authEnabled;
 
   return (
     <ScrollArea sx={{ height: 'calc(100vh - 88px)' }}>
@@ -40,32 +41,42 @@ export default function DashboardPage() {
           </Text>
         </motion.div>
 
-        {/* Stat Cards */}
-        <DashboardStats
-          activity={activity}
-          t={t}
-          setIsQueueModalOpen={setIsQueueModalOpen}
-          setIsFailedModalOpen={setIsFailedModalOpen}
-        />
+        <Tabs value={activeTab} onTabChange={setActiveTab} variant="outline" radius="md">
+          <Tabs.List mb="xl">
+            <Tabs.Tab value="overview" icon={<IconDashboard size={16} />}>
+              Overview
+            </Tabs.Tab>
+            <Tabs.Tab value="integrations" icon={<IconPlug size={16} />}>
+              Integrations
+            </Tabs.Tab>
+            {isAuthEnabled && (
+              <Tabs.Tab value="users" icon={<IconUsers size={16} />}>
+                Users
+              </Tabs.Tab>
+            )}
+          </Tabs.List>
 
-        <div style={{ marginTop: 24, marginBottom: 24 }}>
-          <SourceStatsChart />
-        </div>
+          <Tabs.Panel value="overview">
+            <OverviewTab
+              activity={activity}
+              historyQuery={historyQuery}
+              activityHistoryQuery={activityHistoryQuery}
+              setIsQueueModalOpen={setIsQueueModalOpen}
+              setIsFailedModalOpen={setIsFailedModalOpen}
+              t={t}
+            />
+          </Tabs.Panel>
 
-        <Grid>
-          {/* Downloads chart */}
-          <Grid.Col md={8}>
-            <Stack>
-              <DownloadsChart activityHistoryQuery={activityHistoryQuery} />
-              <SourceFailureChart />
-            </Stack>
-          </Grid.Col>
+          <Tabs.Panel value="integrations">
+            <IntegrationsTab />
+          </Tabs.Panel>
 
-          {/* Recent activity feed */}
-          <Grid.Col md={4}>
-            <RecentActivityFeed historyQuery={historyQuery} />
-          </Grid.Col>
-        </Grid>
+          <Tabs.Panel value="users">
+            <Paper withBorder p="xl" radius="md">
+              <Text color="dimmed" align="center">User management coming soon...</Text>
+            </Paper>
+          </Tabs.Panel>
+        </Tabs>
 
         <FailedJobsModal opened={isFailedModalOpen} onClose={() => setIsFailedModalOpen(false)} />
         <DownloadQueueModal opened={isQueueModalOpen} onClose={() => setIsQueueModalOpen(false)} />

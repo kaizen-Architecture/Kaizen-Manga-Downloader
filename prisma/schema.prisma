@@ -52,13 +52,16 @@ model MangaSource {
 }
 
 model Chapter {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  index     Int
-  fileName  String
-  size      Int
-  manga     Manga    @relation(fields: [mangaId], references: [id], onDelete: Cascade)
-  mangaId   Int
+  id               Int      @id @default(autoincrement())
+  createdAt        DateTime @default(now())
+  index            Int
+  fileName         String
+  size             Int
+  metadataInjected Boolean  @default(false)
+  lastReadAt       DateTime?
+  isRead           Boolean  @default(false)
+  manga            Manga    @relation(fields: [mangaId], references: [id], onDelete: Cascade)
+  mangaId          Int
 
   @@unique([mangaId, fileName])
 }
@@ -89,27 +92,28 @@ model Metadata {
 }
 
 model Settings {
-  id                   Int      @id @default(autoincrement())
-  telegramEnabled      Boolean  @default(false)
-  telegramToken        String?
-  telegramChatId       String?
-  telegramSendSilently Boolean  @default(false)
-  appriseEnabled       Boolean  @default(false)
-  appriseHost          String?
-  appriseUrls          String[] @default([])
-  komgaEnabled         Boolean  @default(false)
-  komgaHost            String?
-  komgaUser            String?
-  komgaPassword        String?
-  kavitaEnabled        Boolean  @default(false)
-  kavitaHost           String?
-  kavitaUser           String?
-  kavitaPassword       String?
-  kavitaLibraries      String[] @default([])
-  githubRepo           String?
-  githubToken          String?
-  retryDelayMs         Int      @default(2000)
+  id                        Int      @id @default(autoincrement())
+  telegramEnabled           Boolean  @default(false)
+  telegramToken             String?
+  telegramChatId            String?
+  telegramSendSilently      Boolean  @default(false)
+  appriseEnabled            Boolean  @default(false)
+  appriseHost               String?
+  appriseUrls               String[] @default([])
+  komgaEnabled              Boolean  @default(false)
+  komgaHost                 String?
+  komgaUser                 String?
+  komgaPassword             String?
+  kavitaEnabled             Boolean  @default(false)
+  kavitaHost                String?
+  kavitaUser                String?
+  kavitaPassword            String?
+  kavitaLibraries           String[] @default([])
+  githubRepo                String?
+  githubToken               String?
+  retryDelayMs              Int      @default(2000)
   metadataProviders         String[] @default(["anilist", "mangadex"])
+  preferredMetadataLanguage String   @default("en")
   alternativeSourceMatching String   @default("exact")
   refreshStatusInterval     String   @default("weekly")
   refreshStatusWindow       String   @default("night")

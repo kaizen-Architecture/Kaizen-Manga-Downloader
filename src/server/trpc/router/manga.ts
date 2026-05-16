@@ -49,6 +49,11 @@ export const mangaRouter = t.router({
           },
         },
         library: true,
+        chapters: {
+          select: {
+            metadataInjected: true,
+          },
+        },
         _count: {
           select: { chapters: true, outOfSyncChapters: true },
         },
