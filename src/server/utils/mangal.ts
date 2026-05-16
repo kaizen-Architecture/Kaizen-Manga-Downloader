@@ -605,13 +605,27 @@ export const findMissingChapterFiles = async (mangaDir: string, source: string, 
   }
   await fs.mkdir(mangaDir, { recursive: true });
 
-  const localChapters = (await fs.readdir(mangaDir)).filter(shouldIncludeFile);
-  const localChapterIndexSet = new Set(localChapters.map(getChapterIndexFromFile));
+  const localFiles = await fs.readdir(mangaDir);
+  const localChapters = localFiles.filter(shouldIncludeFile);
+  
+  // Create a set of sanitized local names to detect duplicates regardless of index
+  const localNames = new Set(localChapters.map(f => sanitizer(f.replace(/\[\d+\]_/, '').replace('.cbz', ''))));
+  const localIndices = new Set(localChapters.map(getChapterIndexFromFile));
 
   const remoteChapters = await getChaptersFromRemote(source, title);
-  const remoteChapterIndexList = remoteChapters.map((r) => r.index);
-
-  return remoteChapterIndexList.filter((c) => !localChapterIndexSet.has(c));
+  
+  return remoteChapters
+    .filter((remote) => {
+      const remoteName = sanitizer(remote.name);
+      // It's missing if:
+      // 1. We don't have the index AND
+      // 2. We don't have a file with a similar name
+      const hasIndex = localIndices.has(remote.index);
+      const hasName = localNames.has(remoteName);
+      
+      return !hasIndex && !hasName;
+    })
+    .map((r) => r.index);
 };
 
 export const createLibrary = async (libraryPath: string) => {
