@@ -1,7 +1,7 @@
-import { prisma } from '../../db/client';
-import { getCachedSettings } from '../settings-cache';
 import AdmZip from 'adm-zip';
 import path from 'path';
+import { prisma } from '../../db/client';
+import { getCachedSettings } from '../settings-cache';
 import { logger } from '../../../utils/logging';
 
 interface Library {
@@ -52,7 +52,7 @@ export const testConnection = async () => {
     const baseUrl = getBaseUrl(settings.kavitaHost);
     const token = await getToken(baseUrl, settings.kavitaUser, settings.kavitaPassword);
     if (!token) throw new Error('Could not get token');
-    
+
     return { status: 'healthy', message: 'Connected to Kavita successfully' };
   } catch (err) {
     return { status: 'unhealthy', message: `${err}` };

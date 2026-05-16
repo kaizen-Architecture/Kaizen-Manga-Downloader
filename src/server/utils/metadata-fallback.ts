@@ -61,8 +61,7 @@ export async function fetchMetadataFromMangaDex(title: string): Promise<Fallback
 
     // Summary (prefer English)
     const summary =
-      attrs.description?.en ||
-      (Object.values(attrs.description || {}).find((v) => v) as string | undefined);
+      attrs.description?.en || (Object.values(attrs.description || {}).find((v) => v) as string | undefined);
 
     // Authors
     const authors = (manga.relationships || [])

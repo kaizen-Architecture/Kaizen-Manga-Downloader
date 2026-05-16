@@ -11,7 +11,9 @@ interface IOutput {
 // Convert FallbackMetadata to the Metadata structure expected by Prisma
 const mapFallbackToMetadata = (fallback: FallbackMetadata): any => {
   return {
-    cover: fallback.cover ? { extraLarge: fallback.cover, large: fallback.cover, medium: fallback.cover, color: '' } : undefined,
+    cover: fallback.cover
+      ? { extraLarge: fallback.cover, large: fallback.cover, medium: fallback.cover, color: '' }
+      : undefined,
     summary: fallback.summary,
     genres: fallback.genres || [],
     tags: fallback.tags || [],
@@ -44,17 +46,7 @@ const mergeMetadata = (base: any, overlay: any): any => {
 };
 
 const runAnilistMetadata = async (source: string, title: string): Promise<any | undefined> => {
-  const args = [
-    'inline',
-    '--source',
-    source,
-    '--query',
-    title,
-    '--manga',
-    'exact',
-    '--include-anilist-manga',
-    '-j',
-  ];
+  const args = ['inline', '--source', source, '--query', title, '--manga', 'exact', '--include-anilist-manga', '-j'];
   try {
     const { stdout } = await mangalExec(args);
     const output: IOutput = JSON.parse(stdout);
@@ -68,16 +60,7 @@ const runAnilistMetadata = async (source: string, title: string): Promise<any | 
 };
 
 const runSourceMetadataOnly = async (source: string, title: string): Promise<any | undefined> => {
-  const args = [
-    'inline',
-    '--source',
-    source,
-    '--query',
-    title,
-    '--manga',
-    'exact',
-    '-j',
-  ];
+  const args = ['inline', '--source', source, '--query', title, '--manga', 'exact', '-j'];
   try {
     const { stdout } = await mangalExec(args);
     const output: IOutput = JSON.parse(stdout);
@@ -96,12 +79,12 @@ export const getMangaMetadataModular = async (source: string, title: string): Pr
 
   logger.info(`Running metadata providers for "${title}" in order: ${providers.join(' -> ')}`);
 
-  let currentMetadata: any = undefined;
+  let currentMetadata: any;
 
   // We always want to get the base metadata from the source itself first
   // if Anilist is not the first provider, or if we just need base info.
   // Actually, Mangal's `inline` returns metadata from the source natively if `--include-anilist-manga` is omitted.
-  let sourceMetadata = await runSourceMetadataOnly(source, title);
+  const sourceMetadata = await runSourceMetadataOnly(source, title);
   currentMetadata = sourceMetadata;
 
   for (const provider of providers) {

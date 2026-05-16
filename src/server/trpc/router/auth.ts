@@ -95,28 +95,26 @@ export const authRouter = t.router({
       });
     }),
 
-  deleteUser: t.procedure
-    .input(z.object({ id: z.number() }))
-    .mutation(async ({ ctx, input }) => {
-      const targetUser = await ctx.prisma.user.findUniqueOrThrow({
-        where: { id: input.id },
-      });
+  deleteUser: t.procedure.input(z.object({ id: z.number() })).mutation(async ({ ctx, input }) => {
+    const targetUser = await ctx.prisma.user.findUniqueOrThrow({
+      where: { id: input.id },
+    });
 
-      if (targetUser.role === 'SUPERADMIN') {
-        const adminCount = await ctx.prisma.user.count({
-          where: { role: 'SUPERADMIN' },
+    if (targetUser.role === 'SUPERADMIN') {
+      const adminCount = await ctx.prisma.user.count({
+        where: { role: 'SUPERADMIN' },
+      });
+      if (adminCount <= 1) {
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message: 'Cannot delete the last remaining SUPERADMIN user account.',
         });
-        if (adminCount <= 1) {
-          throw new TRPCError({
-            code: 'PRECONDITION_FAILED',
-            message: 'Cannot delete the last remaining SUPERADMIN user account.',
-          });
-        }
       }
+    }
 
-      return ctx.prisma.user.delete({
-        where: { id: input.id },
-        select: { id: true, username: true },
-      });
-    }),
+    return ctx.prisma.user.delete({
+      where: { id: input.id },
+      select: { id: true, username: true },
+    });
+  }),
 });

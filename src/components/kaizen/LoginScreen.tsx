@@ -76,7 +76,11 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
                     required
                     styles={{
                       label: { color: '#e2e8f0' },
-                      input: { background: 'rgba(0, 0, 0, 0.2)', color: '#fff', borderColor: 'rgba(255, 255, 255, 0.1)' },
+                      input: {
+                        background: 'rgba(0, 0, 0, 0.2)',
+                        color: '#fff',
+                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                      },
                     }}
                   />
 
@@ -88,7 +92,11 @@ export function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) 
                     required
                     styles={{
                       label: { color: '#e2e8f0' },
-                      input: { background: 'rgba(0, 0, 0, 0.2)', color: '#fff', borderColor: 'rgba(255, 255, 255, 0.1)' },
+                      input: {
+                        background: 'rgba(0, 0, 0, 0.2)',
+                        color: '#fff',
+                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                      },
                       innerInput: { color: '#fff' },
                     }}
                   />

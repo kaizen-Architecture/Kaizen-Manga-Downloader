@@ -52,19 +52,17 @@ export function IntegrationHealthCard({
 
       <Stack spacing="xs" mt="md">
         <Group position="apart">
-          <Text size="sm" color="dimmed">Sync Status</Text>
-          <Text size="sm" weight={500}>{syncedCount} / {totalCount} mangas</Text>
+          <Text size="sm" color="dimmed">
+            Sync Status
+          </Text>
+          <Text size="sm" weight={500}>
+            {syncedCount} / {totalCount} mangas
+          </Text>
         </Group>
-        
+
         {onSync && (
           <Group position="right">
-            <ThemeIcon 
-              variant="light" 
-              color="indigo" 
-              size="sm" 
-              sx={{ cursor: 'pointer' }}
-              onClick={onSync}
-            >
+            <ThemeIcon variant="light" color="indigo" size="sm" sx={{ cursor: 'pointer' }} onClick={onSync}>
               <IconRefresh size={14} className={isLoading ? 'animate-spin' : ''} />
             </ThemeIcon>
           </Group>

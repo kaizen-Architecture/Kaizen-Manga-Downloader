@@ -118,6 +118,7 @@ model Settings {
   refreshStatusInterval     String   @default("weekly")
   refreshStatusWindow       String   @default("night")
   authEnabled               Boolean  @default(false)
+  apiToken                  String?
 }
 
 model LuaSource {

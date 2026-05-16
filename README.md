@@ -21,6 +21,28 @@
 | :---: | :---: | :---: |
 | ![Dashboard](./screenshots/dashboard.png) | ![Library](./screenshots/library.png) | ![Planner](./screenshots/planner.png) |
 
+## 🔌 API Integration
+
+Kaizen exposes a REST API that allows other applications to integrate with it.
+
+### Authentication
+
+To authenticate with the API, you must provide a Bearer token in the `Authorization` header.
+You can configure this token in two ways:
+1. Setting the `KAIZEN_API_TOKEN` environment variable.
+2. Saving an API Token in the Database via Settings.
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_TOKEN" http://localhost:3000/api/v1/mangas
+```
+
+### Endpoints
+
+- `GET /api/v1/mangas`
+  Returns a list of all mangas in the database, including metadata and library information.
+- `GET /api/v1/mangas/:id`
+  Returns details for a specific manga, including its chapters.
+
 ## 🔄 Migration & Compatibility
 
 Kaizen is fully backward compatible with existing Kaizoku deployments. 

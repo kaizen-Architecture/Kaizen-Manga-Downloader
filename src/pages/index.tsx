@@ -73,7 +73,9 @@ export default function DashboardPage() {
 
           <Tabs.Panel value="users">
             <Paper withBorder p="xl" radius="md">
-              <Text color="dimmed" align="center">User management coming soon...</Text>
+              <Text color="dimmed" align="center">
+                User management coming soon...
+              </Text>
             </Paper>
           </Tabs.Panel>
         </Tabs>

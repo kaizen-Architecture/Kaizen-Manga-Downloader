@@ -21,7 +21,7 @@ const formatBytes = (bytes: number) => {
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  return `${parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
 };
 
 const COLORS = ['#4f46e5', '#ec4899', '#14b8a6', '#f59e0b', '#8b5cf6', '#ef4444', '#10b981'];
@@ -32,26 +32,40 @@ export function SourceStatsChart() {
 
   if (query.isLoading) {
     return (
-      <Paper withBorder p="md" radius="md" sx={(theme) => ({ backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white })}>
-        <Center sx={{ height: 200 }}><Loader variant="dots" /></Center>
+      <Paper
+        withBorder
+        p="md"
+        radius="md"
+        sx={(theme) => ({ backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white })}
+      >
+        <Center sx={{ height: 200 }}>
+          <Loader variant="dots" />
+        </Center>
       </Paper>
     );
   }
 
   if (!query.data || query.data.length === 0) {
     return (
-      <Paper withBorder p="md" radius="md" sx={(theme) => ({ backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white })}>
+      <Paper
+        withBorder
+        p="md"
+        radius="md"
+        sx={(theme) => ({ backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white })}
+      >
         <Stack align="center" justify="center" sx={{ height: 200 }}>
           <ThemeIcon size={64} radius="xl" color="gray" variant="light">
             <IconChartBarOff size={32} />
           </ThemeIcon>
-          <Text color="dimmed" size="sm">No source statistics available</Text>
+          <Text color="dimmed" size="sm">
+            No source statistics available
+          </Text>
         </Stack>
       </Paper>
     );
   }
 
-  const data = query.data;
+  const { data } = query;
 
   return (
     <Grid>

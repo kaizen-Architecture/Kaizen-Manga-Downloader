@@ -96,7 +96,8 @@ export async function mangalExec(args: string[], options: Options = {}, retries 
 
       if (isRateLimit && i < retries - 1) {
         logger.warn(
-          `Rate limit hit (429) while running mangal ${args.join(' ')}. Retrying in ${delay / 1000}s... (Attempt ${i + 1
+          `Rate limit hit (429) while running mangal ${args.join(' ')}. Retrying in ${delay / 1000}s... (Attempt ${
+            i + 1
           }/${retries})`,
         );
         await new Promise((resolve) => setTimeout(resolve, delay));
@@ -207,7 +208,7 @@ export const updateExistingMangaMetadata = async (libraryPath: string, title: st
 };
 
 export const search = async (source: string | string[], keyword: string): Promise<IOutput> => {
-    const searchSingleSource = async (s?: string): Promise<Result[]> => {
+  const searchSingleSource = async (s?: string): Promise<Result[]> => {
     const runSearch = async (includeAnilist: boolean): Promise<Result[]> => {
       const args = ['inline', '--query', keyword, '-j', '--chapters', 'all'];
       if (includeAnilist) {
@@ -269,16 +270,7 @@ export const search = async (source: string | string[], keyword: string): Promis
 
 export const getChaptersFromRemote = async (source: string, title: string): Promise<Chapter[]> => {
   const runGetChapters = async (includeAnilist: boolean, exact: boolean): Promise<Chapter[]> => {
-    const args = [
-      'inline',
-      '--source',
-      source,
-      '--query',
-      title,
-      '--chapters',
-      'all',
-      '-j',
-    ];
+    const args = ['inline', '--source', source, '--query', title, '--chapters', 'all', '-j'];
     if (includeAnilist) {
       args.splice(1, 0, '--include-anilist-manga');
     }
@@ -310,7 +302,10 @@ export const getChaptersFromRemote = async (source: string, title: string): Prom
       return chapters;
     } catch (err: any) {
       const errorText = `${err.message || ''} ${err.stdout || ''} ${err.stderr || ''}`;
-      if (includeAnilist && (errorText.includes('no results found on Anilist') || errorText.includes('failed to search'))) {
+      if (
+        includeAnilist &&
+        (errorText.includes('no results found on Anilist') || errorText.includes('failed to search'))
+      ) {
         logger.warn(`Anilist chapter fetch failed for ${title}, retrying without Anilist...`);
         return trySearch(false);
       }
@@ -333,18 +328,7 @@ export const getMangaMetadata = async (source: string, title: string): Promise<M
 
 export const getMangaDetail = async (source: string, title: string): Promise<Mangal | undefined> => {
   const runGetDetail = async (includeAnilist: boolean): Promise<Mangal | undefined> => {
-    const args = [
-      'inline',
-      '--source',
-      source,
-      '--query',
-      title,
-      '--manga',
-      'exact',
-      '--chapters',
-      'all',
-      '-j',
-    ];
+    const args = ['inline', '--source', source, '--query', title, '--manga', 'exact', '--chapters', 'all', '-j'];
     if (includeAnilist) {
       args.splice(1, 0, '--include-anilist-manga');
     }
@@ -359,7 +343,7 @@ export const getMangaDetail = async (source: string, title: string): Promise<Man
 
   try {
     const result = await runGetDetail(true);
-    return applyModularFallbackToDetail(source, title, result);
+    return await applyModularFallbackToDetail(source, title, result);
   } catch (err: any) {
     const errorText = `${err.message || ''} ${err.stdout || ''} ${err.stderr || ''}`;
     if (errorText.includes('no results found on Anilist') || errorText.includes('failed to search')) {
@@ -389,16 +373,7 @@ export const downloadChapter = async (
     logger.info(`Downloading chapter #${chapterIndex} for ${title} from ${source}`);
 
     const runSearch = async (exact: boolean, queryText: string) => {
-      const args = [
-        'inline',
-        '--source',
-        source,
-        '--query',
-        queryText,
-        '--chapters',
-        'all',
-        '-j',
-      ];
+      const args = ['inline', '--source', source, '--query', queryText, '--chapters', 'all', '-j'];
       if (exact) {
         args.push('--manga');
         args.push('exact');
@@ -437,7 +412,7 @@ export const downloadChapter = async (
     // Find the chapter in the list. Mangal chapters are usually 1-indexed in the name/index field
     // but the CLI expects the position in the array (0-indexed) or the string representation.
     const targetIdxStr = String(chapterIndex);
-    
+
     let chapterPos = manga.chapters.findIndex(
       (c: any) =>
         String(c.index) === targetIdxStr ||
@@ -465,11 +440,7 @@ export const downloadChapter = async (
     if (chapterPos === -1 && targetIdxStr === '0') {
       logger.warn(`Chapter #0 requested but not found on ${source}. Falling back to check for chapter #1...`);
       chapterPos = manga.chapters.findIndex(
-        (c: any) =>
-          String(c.index) === '1' ||
-          c.name.includes('#1') ||
-          c.name.includes(' 1 ') ||
-          c.name.endsWith(' 1'),
+        (c: any) => String(c.index) === '1' || c.name.includes('#1') || c.name.includes(' 1 ') || c.name.endsWith(' 1'),
       );
       // If even chapter #1 isn't explicitly found but chapters exist, take the last element (mangal sorts newest first, so oldest is at the end)
       if (chapterPos === -1 && manga.chapters.length > 0) {
@@ -479,8 +450,13 @@ export const downloadChapter = async (
     }
 
     if (chapterPos === -1) {
-      const availableIndices = manga.chapters.slice(0, 10).map((c: any) => c.index).join(', ');
-      throw new Error(`Chapter #${chapterIndex} not found in the list returned by ${source}. Total chapters: ${manga.chapters.length}. First 10 indices: ${availableIndices}`);
+      const availableIndices = manga.chapters
+        .slice(0, 10)
+        .map((c: any) => c.index)
+        .join(', ');
+      throw new Error(
+        `Chapter #${chapterIndex} not found in the list returned by ${source}. Total chapters: ${manga.chapters.length}. First 10 indices: ${availableIndices}`,
+      );
     }
 
     const downloadArgs = [
@@ -524,7 +500,9 @@ export const downloadChapter = async (
       if (stderr.includes('invalid chapter filter pattern')) {
         throw new Error(`The source "${source}" does not support the chapter selection pattern used.`);
       }
-      throw new Error(`Mangal finished but no file was downloaded. This usually means the chapter #${chapterIndex} was not found in the source "${source}".`);
+      throw new Error(
+        `Mangal finished but no file was downloaded. This usually means the chapter #${chapterIndex} was not found in the source "${source}".`,
+      );
     }
 
     logger.info(`Downloaded chapter #${chapterIndex} for ${title}. Path: ${result}`);
@@ -607,13 +585,13 @@ export const findMissingChapterFiles = async (mangaDir: string, source: string, 
 
   const localFiles = await fs.readdir(mangaDir);
   const localChapters = localFiles.filter(shouldIncludeFile);
-  
+
   // Create a set of sanitized local names to detect duplicates regardless of index
-  const localNames = new Set(localChapters.map(f => sanitizer(f.replace(/\[\d+\]_/, '').replace('.cbz', ''))));
+  const localNames = new Set(localChapters.map((f) => sanitizer(f.replace(/\[\d+\]_/, '').replace('.cbz', ''))));
   const localIndices = new Set(localChapters.map(getChapterIndexFromFile));
 
   const remoteChapters = await getChaptersFromRemote(source, title);
-  
+
   return remoteChapters
     .filter((remote) => {
       const remoteName = sanitizer(remote.name);
@@ -622,7 +600,7 @@ export const findMissingChapterFiles = async (mangaDir: string, source: string, 
       // 2. We don't have a file with a similar name
       const hasIndex = localIndices.has(remote.index);
       const hasName = localNames.has(remoteName);
-      
+
       return !hasIndex && !hasName;
     })
     .map((r) => r.index);

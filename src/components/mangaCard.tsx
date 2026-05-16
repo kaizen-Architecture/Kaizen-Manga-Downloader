@@ -226,7 +226,13 @@ interface MangaCardContentProps {
   classes: Record<string, string>;
 }
 
-function MangaCardContent({ source, chaptersCount, title, classes, integrationStatus }: MangaCardContentProps & { integrationStatus?: 'ready' | 'pending' | 'error' }) {
+function MangaCardContent({
+  source,
+  chaptersCount,
+  title,
+  classes,
+  integrationStatus,
+}: MangaCardContentProps & { integrationStatus?: 'ready' | 'pending' | 'error' }) {
   return (
     <div>
       <Group spacing={5} mb={5}>
@@ -242,13 +248,19 @@ function MangaCardContent({ source, chaptersCount, title, classes, integrationSt
         </Badge>
         {integrationStatus && (
           <Tooltip label={`Integration Status: ${integrationStatus}`} withinPortal>
-            <ThemeIcon 
-              size="xs" 
-              radius="xl" 
+            <ThemeIcon
+              size="xs"
+              radius="xl"
               color={integrationStatus === 'ready' ? 'teal' : integrationStatus === 'error' ? 'red' : 'yellow'}
               variant="filled"
             >
-              {integrationStatus === 'ready' ? <IconCircleCheck size={10} /> : integrationStatus === 'error' ? <IconX size={10} /> : <IconRefresh size={10} />}
+              {integrationStatus === 'ready' ? (
+                <IconCircleCheck size={10} />
+              ) : integrationStatus === 'error' ? (
+                <IconX size={10} />
+              ) : (
+                <IconRefresh size={10} />
+              )}
             </ThemeIcon>
           </Tooltip>
         )}
@@ -287,9 +299,7 @@ export function MangaCard({ manga, onRemove, onUpdate, onRefresh, onClick }: Man
         title={manga.title}
         classes={classes}
         integrationStatus={
-          manga._count?.chapters > 0 && manga.chapters?.every((c: any) => c.metadataInjected)
-            ? 'ready'
-            : 'pending'
+          manga._count?.chapters > 0 && manga.chapters?.every((c: any) => c.metadataInjected) ? 'ready' : 'pending'
         }
       />
     </Paper>

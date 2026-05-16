@@ -45,8 +45,12 @@ export function MetadataSettings() {
               value: 'anilist',
               label: (
                 <Stack spacing={2} py={4}>
-                  <Text size="sm" weight={600}>AniList First</Text>
-                  <Text size="xs" color="dimmed">AniList → MangaDex Fallback</Text>
+                  <Text size="sm" weight={600}>
+                    AniList First
+                  </Text>
+                  <Text size="xs" color="dimmed">
+                    AniList → MangaDex Fallback
+                  </Text>
                 </Stack>
               ),
             },
@@ -54,8 +58,12 @@ export function MetadataSettings() {
               value: 'mangadex',
               label: (
                 <Stack spacing={2} py={4}>
-                  <Text size="sm" weight={600}>MangaDex First</Text>
-                  <Text size="xs" color="dimmed">MangaDex → AniList Fallback</Text>
+                  <Text size="sm" weight={600}>
+                    MangaDex First
+                  </Text>
+                  <Text size="xs" color="dimmed">
+                    MangaDex → AniList Fallback
+                  </Text>
                 </Stack>
               ),
             },

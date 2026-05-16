@@ -7,7 +7,7 @@ const CACHE_TTL_MS = 60000; // 60 seconds
 
 export async function getCachedSettings(): Promise<Settings> {
   const now = Date.now();
-  if (cachedSettings && (now - lastFetchTime < CACHE_TTL_MS)) {
+  if (cachedSettings && now - lastFetchTime < CACHE_TTL_MS) {
     return cachedSettings;
   }
 

@@ -4,16 +4,16 @@ import { DataTable } from 'mantine-datatable';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
-dayjs.extend(relativeTime);
-
 import { Center, Tooltip, Stack, Paper, Group, Text, Pagination, ActionIcon, Box } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconAlertTriangle, IconCheck, IconTrash } from '@tabler/icons-react';
 import prettyBytes from 'pretty-bytes';
 import { useEffect, useMemo, useState } from 'react';
-import { trpc } from '../utils/trpc';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import { trpc } from '../utils/trpc';
+
+dayjs.extend(relativeTime);
 
 const mangaWithMetadataAndChaptersAndOutOfSyncChaptersAndLibrary = Prisma.validator<Prisma.MangaArgs>()({
   include: { metadata: true, chapters: true, library: true, outOfSyncChapters: true },
@@ -56,7 +56,11 @@ export function ChaptersTable({ manga }: { manga: MangaWithMetadataAndChaptersAn
   const columns = useMemo(
     () => [
       { accessor: 'index', title: '#', render: ({ index }: { index: number }) => `${index + 1}` },
-      { accessor: 'createdAt', title: t('download_date'), render: ({ createdAt }: { createdAt: Date }) => dayjs(createdAt).fromNow() },
+      {
+        accessor: 'createdAt',
+        title: t('download_date'),
+        render: ({ createdAt }: { createdAt: Date }) => dayjs(createdAt).fromNow(),
+      },
       {
         accessor: 'fileName',
         title: t('chapter_name'),
@@ -122,7 +126,9 @@ export function ChaptersTable({ manga }: { manga: MangaWithMetadataAndChaptersAn
                     <Text size="xs" color="dimmed">
                       {dayjs(chapter.createdAt).fromNow()}
                     </Text>
-                    <Text size="xs" color="dimmed">•</Text>
+                    <Text size="xs" color="dimmed">
+                      •
+                    </Text>
                     <Text size="xs" color="dimmed">
                       {prettyBytes(chapter.size)}
                     </Text>

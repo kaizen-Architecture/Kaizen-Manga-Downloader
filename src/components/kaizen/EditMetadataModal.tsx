@@ -4,8 +4,8 @@ import { useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import { IconCheck, IconX, IconUpload } from '@tabler/icons-react';
 import { useTranslation } from 'next-i18next';
-import { trpc } from '../../utils/trpc';
 import { Prisma } from '@prisma/client';
+import { trpc } from '../../utils/trpc';
 
 const mangaWithMetadata = Prisma.validator<Prisma.MangaArgs>()({
   include: { metadata: true },
@@ -96,7 +96,11 @@ export function EditMetadataModalContent({ manga, onClose, onSuccess }: EditMeta
               setSelectedFile(null);
               form.getInputProps('cover').onChange(e);
             }}
-            description={form.values.cover.startsWith('data:image/') ? 'Custom file uploaded successfully (Base64 ready)' : undefined}
+            description={
+              form.values.cover.startsWith('data:image/')
+                ? 'Custom file uploaded successfully (Base64 ready)'
+                : undefined
+            }
           />
           <FileInput
             label="Or Upload Image"

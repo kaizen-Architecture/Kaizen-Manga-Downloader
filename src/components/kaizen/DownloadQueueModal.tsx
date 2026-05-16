@@ -86,12 +86,11 @@ export function DownloadQueueModal({ opened, onClose }: DownloadQueueModalProps)
   const twoMinutesAgo = now - 2 * 60 * 1000;
 
   // Show active, waiting, and anything that finished in the last 2 minutes
-  const activeAndWaiting = queueQuery.data?.filter((j) => 
-    j.status === 'active' || 
-    j.status === 'waiting' || 
-    (j.timestamp && j.timestamp > twoMinutesAgo)
-  ) ?? [];
-  
+  const activeAndWaiting =
+    queueQuery.data?.filter(
+      (j) => j.status === 'active' || j.status === 'waiting' || (j.timestamp && j.timestamp > twoMinutesAgo),
+    ) ?? [];
+
   const recent = queueQuery.data?.filter((j) => j.status === 'completed' || j.status === 'failed') ?? [];
 
   const renderTable = (jobs: typeof activeAndWaiting, showProgress = false) => {
@@ -177,7 +176,9 @@ export function DownloadQueueModal({ opened, onClose }: DownloadQueueModalProps)
                     ) : job.status === 'completed' ? (
                       <Progress value={100} size="sm" radius="xl" color="green" />
                     ) : (
-                      <Text size="xs" color="dimmed">—</Text>
+                      <Text size="xs" color="dimmed">
+                        —
+                      </Text>
                     )}
                   </td>
                 )}
@@ -258,12 +259,8 @@ export function DownloadQueueModal({ opened, onClose }: DownloadQueueModalProps)
             </Button>
           </Group>
 
-          <Tabs.Panel value="active">
-            {renderTable(activeAndWaiting, true)}
-          </Tabs.Panel>
-          <Tabs.Panel value="recent">
-            {renderTable(recent, false)}
-          </Tabs.Panel>
+          <Tabs.Panel value="active">{renderTable(activeAndWaiting, true)}</Tabs.Panel>
+          <Tabs.Panel value="recent">{renderTable(recent, false)}</Tabs.Panel>
         </Tabs>
       )}
     </Modal>

@@ -290,13 +290,14 @@ export function MangalSettings() {
           {item.type === 'int' && (
             <NumberItem configKey={item.key} onUpdate={handleUpdate} initialValue={item.value as number} />
           )}
-          {item.type === 'string' && (
-            item.key.toLowerCase().includes('password') || item.key.toLowerCase().includes('token') || item.key.toLowerCase().includes('secret') ? (
+          {item.type === 'string' &&
+            (item.key.toLowerCase().includes('password') ||
+            item.key.toLowerCase().includes('token') ||
+            item.key.toLowerCase().includes('secret') ? (
               <PasswordItem configKey={item.key} onUpdate={handleUpdate} initialValue={item.value as string} />
             ) : (
               <TextItem configKey={item.key} onUpdate={handleUpdate} initialValue={item.value as string} />
-            )
-          )}
+            ))}
         </Group>
       ))}
     </Box>
