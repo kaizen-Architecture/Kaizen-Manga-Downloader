@@ -3,6 +3,7 @@ import { IconAlertCircle, IconCode, IconExternalLink, IconChevronDown, IconChevr
 import { useTranslation } from 'next-i18next';
 import { trpc } from '../../utils/trpc';
 import { useState } from 'react';
+import { setCookie } from 'cookies-next';
 import dynamic from 'next/dynamic';
 
 const SwaggerUI = dynamic(() => import('swagger-ui-react'), { ssr: false });
@@ -18,8 +19,30 @@ export function DeveloperSettings() {
 
   const apiEnabledValue = (settings.data?.appConfig as any)?.apiEnabled === true ? 'yes' : 'no';
 
-  const handleApiToggle = (val: string) => {
-    update.mutate({ updateType: 'app', key: 'apiEnabled' as any, value: val === 'yes' });
+  const handleApiToggle = async (val: string) => {
+    const isApiEnabled = val === 'yes';
+    if (isApiEnabled) {
+      // 1. Habilitar la API
+      await update.mutateAsync({ updateType: 'app', key: 'apiEnabled' as any, value: true });
+
+      // 2. Si la Autenticación no está activada, activarla automáticamente para poder usar tokens
+      const isAuthCurrentlyEnabled = (settings.data?.appConfig as any)?.authEnabled === true;
+      if (!isAuthCurrentlyEnabled) {
+        // Inyectar sesión inmediatamente para que el administrador activo no sea expulsado a Login
+        setCookie(
+          'kaizen-session',
+          JSON.stringify({ username: 'admin', role: 'admin' }),
+          { path: '/' }
+        );
+        await update.mutateAsync({ updateType: 'app', key: 'authEnabled' as any, value: true });
+      }
+    } else {
+      await update.mutateAsync({ updateType: 'app', key: 'apiEnabled' as any, value: false });
+    }
+
+    settings.refetch().then(() => {
+      window.location.reload();
+    });
   };
 
   if (settings.isLoading || !settings.data) return null;
