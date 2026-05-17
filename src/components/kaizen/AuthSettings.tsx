@@ -9,7 +9,11 @@ export function AuthSettings() {
 
   const settings = trpc.settings.query.useQuery();
   const update = trpc.settings.update.useMutation({
-    onSuccess: () => settings.refetch(),
+    onSuccess: () => {
+      settings.refetch().then(() => {
+        window.location.reload();
+      });
+    },
   });
 
   const authEnabledValue = (settings.data?.appConfig as any)?.authEnabled === true ? 'yes' : 'no';
@@ -18,7 +22,11 @@ export function AuthSettings() {
     const isEnabled = val === 'yes';
     if (isEnabled) {
       // Inyectar sesión inmediatamente para que el administrador activo no sea expulsado a Login
-      setCookie('kaizen-session', 'admin-default-session', { path: '/' });
+      setCookie(
+        'kaizen-session',
+        JSON.stringify({ username: 'admin', role: 'admin' }),
+        { path: '/' }
+      );
     }
     update.mutate({ updateType: 'app', key: 'authEnabled' as any, value: isEnabled });
   };
