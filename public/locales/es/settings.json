@@ -45,7 +45,9 @@
     "developerTitle": "Opciones de la API de Desarrollo",
     "developerDesc": "Habilita el acceso externo a los metadatos de tu biblioteca mediante una REST API segura para clientes de terceros y scripts personalizados.",
     "docsTitle": "Documentación Interactiva de la API",
-    "docsDesc": "Explora y prueba las rutas REST disponibles en vivo usando nuestra interfaz de Swagger."
+    "docsDesc": "Explora y prueba las rutas REST disponibles en vivo usando nuestra interfaz de Swagger.",
+    "logout": "Cerrar Sesión",
+    "logoutConfirm": "¿Estás seguro de que deseas cerrar tu sesión actual?"
   },
   "users": {
     "title": "Centro de Cuentas y Control de Acceso",
