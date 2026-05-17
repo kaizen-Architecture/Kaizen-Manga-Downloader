@@ -14,35 +14,17 @@ export function DeveloperSettings() {
 
   const settings = trpc.settings.query.useQuery();
   const update = trpc.settings.update.useMutation({
-    onSuccess: () => settings.refetch(),
+    onSuccess: () => {
+      settings.refetch().then(() => {
+        window.location.reload();
+      });
+    },
   });
 
   const apiEnabledValue = (settings.data?.appConfig as any)?.apiEnabled === true ? 'yes' : 'no';
 
-  const handleApiToggle = async (val: string) => {
-    const isApiEnabled = val === 'yes';
-    if (isApiEnabled) {
-      // 1. Habilitar la API
-      await update.mutateAsync({ updateType: 'app', key: 'apiEnabled' as any, value: true });
-
-      // 2. Si la Autenticación no está activada, activarla automáticamente para poder usar tokens
-      const isAuthCurrentlyEnabled = (settings.data?.appConfig as any)?.authEnabled === true;
-      if (!isAuthCurrentlyEnabled) {
-        // Inyectar sesión inmediatamente para que el administrador activo no sea expulsado a Login
-        setCookie(
-          'kaizen-session',
-          JSON.stringify({ username: 'admin', role: 'admin' }),
-          { path: '/' }
-        );
-        await update.mutateAsync({ updateType: 'app', key: 'authEnabled' as any, value: true });
-      }
-    } else {
-      await update.mutateAsync({ updateType: 'app', key: 'apiEnabled' as any, value: false });
-    }
-
-    settings.refetch().then(() => {
-      window.location.reload();
-    });
+  const handleApiToggle = (val: string) => {
+    update.mutate({ updateType: 'app', key: 'apiEnabled' as any, value: val === 'yes' });
   };
 
   if (settings.isLoading || !settings.data) return null;

@@ -29,6 +29,8 @@ export function KaizenNavbar({ opened, setOpened }: KaizenNavbarProps) {
   const settings = trpc.settings.query.useQuery();
 
   const isAuthEnabled = (settings.data?.appConfig as any)?.authEnabled === true;
+  const isApiEnabled = (settings.data?.appConfig as any)?.apiEnabled === true;
+  const showUsersMenu = isAuthEnabled || isApiEnabled;
 
   const [currentUser, setCurrentUser] = useState<{ username: string; role: string } | null>(null);
 
@@ -65,7 +67,7 @@ export function KaizenNavbar({ opened, setOpened }: KaizenNavbarProps) {
     { label: t('nav.library'), icon: IconBooks, href: '/library' },
     { label: t('nav.planner'), icon: IconCalendarStats, href: '/scheduler' },
     { label: t('nav.sources'), icon: IconPuzzle, href: '/sources' },
-    ...(isAuthEnabled ? [{ label: t('nav.users', 'Cuentas'), icon: IconUsers, href: '/users' }] : []),
+    ...(showUsersMenu ? [{ label: t('nav.users', 'Cuentas'), icon: IconUsers, href: '/users' }] : []),
     { label: t('nav.settings'), icon: IconSettings, href: '/settings' },
   ];
 

@@ -18,7 +18,7 @@ export function AuthSettings() {
 
   const authEnabledValue = (settings.data?.appConfig as any)?.authEnabled === true ? 'yes' : 'no';
 
-  const handleAuthToggle = async (val: string) => {
+  const handleAuthToggle = (val: string) => {
     const isEnabled = val === 'yes';
     if (isEnabled) {
       // Inyectar sesión inmediatamente para que el administrador activo no sea expulsado a Login
@@ -27,19 +27,8 @@ export function AuthSettings() {
         JSON.stringify({ username: 'admin', role: 'admin' }),
         { path: '/' }
       );
-      await update.mutateAsync({ updateType: 'app', key: 'authEnabled' as any, value: true });
-    } else {
-      // Si se desactiva Autenticación, también se debe desactivar automáticamente la API
-      const isApiCurrentlyEnabled = (settings.data?.appConfig as any)?.apiEnabled === true;
-      if (isApiCurrentlyEnabled) {
-        await update.mutateAsync({ updateType: 'app', key: 'apiEnabled' as any, value: false });
-      }
-      await update.mutateAsync({ updateType: 'app', key: 'authEnabled' as any, value: false });
     }
-
-    settings.refetch().then(() => {
-      window.location.reload();
-    });
+    update.mutate({ updateType: 'app', key: 'authEnabled' as any, value: isEnabled });
   };
 
   if (settings.isLoading || !settings.data) return null;
