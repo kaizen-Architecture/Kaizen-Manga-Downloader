@@ -197,11 +197,8 @@ export function MangaSearchResult({
       >
         <AnimatePresence>
           {items.map((m, index) => {
-            const isSelected = selectedList.some(
-              (s) => s.source === m.source && s.title === m.title,
-            );
-            const isDisabled =
-              selectedList.length > 0 && selectedList[0] && m.title !== selectedList[0].title;
+            const isSelected = selectedList.some((s) => s.source === m.source && s.title === m.title);
+            const isDisabled = selectedList.length > 0 && selectedList[0] && m.title !== selectedList[0].title;
 
             return (
               <ImageCheckbox
@@ -218,9 +215,7 @@ export function MangaSearchResult({
                   if (checked) {
                     nextList = [...selectedList, m];
                   } else {
-                    nextList = selectedList.filter(
-                      (s) => !(s.source === m.source && s.title === m.title),
-                    );
+                    nextList = selectedList.filter((s) => !(s.source === m.source && s.title === m.title));
                   }
                   setSelectedList(nextList);
                   if (onMultiSelect) {

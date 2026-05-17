@@ -89,9 +89,7 @@ export function DownloadSettings() {
               { label: 'Include Confidence Alternative Names', value: 'fuzzy' },
             ]}
             value={currentMatching}
-            onChange={(value) =>
-              update.mutate({ updateType: 'app', key: 'alternativeSourceMatching', value })
-            }
+            onChange={(value) => update.mutate({ updateType: 'app', key: 'alternativeSourceMatching', value })}
             disabled={update.isLoading}
             color="indigo"
             size="sm"

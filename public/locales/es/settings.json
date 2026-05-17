@@ -27,5 +27,79 @@
       "successMessage": "Credenciales de GitHub actualizadas correctamente",
       "error": "Error al guardar los ajustes"
     }
+  },
+  "auth": {
+    "title": "Autenticación y Control de Acceso Web",
+    "desc": "Protege tu interfaz web requiriendo credenciales e instaura un entorno seguro con acceso exclusivo.",
+    "toggleLabel": "Requerir Inicio de Sesión Web",
+    "apiEnabledLabel": "REST API Externa",
+    "apiEnabled": "Activada",
+    "apiDisabled": "Desactivada",
+    "docsButton": "Ver Docs",
+    "unlockedTitle": "¡Modo de Cuentas Desbloqueado!",
+    "unlockedDesc": "La sección de Cuentas se ha vuelto visible en el menú de navegación principal.",
+    "unlockedDefault": "Usuario por defecto: {{user}} | Contraseña: {{pass}}",
+    "unlockedWarning": "Te recomendamos encarecidamente acceder a la sección de Cuentas para cambiar la contraseña predeterminada en tu primer reinicio o añadir usuarios con roles personalizados."
+  },
+  "users": {
+    "title": "Centro de Cuentas y Control de Acceso",
+    "description": "Gestiona la seguridad y los niveles de autorización de todos los usuarios de la plataforma Kaizen.",
+    "defaultPasswordAlert": {
+      "title": "¡Atención! Contraseña Predeterminada de Administrador Activa",
+      "desc": "Hemos detectado que tu cuenta principal admin sigue configurada con la contraseña de fábrica. Por tu absoluta privacidad y seguridad web, es de suma importancia que la modifiques en este momento utilizando el panel inferior."
+    },
+    "adminPassword": {
+      "title": "Actualizar Contraseña del Administrador Principal",
+      "desc": "Cambia la contraseña de la cuenta raíz admin para salvaguardar la configuración del descargador.",
+      "newPassword": "Nueva Contraseña",
+      "newPasswordPlaceholder": "Escribe la nueva clave segura",
+      "confirmPassword": "Confirmar Contraseña",
+      "confirmPasswordPlaceholder": "Vuelve a escribir la clave",
+      "saveButton": "Guardar Contraseña"
+    },
+    "management": {
+      "title": "Gestión y Creación de Usuarios Locales",
+      "desc": "Crea sub-cuentas con roles específicos de acceso: Admin (control total), Gestor (descargas y series) o Lector (sólo lectura de la biblioteca).",
+      "addAccount": "Añadir Nueva Cuenta",
+      "username": "Nombre de Usuario",
+      "usernamePlaceholder": "ej. editor",
+      "password": "Contraseña",
+      "role": "Nivel de Permisos",
+      "addButton": "Añadir Usuario"
+    },
+    "roles": {
+      "superadmin": "Admin",
+      "manager": "Gestor",
+      "reader": "Lector"
+    },
+    "list": {
+      "title": "Usuarios Registrados Activos",
+      "id": "ID",
+      "username": "Usuario",
+      "role": "Rol Asignado",
+      "apiToken": "API Token",
+      "actions": "Acciones",
+      "regenerate": "Regenerar",
+      "generate": "Generar Token",
+      "regenerateConfirmTitle": "Regenerar API Token",
+      "regenerateConfirm": "¿Estás seguro de que deseas regenerar el API token de este usuario? Cualquier aplicación que use el antiguo perderá el acceso."
+    },
+    "delete": {
+      "confirmTitle": "Confirmar eliminación de cuenta",
+      "confirmDesc": "¿Estás completamente seguro de que deseas revocar y eliminar el acceso para el usuario {{username}}?",
+      "confirmButton": "Eliminar",
+      "cancelButton": "Cancelar"
+    },
+    "notifications": {
+      "passwordUpdatedTitle": "Contraseña Actualizada",
+      "passwordUpdatedDesc": "La contraseña del administrador ha sido cambiada exitosamente.",
+      "tokenGeneratedTitle": "Token Generado",
+      "tokenGeneratedDesc": "El API Token ha sido generado correctamente.",
+      "tokenErrorTitle": "Error Generando Token",
+      "userCreatedTitle": "Usuario Creado",
+      "userCreatedDesc": "La nueva cuenta de usuario se ha registrado correctamente.",
+      "userDeletedTitle": "Cuenta Eliminada",
+      "userDeletedDesc": "El acceso del usuario ha sido revocado permanentemente."
+    }
   }
 }

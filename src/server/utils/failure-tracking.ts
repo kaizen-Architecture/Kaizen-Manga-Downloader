@@ -43,7 +43,9 @@ export const trackSourceFailure = async (source: string, errorText: string) => {
       // Ensure disabled/failed directory exists
       try {
         await fs.mkdir(failedPath, { recursive: true });
-      } catch (e) { /* ignore */ }
+      } catch (e) {
+        /* ignore */
+      }
 
       const fileName = `${source}.lua`;
       const activeFile = path.join(cleanPath, fileName);

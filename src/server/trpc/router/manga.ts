@@ -224,12 +224,14 @@ export const mangaRouter = t.router({
       z.object({
         source: z.union([
           z.string().trim().min(1),
-          z.array(
-            z.object({
-              source: z.string().trim().min(1),
-              title: z.string().trim().min(1),
-            }),
-          ).min(1),
+          z
+            .array(
+              z.object({
+                source: z.string().trim().min(1),
+                title: z.string().trim().min(1),
+              }),
+            )
+            .min(1),
         ]),
         title: z.string().trim().min(1),
         interval: z
@@ -244,9 +246,7 @@ export const mangaRouter = t.router({
     .mutation(async ({ input, ctx }) => {
       const { source, title, interval } = input;
       const actualSources = Array.isArray(source) ? source : [{ source, title }];
-      const uniqueSources = actualSources.filter(
-        (v, i, a) => a.findIndex((t) => t.source === v.source) === i,
-      );
+      const uniqueSources = actualSources.filter((v, i, a) => a.findIndex((t) => t.source === v.source) === i);
       const primarySource = uniqueSources[0]!;
 
       const mangaDetail = await getMangaDetail(primarySource.source, primarySource.title);
@@ -551,9 +551,7 @@ export const mangaRouter = t.router({
       include: { metadata: true, library: true, sources: true },
     });
 
-    const needsRefresh = allManga.filter(
-      (m) => !m.metadata?.cover || !m.metadata?.summary,
-    );
+    const needsRefresh = allManga.filter((m) => !m.metadata?.cover || !m.metadata?.summary);
 
     let updated = 0;
     let skipped = 0;
@@ -569,7 +567,8 @@ export const mangaRouter = t.router({
         await ctx.prisma.metadata.update({
           where: { id: manga.metadataId },
           data: {
-            cover: metadata.cover?.extraLarge || metadata.cover?.large || metadata.cover?.medium || manga.metadata?.cover,
+            cover:
+              metadata.cover?.extraLarge || metadata.cover?.large || metadata.cover?.medium || manga.metadata?.cover,
             authors: metadata.staff?.story ? [...metadata.staff.story] : undefined,
             genres: metadata.genres || undefined,
             status: metadata.status || undefined,
@@ -916,7 +915,7 @@ export const mangaRouter = t.router({
         const isDailyCron = /^\d+ \d+ \* \* \*$/.test(interval);
         if (isDailyCron || interval === '0 * * * *') {
           const randomMinute = Math.floor(Math.random() * 60);
-          const range = (endHour - startHour) + 1;
+          const range = endHour - startHour + 1;
           const randomHour = startHour + Math.floor(Math.random() * range);
           const newInterval = `${randomMinute} ${randomHour} * * *`;
 
@@ -1107,48 +1106,43 @@ export const mangaRouter = t.router({
     });
   }),
   cleanQueue: t.procedure.mutation(async () => {
-    await Promise.all([
-      downloadQueue.clean(0, 0, 'completed'),
-      downloadQueue.clean(0, 0, 'failed'),
-    ]);
+    await Promise.all([downloadQueue.clean(0, 0, 'completed'), downloadQueue.clean(0, 0, 'failed')]);
     return { success: true };
   }),
-  deleteChapter: t.procedure
-    .input(z.object({ id: z.number() }))
-    .mutation(async ({ input, ctx }) => {
-      const chapter = await ctx.prisma.chapter.findUnique({
-        where: { id: input.id },
-        include: { manga: { include: { library: true } } },
+  deleteChapter: t.procedure.input(z.object({ id: z.number() })).mutation(async ({ input, ctx }) => {
+    const chapter = await ctx.prisma.chapter.findUnique({
+      where: { id: input.id },
+      include: { manga: { include: { library: true } } },
+    });
+
+    if (!chapter) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Chapter not found',
       });
+    }
 
-      if (!chapter) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Chapter not found',
-        });
+    // 1. Delete physical file
+    try {
+      const libraryPath = chapter.manga.library.path;
+      const fileName = chapter.fileName;
+      const filePath = path.join(libraryPath, sanitizer(chapter.manga.title), fileName);
+
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        logger.info(`Deleted physical file for chapter ${chapter.index}: ${filePath}`);
       }
+    } catch (err) {
+      logger.error(`Failed to delete physical file for chapter ${chapter.id}: ${err}`);
+    }
 
-      // 1. Delete physical file
-      try {
-        const libraryPath = chapter.manga.library.path;
-        const fileName = chapter.fileName;
-        const filePath = path.join(libraryPath, sanitizer(chapter.manga.title), fileName);
-        
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-          logger.info(`Deleted physical file for chapter ${chapter.index}: ${filePath}`);
-        }
-      } catch (err) {
-        logger.error(`Failed to delete physical file for chapter ${chapter.id}: ${err}`);
-      }
+    // 2. Delete from DB
+    await ctx.prisma.chapter.delete({
+      where: { id: input.id },
+    });
 
-      // 2. Delete from DB
-      await ctx.prisma.chapter.delete({
-        where: { id: input.id },
-      });
-
-      return { success: true };
-    }),
+    return { success: true };
+  }),
   cleanupDuplicates: t.procedure.mutation(async ({ ctx }) => {
     logger.info('Starting manual duplicate chapter cleanup...');
     const mangas = await ctx.prisma.manga.findMany({
@@ -1226,7 +1220,9 @@ export const mangaRouter = t.router({
         }
       }
 
-      logger.info(`bulkUpdateIntervalByStatus: updated ${updatedCount} unlocked manga with status ${status} to interval ${interval}`);
+      logger.info(
+        `bulkUpdateIntervalByStatus: updated ${updatedCount} unlocked manga with status ${status} to interval ${interval}`,
+      );
       return { count: updatedCount };
     }),
   bulkLockByStatus: t.procedure
@@ -1293,7 +1289,7 @@ export const mangaRouter = t.router({
       if (!newSourceTitle && strategy === 'fuzzy') {
         try {
           // 1. Try primary title
-          let { result } = await search(newSource, manga.title);
+          const { result } = await search(newSource, manga.title);
           let bestMatch = result.find((r) => !!r.mangal?.name);
 
           // 2. Fallback to synonyms if no match found
@@ -1332,14 +1328,12 @@ export const mangaRouter = t.router({
       }
 
       // Remove the specific failed download job
-      let job = await downloadQueue.getJob(jobId);
+      const job = await downloadQueue.getJob(jobId);
       if (job) {
         await job.remove();
       } else {
         const failedJobs = await downloadQueue.getFailed();
-        const found = failedJobs.find(
-          (j) => j.data?.mangaId === mangaId && j.data?.chapterIndex === chapterIndex,
-        );
+        const found = failedJobs.find((j) => j.data?.mangaId === mangaId && j.data?.chapterIndex === chapterIndex);
         if (found) {
           await found.remove();
         }
@@ -1384,12 +1378,14 @@ export const mangaRouter = t.router({
       if (!newSourceTitle && strategy === 'fuzzy') {
         try {
           // 1. Try primary title
-          let { result } = await search(newSource, manga.title);
+          const { result } = await search(newSource, manga.title);
           let bestMatch = result.find((r) => !!r.mangal?.name);
 
           // 2. Fallback to synonyms if no match found
           if (!bestMatch && manga.metadata?.synonyms && manga.metadata.synonyms.length > 0) {
-            logger.info(`Primary title search failed during switch to ${newSource}. Trying synonyms for ${manga.title}...`);
+            logger.info(
+              `Primary title search failed during switch to ${newSource}. Trying synonyms for ${manga.title}...`,
+            );
             for (const synonym of manga.metadata.synonyms) {
               const { result: synResult } = await search(newSource, synonym);
               bestMatch = synResult.find((r) => !!r.mangal?.name);

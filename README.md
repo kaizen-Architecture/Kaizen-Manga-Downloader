@@ -21,6 +21,24 @@
 | :---: | :---: | :---: |
 | ![Dashboard](./screenshots/dashboard.png) | ![Library](./screenshots/library.png) | ![Planner](./screenshots/planner.png) |
 
+## 🔌 API Integration
+
+Kaizen exposes a modular REST API that allows other applications to integrate with it. The API is documented interactively using Swagger.
+
+### Getting Started
+
+1. **Enable the API**: Log in to Kaizen, go to **Settings > Access Control**, and toggle **External REST API** to "On".
+2. **Generate a Token**: Go to the **Accounts** (Users) page and generate an API Token for your specific user account.
+3. **Authenticate**: Provide this Bearer token in the `Authorization` header of your HTTP requests.
+
+```bash
+curl -H "Authorization: Bearer YOUR_USER_API_TOKEN" http://localhost:3000/api/v1/mangas
+```
+
+### Documentation
+
+You can view the full interactive OpenAPI (Swagger) documentation, test endpoints, and explore the schema by navigating to `/api-docs` on your Kaizen instance (e.g., `http://localhost:3000/api-docs`).
+
 ## 🔄 Migration & Compatibility
 
 Kaizen is fully backward compatible with existing Kaizoku deployments. 

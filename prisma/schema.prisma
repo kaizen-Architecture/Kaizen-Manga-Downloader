@@ -118,6 +118,7 @@ model Settings {
   refreshStatusInterval     String   @default("weekly")
   refreshStatusWindow       String   @default("night")
   authEnabled               Boolean  @default(false)
+  apiEnabled                Boolean  @default(false)
 }
 
 model LuaSource {
@@ -133,6 +134,7 @@ model User {
   username  String    @unique
   password  String
   role      String    @default("SUPERADMIN") // "SUPERADMIN", "MANAGER", "READER"
+  apiToken  String?   @unique
   libraries Library[] @relation("UserLibraries")
 }
 

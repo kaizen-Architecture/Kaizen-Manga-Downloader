@@ -21,7 +21,11 @@ export const refreshMangaStatusWorker = new Worker(
         return !['COMPLETED', 'FINISHED', 'CANCELLED'].includes(st);
       });
 
-      logger.info(`[Status Audit] Found ${activeMangas.length} ongoing/unknown series to audit using providers: ${providers.join(' -> ')}`);
+      logger.info(
+        `[Status Audit] Found ${activeMangas.length} ongoing/unknown series to audit using providers: ${providers.join(
+          ' -> ',
+        )}`,
+      );
 
       let updatedCount = 0;
       for (const manga of activeMangas) {
@@ -31,8 +35,14 @@ export const refreshMangaStatusWorker = new Worker(
         const currentStatus = mItem.metadata.status?.toUpperCase() || '';
         const newStatus = await checkMangaStatusLightweight(mItem.title, providers);
 
-        if (newStatus && newStatus !== currentStatus && ['FINISHED', 'COMPLETED', 'CANCELLED', 'HIATUS'].includes(newStatus)) {
-          logger.info(`[Status Audit] Series "${mItem.title}" changed status from "${currentStatus}" to "${newStatus}"! Updating metadata...`);
+        if (
+          newStatus &&
+          newStatus !== currentStatus &&
+          ['FINISHED', 'COMPLETED', 'CANCELLED', 'HIATUS'].includes(newStatus)
+        ) {
+          logger.info(
+            `[Status Audit] Series "${mItem.title}" changed status from "${currentStatus}" to "${newStatus}"! Updating metadata...`,
+          );
           await prisma.metadata.update({
             where: { id: mItem.metadata.id },
             data: { status: newStatus },
@@ -102,7 +112,9 @@ export const scheduleMangaStatusRefresh = async () => {
       cronPattern = `0 ${hour} 1 * *`;
     }
 
-    logger.info(`[Status Audit] Scheduling automated background maintenance loop with pattern "${cronPattern}" (${interval} at ${window} window)`);
+    logger.info(
+      `[Status Audit] Scheduling automated background maintenance loop with pattern "${cronPattern}" (${interval} at ${window} window)`,
+    );
     await refreshMangaStatusQueue.add(
       'refreshMangaStatusCron',
       {},

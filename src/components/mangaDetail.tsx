@@ -1,13 +1,26 @@
-import { ActionIcon, Badge, Box, createStyles, Divider, Grid, Group, Image, Spoiler, Text, Title, Tooltip } from '@mantine/core';
+import {
+  ActionIcon,
+  Badge,
+  Box,
+  createStyles,
+  Divider,
+  Grid,
+  Group,
+  Image,
+  Spoiler,
+  Text,
+  Title,
+  Tooltip,
+} from '@mantine/core';
 import { NextLink } from '@mantine/next';
 import { Prisma } from '@prisma/client';
 import { IconExternalLink, IconRefresh, IconEdit } from '@tabler/icons-react';
 import { contrastColor } from 'contrast-color';
 import stc from 'string-to-color';
 import { useTranslation } from 'next-i18next';
+import { useModals } from '@mantine/modals';
 import { getCronLabel } from '../utils';
 import { trpc } from '../utils/trpc';
-import { useModals } from '@mantine/modals';
 import { EditMetadataModalContent } from './kaizen/EditMetadataModal';
 
 const useStyles = createStyles((theme) => ({
@@ -144,7 +157,10 @@ export function MangaDetail({ manga }: { manga: MangaWithMetadataAndChapters }) 
               color="cyan"
               variant="filled"
               size="xs"
-              sx={{ backgroundColor: stc(manga.source || 'mangal'), color: contrastColor({ bgColor: stc(manga.source || 'mangal') }) }}
+              sx={{
+                backgroundColor: stc(manga.source || 'mangal'),
+                color: contrastColor({ bgColor: stc(manga.source || 'mangal') }),
+              }}
             >
               <Box className="h-3">{manga.source}</Box>
             </Badge>
@@ -166,12 +182,7 @@ export function MangaDetail({ manga }: { manga: MangaWithMetadataAndChapters }) 
               </ActionIcon>
             </Tooltip>
             <Tooltip label="Edit Metadata" withArrow position="right">
-              <ActionIcon
-                variant="light"
-                color="indigo"
-                size="sm"
-                onClick={openEditModal}
-              >
+              <ActionIcon variant="light" color="indigo" size="sm" onClick={openEditModal}>
                 <IconEdit size={14} />
               </ActionIcon>
             </Tooltip>

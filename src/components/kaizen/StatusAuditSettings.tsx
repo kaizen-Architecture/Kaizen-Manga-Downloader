@@ -42,7 +42,10 @@ export function StatusAuditSettings() {
     onSuccess: () => {
       showNotification({
         title: t('maintenance.statusAuditTriggeredTitle', 'Auditoría Disparada'),
-        message: t('maintenance.statusAuditTriggeredMsg', 'Se ha iniciado la revisión ligera en segundo plano de todas las series activas.'),
+        message: t(
+          'maintenance.statusAuditTriggeredMsg',
+          'Se ha iniciado la revisión ligera en segundo plano de todas las series activas.',
+        ),
         color: 'teal',
         icon: <IconCheck size={18} />,
       });
@@ -70,7 +73,9 @@ export function StatusAuditSettings() {
             <IconActivity size={20} />
           </ThemeIcon>
           <Box>
-            <Title order={5}>{t('maintenance.statusAuditTitle', 'Mantenimiento Automático de Estados de Publicación')}</Title>
+            <Title order={5}>
+              {t('maintenance.statusAuditTitle', 'Mantenimiento Automático de Estados de Publicación')}
+            </Title>
             <Text size="xs" color="dimmed">
               {t(
                 'maintenance.statusAuditDesc',
@@ -152,7 +157,8 @@ export function StatusAuditSettings() {
               Limpieza de Capítulos Duplicados
             </Text>
             <Text size="xs" color="dimmed" sx={{ maxWidth: 450 }}>
-              Escanea de forma completa toda la biblioteca global buscando y eliminando archivos de capítulos clonados idénticos en disco para liberar almacenamiento.
+              Escanea de forma completa toda la biblioteca global buscando y eliminando archivos de capítulos clonados
+              idénticos en disco para liberar almacenamiento.
             </Text>
           </Stack>
           <Button

@@ -13,6 +13,7 @@ export function AuthSettings() {
   });
 
   const authEnabledValue = (settings.data?.appConfig as any)?.authEnabled === true ? 'yes' : 'no';
+  const apiEnabledValue = (settings.data?.appConfig as any)?.apiEnabled === true ? 'yes' : 'no';
 
   const handleAuthToggle = (val: string) => {
     const isEnabled = val === 'yes';
@@ -21,6 +22,10 @@ export function AuthSettings() {
       setCookie('kaizen-session', 'admin-default-session', { path: '/' });
     }
     update.mutate({ updateType: 'app', key: 'authEnabled' as any, value: isEnabled });
+  };
+
+  const handleApiToggle = (val: string) => {
+    update.mutate({ updateType: 'app', key: 'apiEnabled' as any, value: val === 'yes' });
   };
 
   if (settings.isLoading || !settings.data) return null;
@@ -58,23 +63,35 @@ export function AuthSettings() {
         />
       </Stack>
 
+      <Stack spacing="xs" mt="sm">
+        <Text size="xs" weight={500} color="dimmed">
+          {t('auth.apiEnabledLabel', 'REST API Externa')}
+        </Text>
+        <SegmentedControl
+          fullWidth
+          value={apiEnabledValue}
+          onChange={handleApiToggle}
+          disabled={update.isLoading}
+          data={[
+            { value: 'yes', label: t('auth.apiEnabled', 'Activada') },
+            { value: 'no', label: t('auth.apiDisabled', 'Desactivada') },
+          ]}
+        />
+      </Stack>
+
       {authEnabledValue === 'yes' && (
         <Alert icon={<IconAlertCircle size={16} />} color="violet" radius="md" variant="light" mt="sm">
           <Text size="sm" weight={600} mb={4}>
-            ¡Modo de Cuentas Desbloqueado!
+            {t('auth.unlockedTitle', '¡Modo de Cuentas Desbloqueado!')}
           </Text>
           <Text size="xs">
-            La sección de <b>Cuentas</b> se ha vuelto visible en el menú de navegación principal.
+            {t('auth.unlockedDesc', 'La sección de Cuentas se ha vuelto visible en el menú de navegación principal.')}
           </Text>
           <Text size="xs" mt={4}>
-            💡 <b>Usuario por defecto</b>:{' '}
-            <code style={{ background: 'rgba(0,0,0,0.05)', padding: '2px 4px', borderRadius: 4 }}>admin</code> |{' '}
-            <b>Contraseña</b>:{' '}
-            <code style={{ background: 'rgba(0,0,0,0.05)', padding: '2px 4px', borderRadius: 4 }}>admin</code>
+            💡 {t('auth.unlockedDefault', 'Usuario por defecto: admin | Contraseña: admin', { user: 'admin', pass: 'admin' })}
           </Text>
           <Text size="xs" color="dimmed" mt={6} sx={{ fontStyle: 'italic' }}>
-            ⚠️ Te recomendamos encarecidamente acceder a la sección de <b>Cuentas</b> para cambiar la contraseña
-            predeterminada en tu primer reinicio o añadir usuarios con roles personalizados.
+            ⚠️ {t('auth.unlockedWarning', 'Te recomendamos encarecidamente acceder a la sección de Cuentas para cambiar la contraseña predeterminada en tu primer reinicio o añadir usuarios con roles personalizados.')}
           </Text>
         </Alert>
       )}

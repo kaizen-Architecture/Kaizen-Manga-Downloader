@@ -57,6 +57,7 @@ export const settingsRouter = t.router({
             'refreshStatusInterval',
             'refreshStatusWindow',
             'authEnabled',
+            'apiEnabled',
           ]),
           value: z.any(),
         }),

@@ -246,7 +246,10 @@ export default function LibraryPage() {
             placeholder={t('library:controls.sourcePlaceholder')}
             value={sourceFilter}
             onChange={setSourceFilter}
-            data={[{ value: '', label: t('library:controls.sourcePlaceholder') }, ...sources.map((s) => ({ value: s, label: s }))]}
+            data={[
+              { value: '', label: t('library:controls.sourcePlaceholder') },
+              ...sources.map((s) => ({ value: s, label: s })),
+            ]}
             clearable
           />
           <SegmentedControl
@@ -311,10 +314,16 @@ export default function LibraryPage() {
                   >
                     <Group position="apart" noWrap>
                       <Box sx={{ flex: 1, overflow: 'hidden' }}>
-                        <Text weight={500} lineClamp={1}>{manga.title}</Text>
-                        <Text size="xs" color="dimmed">{manga.source}</Text>
+                        <Text weight={500} lineClamp={1}>
+                          {manga.title}
+                        </Text>
+                        <Text size="xs" color="dimmed">
+                          {manga.source}
+                        </Text>
                       </Box>
-                      <Text size="sm" weight={600}>{manga._count?.chapters || 0} {t('library:stats.chapters')}</Text>
+                      <Text size="sm" weight={600}>
+                        {manga._count?.chapters || 0} {t('library:stats.chapters')}
+                      </Text>
                     </Group>
                   </Paper>
                 ))}

@@ -117,7 +117,9 @@ export default function SchedulerPage() {
       updateNotification({
         id: 'stagger-notification',
         title: t('scheduler.notifications.optimizing'),
-        message: `${t('scheduler.notifications.processing')}: ${staggerProgressQuery.data.title} (${staggerProgressQuery.data.current}/${staggerProgressQuery.data.total})`,
+        message: `${t('scheduler.notifications.processing')}: ${staggerProgressQuery.data.title} (${
+          staggerProgressQuery.data.current
+        }/${staggerProgressQuery.data.total})`,
         loading: true,
         autoClose: false,
       });
@@ -166,9 +168,7 @@ export default function SchedulerPage() {
   const bulkUpdateIntervalMutation = trpc.manga.bulkUpdateInterval.useMutation();
 
   const handleClearTabSchedules = async () => {
-    const targetIds = tabFilteredSchedules
-      .filter((m) => !m.isLocked && m.interval !== 'never')
-      .map((m) => m.id);
+    const targetIds = tabFilteredSchedules.filter((m) => !m.isLocked && m.interval !== 'never').map((m) => m.id);
 
     if (targetIds.length === 0) {
       showNotification({
@@ -179,7 +179,11 @@ export default function SchedulerPage() {
       return;
     }
 
-    if (!confirm(`¿Estás seguro de desactivar la planificación (poner en 'never') para las ${targetIds.length} series visibles en esta pestaña?`)) {
+    if (
+      !confirm(
+        `¿Estás seguro de desactivar la planificación (poner en 'never') para las ${targetIds.length} series visibles en esta pestaña?`,
+      )
+    ) {
       return;
     }
 
@@ -449,7 +453,11 @@ export default function SchedulerPage() {
             </Group>
             <Group align="flex-end" spacing={4} sx={{ height: 150 }}>
               {distribution.map((count, hour) => (
-                <Tooltip key={`dist-${hour}`} label={`${count} ${t('common.jobs')} ${t('common.at')} ${hour}:00`} withArrow>
+                <Tooltip
+                  key={`dist-${hour}`}
+                  label={`${count} ${t('common.jobs')} ${t('common.at')} ${hour}:00`}
+                  withArrow
+                >
                   <Box
                     onClick={() => setSelectedHour((prev) => (prev === hour ? null : hour))}
                     sx={(theme) => ({
@@ -509,24 +517,47 @@ export default function SchedulerPage() {
               </Tabs.List>
 
               {activeStatusTab !== 'all' && (
-                <Group position="apart" mb="md" p="xs" sx={(theme) => ({ backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0], borderRadius: theme.radius.sm })}>
+                <Group
+                  position="apart"
+                  mb="md"
+                  p="xs"
+                  sx={(theme) => ({
+                    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+                    borderRadius: theme.radius.sm,
+                  })}
+                >
                   <Text size="xs" color="dimmed">
                     {activeStatusTab === 'ongoing' && 'Tip: Active series are ideal for daily or hourly polling.'}
-                    {activeStatusTab === 'completed' && 'Tip: Concluded series are ideal for light long-term tracking (e.g. Monthly).'}
-                    {activeStatusTab === 'hiatus' && 'Tip: Suspended series can be safely configured to check rarely or Never.'}
+                    {activeStatusTab === 'completed' &&
+                      'Tip: Concluded series are ideal for light long-term tracking (e.g. Monthly).'}
+                    {activeStatusTab === 'hiatus' &&
+                      'Tip: Suspended series can be safely configured to check rarely or Never.'}
                   </Text>
                   <Group spacing="xs">
                     {activeStatusTab === 'ongoing' && (
-                      <Button size="xs" variant="light" onClick={() => handleBulkUpdateInterval('ONGOING', '0 0 * * *')}>
+                      <Button
+                        size="xs"
+                        variant="light"
+                        onClick={() => handleBulkUpdateInterval('ONGOING', '0 0 * * *')}
+                      >
                         Set Unlocked to Daily
                       </Button>
                     )}
                     {activeStatusTab === 'completed' && (
                       <>
-                        <Button size="xs" variant="light" onClick={() => handleBulkUpdateInterval('COMPLETED', '0 0 1 * *')}>
+                        <Button
+                          size="xs"
+                          variant="light"
+                          onClick={() => handleBulkUpdateInterval('COMPLETED', '0 0 1 * *')}
+                        >
                           Set Unlocked to Monthly
                         </Button>
-                        <Button size="xs" variant="light" color="indigo" onClick={() => handleBulkLock('COMPLETED', true)}>
+                        <Button
+                          size="xs"
+                          variant="light"
+                          color="indigo"
+                          onClick={() => handleBulkLock('COMPLETED', true)}
+                        >
                           Lock All Completed
                         </Button>
                       </>
@@ -558,7 +589,11 @@ export default function SchedulerPage() {
                                 {m.title}
                               </Text>
                               <Group spacing="xs">
-                                <Badge color={m.interval === 'never' ? 'gray' : (m.isLocked ? 'indigo' : 'indigo')} variant={m.isLocked ? 'filled' : 'light'} size="sm">
+                                <Badge
+                                  color={m.interval === 'never' ? 'gray' : m.isLocked ? 'indigo' : 'indigo'}
+                                  variant={m.isLocked ? 'filled' : 'light'}
+                                  size="sm"
+                                >
                                   {getCronLabel(m.interval)}
                                 </Badge>
                                 <Badge size="xs" variant="outline">
@@ -597,7 +632,13 @@ export default function SchedulerPage() {
                               >
                                 <IconEdit size={16} />
                               </ActionIcon>
-                              <Tooltip label={m.isLocked ? 'Locked (Ignored by Auto-Stagger)' : 'Unlocked (Affected by Auto-Stagger)'}>
+                              <Tooltip
+                                label={
+                                  m.isLocked
+                                    ? 'Locked (Ignored by Auto-Stagger)'
+                                    : 'Unlocked (Affected by Auto-Stagger)'
+                                }
+                              >
                                 <ActionIcon
                                   color={m.isLocked ? 'indigo' : 'gray'}
                                   variant={m.isLocked ? 'filled' : 'light'}
@@ -637,7 +678,11 @@ export default function SchedulerPage() {
                           </td>
                           <td>
                             <Group spacing="xs">
-                              <Badge color={m.interval === 'never' ? 'gray' : (m.isLocked ? 'indigo' : 'indigo')} variant={m.isLocked ? 'filled' : 'light'} size="sm">
+                              <Badge
+                                color={m.interval === 'never' ? 'gray' : m.isLocked ? 'indigo' : 'indigo'}
+                                variant={m.isLocked ? 'filled' : 'light'}
+                                size="sm"
+                              >
                                 {getCronLabel(m.interval)}
                               </Badge>
                               <Text size="xs" color="dimmed" sx={{ fontStyle: 'italic' }}>
@@ -668,7 +713,11 @@ export default function SchedulerPage() {
                             />
                           </td>
                           <td>
-                            <Tooltip label={m.isLocked ? 'Locked (Ignored by Auto-Stagger)' : 'Unlocked (Affected by Auto-Stagger)'}>
+                            <Tooltip
+                              label={
+                                m.isLocked ? 'Locked (Ignored by Auto-Stagger)' : 'Unlocked (Affected by Auto-Stagger)'
+                              }
+                            >
                               <ActionIcon
                                 color={m.isLocked ? 'indigo' : 'gray'}
                                 variant={m.isLocked ? 'filled' : 'light'}
@@ -701,7 +750,13 @@ export default function SchedulerPage() {
         </Grid.Col>
       </Grid>
 
-      <Modal opened={opened} onClose={close} title={`${t('scheduler.editSchedule')}: ${editingManga?.title}`} centered radius="md">
+      <Modal
+        opened={opened}
+        onClose={close}
+        title={`${t('scheduler.editSchedule')}: ${editingManga?.title}`}
+        centered
+        radius="md"
+      >
         <ScheduleEditor
           initialValue={editingManga?.interval || ''}
           onSave={(val) => editingManga && handleUpdate(editingManga.id, val)}
@@ -744,7 +799,7 @@ function ScheduleEditor({ initialValue, onSave, t }: { initialValue: string; onS
             data={[
               { label: t('common.frequencies.hourly'), value: 'Hourly' },
               { label: t('common.frequencies.daily'), value: 'Daily' },
-              { label: t('common.frequencies.weekly'), value: 'Weekly' }
+              { label: t('common.frequencies.weekly'), value: 'Weekly' },
             ]}
             value={frequency}
             onChange={(v) => v && setFrequency(v)}

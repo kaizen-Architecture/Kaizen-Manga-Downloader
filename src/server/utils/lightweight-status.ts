@@ -14,7 +14,7 @@ export async function fetchLightweightStatusAnilist(title: string): Promise<stri
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        Accept: 'application/json',
       },
       body: JSON.stringify({ query, variables: { search: title } }),
       signal: AbortSignal.timeout(10000),
@@ -24,7 +24,7 @@ export async function fetchLightweightStatusAnilist(title: string): Promise<stri
       return null;
     }
 
-    const json = await response.json() as any;
+    const json = (await response.json()) as any;
     const status = json?.data?.Media?.status;
     return status ? status.toUpperCase() : null;
   } catch (err) {
@@ -48,7 +48,7 @@ export async function fetchLightweightStatusMangaDex(title: string): Promise<str
       return null;
     }
 
-    const data = await response.json() as any;
+    const data = (await response.json()) as any;
     if (!data?.data || data.data.length === 0) {
       return null;
     }
@@ -61,7 +61,7 @@ export async function fetchLightweightStatusMangaDex(title: string): Promise<str
     };
 
     const rawStatus = data.data[0]?.attributes?.status;
-    return rawStatus ? (statusMap[rawStatus] || rawStatus.toUpperCase()) : null;
+    return rawStatus ? statusMap[rawStatus] || rawStatus.toUpperCase() : null;
   } catch (err) {
     logger.debug(`[Status Audit] MangaDex fetch failed for "${title}": ${err}`);
     return null;

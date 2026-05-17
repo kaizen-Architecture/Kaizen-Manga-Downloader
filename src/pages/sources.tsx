@@ -18,16 +18,16 @@ import {
 } from '@mantine/core';
 import React from 'react';
 import { showNotification } from '@mantine/notifications';
-import { 
-  IconCheck, 
-  IconTrash, 
-  IconX, 
-  IconRefresh, 
-  IconPlus, 
-  IconPower, 
+import {
+  IconCheck,
+  IconTrash,
+  IconX,
+  IconRefresh,
+  IconPlus,
+  IconPower,
   IconCloudDownload,
   IconBrandGithub,
-  IconAlertTriangle
+  IconAlertTriangle,
 } from '@tabler/icons-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'next-i18next';
@@ -38,11 +38,12 @@ const getFavicon = (name: string) => {
   if (name.includes(' ') || name.includes('_') || name.includes('-')) {
     return null;
   }
-  const domain = name.toLowerCase() + '.com';
+  const domain = `${name.toLowerCase()}.com`;
   return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
 };
 
-const KAIZEN_FALLBACK_LOGO = 'https://raw.githubusercontent.com/kaizen-Architecture/Kaizen-Manga-Downloader/main/public/logo.png';
+const KAIZEN_FALLBACK_LOGO =
+  'https://raw.githubusercontent.com/kaizen-Architecture/Kaizen-Manga-Downloader/main/public/logo.png';
 
 export default function SourcesPage() {
   const { t } = useTranslation(['common', 'sources']);
@@ -175,9 +176,11 @@ export default function SourcesPage() {
             transition: 'all 0.2s ease',
             '&:hover': {
               boxShadow: theme.shadows.md,
-              borderColor: source.isFailed 
-                ? theme.colors.red[4] 
-                : source.isActive ? theme.colors.indigo[4] : theme.colors.gray[4],
+              borderColor: source.isFailed
+                ? theme.colors.red[4]
+                : source.isActive
+                ? theme.colors.indigo[4]
+                : theme.colors.gray[4],
             },
           })}
         >
@@ -203,9 +206,9 @@ export default function SourcesPage() {
                   {source.name}
                 </Text>
                 <Group spacing={4}>
-                  <Badge 
-                    size="xs" 
-                    variant="outline" 
+                  <Badge
+                    size="xs"
+                    variant="outline"
                     color={source.origin === 'GITHUB' ? 'blue' : 'gray'}
                     sx={{ width: 'fit-content' }}
                   >
@@ -279,9 +282,9 @@ export default function SourcesPage() {
             >
               {t('sources:sync.button')}
             </Button>
-            <Button 
-              leftIcon={<IconPlus size={18} />} 
-              variant="filled" 
+            <Button
+              leftIcon={<IconPlus size={18} />}
+              variant="filled"
               color="indigo"
               onClick={handleManualUpload}
               loading={uploadMutation.isLoading}
@@ -297,13 +300,22 @@ export default function SourcesPage() {
           <Stack spacing="md">
             <Group spacing="xs">
               <IconAlertTriangle size={20} color="red" />
-              <Title order={4} color="red">{t('sources.failedSources')}</Title>
+              <Title order={4} color="red">
+                {t('sources.failedSources')}
+              </Title>
               <Badge color="red" variant="filled">
                 {failedSources.length}
               </Badge>
             </Group>
             <Divider variant="dashed" color="red" />
-            <SimpleGrid cols={3} spacing="md" breakpoints={[{ maxWidth: 'md', cols: 2 }, { maxWidth: 'sm', cols: 1 }]}>
+            <SimpleGrid
+              cols={3}
+              spacing="md"
+              breakpoints={[
+                { maxWidth: 'md', cols: 2 },
+                { maxWidth: 'sm', cols: 1 },
+              ]}
+            >
               <AnimatePresence>
                 {failedSources.map((source) => (
                   <SourceCard key={source.name} source={source} />
@@ -323,7 +335,14 @@ export default function SourcesPage() {
               </Badge>
             </Group>
             <Divider variant="dashed" />
-            <SimpleGrid cols={3} spacing="md" breakpoints={[{ maxWidth: 'md', cols: 2 }, { maxWidth: 'sm', cols: 1 }]}>
+            <SimpleGrid
+              cols={3}
+              spacing="md"
+              breakpoints={[
+                { maxWidth: 'md', cols: 2 },
+                { maxWidth: 'sm', cols: 1 },
+              ]}
+            >
               <AnimatePresence>
                 {githubSources.map((source) => (
                   <SourceCard key={source.name} source={source} />
@@ -342,7 +361,14 @@ export default function SourcesPage() {
             </Badge>
           </Group>
           <Divider variant="dashed" />
-          <SimpleGrid cols={3} spacing="md" breakpoints={[{ maxWidth: 'md', cols: 2 }, { maxWidth: 'sm', cols: 1 }]}>
+          <SimpleGrid
+            cols={3}
+            spacing="md"
+            breakpoints={[
+              { maxWidth: 'md', cols: 2 },
+              { maxWidth: 'sm', cols: 1 },
+            ]}
+          >
             <AnimatePresence>
               {localSources.map((source) => (
                 <SourceCard key={source.name} source={source} />

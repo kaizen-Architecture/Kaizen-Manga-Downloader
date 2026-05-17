@@ -41,14 +41,22 @@ export const downloadWorker = new Worker(
 
       const sanitizedChapterIndex = String(chapterIndex).replace('@', '');
 
-      filePath = await downloadChapter(mangaInDb.title, finalSource, sanitizedChapterIndex, mangaInDb.library.path, finalTitle);
+      filePath = await downloadChapter(
+        mangaInDb.title,
+        finalSource,
+        sanitizedChapterIndex,
+        mangaInDb.library.path,
+        finalTitle,
+      );
 
       let chapter;
       try {
         chapter = await getChapterFromLocal(filePath);
       } catch (err) {
         logger.error(`Error processing downloaded file at ${filePath}: ${err}`);
-        throw new Error(`The download finished but the resulting file could not be processed. This often happens if the file is empty or corrupted. (Path: ${filePath})`);
+        throw new Error(
+          `The download finished but the resulting file could not be processed. This often happens if the file is empty or corrupted. (Path: ${filePath})`,
+        );
       }
 
       // Cleanup existing records by index OR fileName to prevent unique constraint violations
@@ -56,10 +64,7 @@ export const downloadWorker = new Worker(
       await prisma.chapter.deleteMany({
         where: {
           mangaId: mangaInDb.id,
-          OR: [
-            { index: Number(sanitizedChapterIndex) },
-            { fileName: chapter.fileName },
-          ],
+          OR: [{ index: Number(sanitizedChapterIndex) }, { fileName: chapter.fileName }],
         },
       });
 

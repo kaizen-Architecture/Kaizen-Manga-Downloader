@@ -176,7 +176,7 @@ export const getJobIdFromTitle = (title: string) => `check_${sanitizer(title)}_c
 
 export const removeJob = async (title: string) => {
   const jobId = getJobIdFromTitle(title);
-  
+
   // Remove repeatable jobs
   const repeatableJobs = await checkChaptersQueue.getRepeatableJobs();
   const repeatableJob = repeatableJobs.find((j) => j.id === jobId || j.key.includes(jobId));

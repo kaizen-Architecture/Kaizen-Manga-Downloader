@@ -8,6 +8,7 @@ interface IntegrationHealthCardProps {
   totalCount: number;
   onSync?: () => void;
   isLoading?: boolean;
+  action?: React.ReactNode;
 }
 
 export function IntegrationHealthCard({
@@ -17,6 +18,7 @@ export function IntegrationHealthCard({
   totalCount,
   onSync,
   isLoading,
+  action,
 }: IntegrationHealthCardProps) {
   const percentage = totalCount > 0 ? Math.round((syncedCount / totalCount) * 100) : 0;
   const color = status === 'healthy' ? 'teal' : status === 'unhealthy' ? 'red' : 'yellow';
@@ -52,21 +54,25 @@ export function IntegrationHealthCard({
 
       <Stack spacing="xs" mt="md">
         <Group position="apart">
-          <Text size="sm" color="dimmed">Sync Status</Text>
-          <Text size="sm" weight={500}>{syncedCount} / {totalCount} mangas</Text>
+          <Text size="sm" color="dimmed">
+            Sync Status
+          </Text>
+          <Text size="sm" weight={500}>
+            {syncedCount} / {totalCount} mangas
+          </Text>
         </Group>
-        
+
         {onSync && (
           <Group position="right">
-            <ThemeIcon 
-              variant="light" 
-              color="indigo" 
-              size="sm" 
-              sx={{ cursor: 'pointer' }}
-              onClick={onSync}
-            >
+            <ThemeIcon variant="light" color="indigo" size="sm" sx={{ cursor: 'pointer' }} onClick={onSync}>
               <IconRefresh size={14} className={isLoading ? 'animate-spin' : ''} />
             </ThemeIcon>
+          </Group>
+        )}
+
+        {action && (
+          <Group position="right">
+            {action}
           </Group>
         )}
       </Stack>

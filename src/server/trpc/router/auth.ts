@@ -53,10 +53,22 @@ export const authRouter = t.router({
         createdAt: true,
         username: true,
         role: true,
+        apiToken: true,
       },
       orderBy: { id: 'asc' },
     });
     return users;
+  }),
+
+  generateApiToken: t.procedure.input(z.object({ id: z.number() })).mutation(async ({ ctx, input }) => {
+    const { randomBytes } = await import('crypto');
+    const newToken = randomBytes(32).toString('hex');
+
+    return ctx.prisma.user.update({
+      where: { id: input.id },
+      data: { apiToken: newToken },
+      select: { id: true, apiToken: true },
+    });
   }),
 
   createUser: t.procedure
@@ -95,28 +107,26 @@ export const authRouter = t.router({
       });
     }),
 
-  deleteUser: t.procedure
-    .input(z.object({ id: z.number() }))
-    .mutation(async ({ ctx, input }) => {
-      const targetUser = await ctx.prisma.user.findUniqueOrThrow({
-        where: { id: input.id },
-      });
+  deleteUser: t.procedure.input(z.object({ id: z.number() })).mutation(async ({ ctx, input }) => {
+    const targetUser = await ctx.prisma.user.findUniqueOrThrow({
+      where: { id: input.id },
+    });
 
-      if (targetUser.role === 'SUPERADMIN') {
-        const adminCount = await ctx.prisma.user.count({
-          where: { role: 'SUPERADMIN' },
+    if (targetUser.role === 'SUPERADMIN') {
+      const adminCount = await ctx.prisma.user.count({
+        where: { role: 'SUPERADMIN' },
+      });
+      if (adminCount <= 1) {
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message: 'Cannot delete the last remaining SUPERADMIN user account.',
         });
-        if (adminCount <= 1) {
-          throw new TRPCError({
-            code: 'PRECONDITION_FAILED',
-            message: 'Cannot delete the last remaining SUPERADMIN user account.',
-          });
-        }
       }
+    }
 
-      return ctx.prisma.user.delete({
-        where: { id: input.id },
-        select: { id: true, username: true },
-      });
-    }),
+    return ctx.prisma.user.delete({
+      where: { id: input.id },
+      select: { id: true, username: true },
+    });
+  }),
 });
