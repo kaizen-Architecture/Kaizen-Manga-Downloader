@@ -4,9 +4,17 @@ echo "[Kaizen] Starting configuration..."
 
 cd /app
 
-# Run migrations only if needed or keep it fast
+# Run migrations with robust retry to handle database startup delays
 echo "[Kaizen] Running database migrations..."
-./node_modules/.bin/prisma migrate deploy
+for i in {1..10}; do
+  echo "[Kaizen] Attempting to deploy database migrations (attempt $i/10)..."
+  if ./node_modules/.bin/prisma migrate deploy; then
+    echo "[Kaizen] Database migrations deployed successfully!"
+    break
+  fi
+  echo "[Kaizen] Database not ready or migrate failed, sleeping 3 seconds..."
+  sleep 3
+done
 
 # Setup mangal data
 echo "[Kaizen] Syncing mangal configuration..."
