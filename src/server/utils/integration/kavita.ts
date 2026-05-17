@@ -117,37 +117,57 @@ export const scanLibrary = async () => {
   const settings = await getCachedSettings();
 
   if (settings.kavitaEnabled && settings.kavitaHost && settings.kavitaUser && settings.kavitaPassword) {
-    const baseKavitaUrl = getBaseUrl(settings.kavitaHost);
+    logger.info(`Kavita: Starting library scan... Host: ${settings.kavitaHost}`);
+    try {
+      const baseKavitaUrl = getBaseUrl(settings.kavitaHost);
+      const token = await getToken(baseKavitaUrl, settings.kavitaUser, settings.kavitaPassword);
+      if (!token) {
+        throw new Error('Failed to retrieve authentication token from Kavita');
+      }
 
-    const token = await getToken(baseKavitaUrl, settings.kavitaUser, settings.kavitaPassword);
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      };
 
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    };
+      const kavitaLibrariesUrl = new URL('/api/Library', baseKavitaUrl).href;
+      logger.debug(`Kavita: Fetching libraries from ${kavitaLibrariesUrl}`);
+      const librariesResponse = await fetch(kavitaLibrariesUrl, { headers });
+      if (!librariesResponse.ok) {
+        throw new Error(`Failed to fetch Kavita libraries: HTTP ${librariesResponse.status}`);
+      }
+      const libraries: Library[] = await librariesResponse.json();
 
-    const kavitaLibrariesUrl = new URL('/api/Library', baseKavitaUrl).href;
+      const includedLibraries = settings.kavitaLibraries;
+      const targetLibraries = libraries.filter((library) =>
+        includedLibraries.length > 0 ? includedLibraries.includes(library.name) : true
+      );
 
-    const libraries: Library[] = await (
-      await fetch(kavitaLibrariesUrl, {
-        headers,
-      })
-    ).json();
+      logger.info(
+        `Kavita: Triggering scan for ${targetLibraries.length} libraries: ${targetLibraries.map((l) => l.name).join(', ')}`
+      );
 
-    const includedLibraries = settings.kavitaLibraries;
-
-    await Promise.all(
-      libraries
-        .filter((library) => (includedLibraries.length > 0 ? includedLibraries.includes(library.name) : library.name))
-        .map(async (library) => {
+      await Promise.all(
+        targetLibraries.map(async (library) => {
           const kavitaLibraryUrl = new URL(`/api/Library/scan?libraryId=${library.id}&force=false`, baseKavitaUrl).href;
-          await fetch(kavitaLibraryUrl, {
+          logger.debug(`Kavita: POST scanning library: ${library.name} (${library.id})`);
+          const scanResponse = await fetch(kavitaLibraryUrl, {
             method: 'POST',
             headers,
           });
-        }),
-    );
+          if (scanResponse.ok) {
+            logger.info(`Kavita: Successfully triggered scan for library "${library.name}"`);
+          } else {
+            logger.error(`Kavita: Failed to trigger scan for library "${library.name}": HTTP ${scanResponse.status}`);
+          }
+        })
+      );
+    } catch (err) {
+      logger.error(`Kavita: Library scan failed: ${err}`);
+    }
+  } else {
+    logger.warn('Kavita: Scan skipped because Kavita is not fully configured or enabled');
   }
 };
 
@@ -155,41 +175,56 @@ export const refreshMetadata = async (mangaName: string) => {
   const settings = await getCachedSettings();
 
   if (settings.kavitaEnabled && settings.kavitaHost && settings.kavitaUser && settings.kavitaPassword) {
-    const baseKavitaUrl = getBaseUrl(settings.kavitaHost);
+    logger.info(`Kavita: Refreshing metadata for series "${mangaName}"...`);
+    try {
+      const baseKavitaUrl = getBaseUrl(settings.kavitaHost);
+      const token = await getToken(baseKavitaUrl, settings.kavitaUser, settings.kavitaPassword);
+      if (!token) {
+        throw new Error('Failed to retrieve authentication token from Kavita');
+      }
 
-    const token = await getToken(baseKavitaUrl, settings.kavitaUser, settings.kavitaPassword);
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      };
 
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    };
-
-    const kavitaSeriesUrl = new URL('/api/Series', baseKavitaUrl).href;
-
-    const series: Series[] = await (
-      await fetch(kavitaSeriesUrl, {
+      const kavitaSeriesUrl = new URL('/api/Series', baseKavitaUrl).href;
+      const seriesResponse = await fetch(kavitaSeriesUrl, {
         method: 'POST',
         body: JSON.stringify({}),
         headers,
-      })
-    ).json();
+      });
+      if (!seriesResponse.ok) {
+        throw new Error(`Failed to fetch Kavita series list: HTTP ${seriesResponse.status}`);
+      }
+      const series: Series[] = await seriesResponse.json();
 
-    const content = series.find((c) => c.name === mangaName);
+      const content = series.find((c) => c.name === mangaName);
 
-    if (!content) {
-      return;
+      if (!content) {
+        logger.warn(`Kavita: Series "${mangaName}" not found in Kavita. Skipping metadata refresh.`);
+        return;
+      }
+
+      const kavitaSeriesRefreshUrl = new URL(`/api/Series/scan`, baseKavitaUrl).href;
+      logger.debug(`Kavita: POST series scan for "${mangaName}" (Series ID: ${content.id})`);
+      const refreshResponse = await fetch(kavitaSeriesRefreshUrl, {
+        method: 'POST',
+        body: JSON.stringify({
+          libraryId: content.libraryId,
+          seriesId: content.id,
+          forceUpdate: true,
+        }),
+        headers,
+      });
+      if (refreshResponse.ok) {
+        logger.info(`Kavita: Successfully triggered metadata refresh for series "${mangaName}"`);
+      } else {
+        logger.error(`Kavita: Failed to refresh metadata for series "${mangaName}": HTTP ${refreshResponse.status}`);
+      }
+    } catch (err) {
+      logger.error(`Kavita: Failed to refresh metadata for series "${mangaName}": ${err}`);
     }
-
-    const kavitaSeriesRefreshUrl = new URL(`/api/Series/scan`, baseKavitaUrl).href;
-    await fetch(kavitaSeriesRefreshUrl, {
-      method: 'POST',
-      body: JSON.stringify({
-        libraryId: content.libraryId,
-        seriesId: content.id,
-        forceUpdate: true,
-      }),
-      headers,
-    });
   }
 };

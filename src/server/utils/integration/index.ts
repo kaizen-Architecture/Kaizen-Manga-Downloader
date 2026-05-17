@@ -23,6 +23,7 @@ export const scanLibrary = async () => {
   }
 
   // 2. Trigger library scans on external platforms
+  logger.info('Integration: Coordinating library scans across all active platforms...');
   await Promise.all([komga.scanLibrary(), kavita.scanLibrary()]);
 };
 
