@@ -91,8 +91,18 @@ export const injectMetadata = async (chapterId: number) => {
 </ComicInfo>`;
 
     fs.writeFileSync(tempXmlPath, comicInfo, 'utf8');
-
-    const scriptPath = path.join(__dirname, 'kavita_inject.py');
+    let scriptPath = path.join(__dirname, 'kavita_inject.py');
+    if (!fs.existsSync(scriptPath)) {
+      const prodPath = path.resolve(process.cwd(), 'dist/server/utils/integration/kavita_inject.py');
+      if (fs.existsSync(prodPath)) {
+        scriptPath = prodPath;
+      } else {
+        const devPath = path.resolve(process.cwd(), 'src/server/utils/integration/kavita_inject.py');
+        if (fs.existsSync(devPath)) {
+          scriptPath = devPath;
+        }
+      }
+    }
     await execa('python3', [scriptPath, filePath, tempXmlPath]);
 
     await prisma.chapter.update({
