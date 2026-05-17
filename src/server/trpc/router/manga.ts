@@ -1132,7 +1132,7 @@ export const mangaRouter = t.router({
       try {
         const libraryPath = chapter.manga.library.path;
         const fileName = chapter.fileName;
-        const filePath = path.join(libraryPath, chapter.manga.title, fileName);
+        const filePath = path.join(libraryPath, sanitizer(chapter.manga.title), fileName);
         
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);

@@ -3,6 +3,7 @@ import { getCachedSettings } from '../settings-cache';
 import AdmZip from 'adm-zip';
 import path from 'path';
 import { logger } from '../../../utils/logging';
+import { sanitizer } from '../../../utils';
 
 interface Library {
   name: string;
@@ -67,7 +68,7 @@ export const injectMetadata = async (chapterId: number) => {
 
   if (!chapter) return;
 
-  const mangaPath = path.join(chapter.manga.library.path, chapter.manga.title);
+  const mangaPath = path.join(chapter.manga.library.path, sanitizer(chapter.manga.title));
   const filePath = path.join(mangaPath, chapter.fileName);
 
   logger.debug(`Kavita: Attempting to inject metadata into ${filePath}`);
