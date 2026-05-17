@@ -1,5 +1,6 @@
-import AdmZip from 'adm-zip';
 import path from 'path';
+import fs from 'fs';
+import execa from 'execa';
 import { prisma } from '../../db/client';
 import { getCachedSettings } from '../settings-cache';
 import { logger } from '../../../utils/logging';
@@ -72,8 +73,9 @@ export const injectMetadata = async (chapterId: number) => {
 
   logger.debug(`Kavita: Attempting to inject metadata into ${filePath}`);
 
+  let tempXmlPath = '';
   try {
-    const zip = new AdmZip(filePath);
+    tempXmlPath = path.join(__dirname, `temp_comicinfo_${chapterId}.xml`);
     const comicInfo = `<?xml version="1.0"?>
 <ComicInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Title>${chapter.fileName.replace('.cbz', '')}</Title>
@@ -86,8 +88,10 @@ export const injectMetadata = async (chapterId: number) => {
   <LanguageISO>${chapter.manga.metadata.summary.match(/[áéíóúñ]/i) ? 'es' : 'en'}</LanguageISO>
 </ComicInfo>`;
 
-    zip.addFile('ComicInfo.xml', Buffer.from(comicInfo, 'utf8'));
-    zip.writeZip();
+    fs.writeFileSync(tempXmlPath, comicInfo, 'utf8');
+
+    const scriptPath = path.join(__dirname, 'kavita_inject.py');
+    await execa('python3', [scriptPath, filePath, tempXmlPath]);
 
     await prisma.chapter.update({
       where: { id: chapterId },
@@ -97,6 +101,14 @@ export const injectMetadata = async (chapterId: number) => {
     logger.info(`Kavita: Successfully injected metadata into ${chapter.fileName}`);
   } catch (err) {
     logger.error(`Kavita: Failed to inject metadata into ${filePath}. Error: ${err}`);
+  } finally {
+    if (tempXmlPath && fs.existsSync(tempXmlPath)) {
+      try {
+        fs.unlinkSync(tempXmlPath);
+      } catch (unlinkErr) {
+        logger.error(`Kavita: Failed to delete temp XML file: ${unlinkErr}`);
+      }
+    }
   }
 };
 

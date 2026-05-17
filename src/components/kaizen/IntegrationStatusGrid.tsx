@@ -1,8 +1,10 @@
-import { Grid, Title, Stack } from '@mantine/core';
+import { Grid, Title, Stack, Button } from '@mantine/core';
+import { useTranslation } from 'next-i18next';
 import { IntegrationHealthCard } from './IntegrationHealthCard';
 import { trpc } from '../../utils/trpc';
 
 export function IntegrationStatusGrid() {
+  const { t } = useTranslation('settings');
   const utils = trpc.useContext();
   const settingsQuery = trpc.settings.query.useQuery();
   const mangaQuery = trpc.manga.query.useQuery();
@@ -69,7 +71,17 @@ export function IntegrationStatusGrid() {
               status="healthy"
               syncedCount={totalMangas}
               totalCount={totalMangas}
-              onSync={() => window.open('/api-docs', '_blank')}
+              action={
+                <Button
+                  variant="light"
+                  color="indigo"
+                  size="xs"
+                  compact
+                  onClick={() => window.open('/api-docs', '_blank')}
+                >
+                  {t('auth.docsButton', 'Ver Docs')}
+                </Button>
+              }
             />
           </Grid.Col>
         )}

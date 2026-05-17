@@ -65,7 +65,7 @@ export function AuthSettings() {
 
       <Stack spacing="xs" mt="sm">
         <Text size="xs" weight={500} color="dimmed">
-          REST API Externa
+          {t('auth.apiEnabledLabel', 'REST API Externa')}
         </Text>
         <SegmentedControl
           fullWidth
@@ -73,8 +73,8 @@ export function AuthSettings() {
           onChange={handleApiToggle}
           disabled={update.isLoading}
           data={[
-            { value: 'yes', label: 'Activada' },
-            { value: 'no', label: 'Desactivada' },
+            { value: 'yes', label: t('auth.apiEnabled', 'Activada') },
+            { value: 'no', label: t('auth.apiDisabled', 'Desactivada') },
           ]}
         />
       </Stack>
@@ -82,20 +82,16 @@ export function AuthSettings() {
       {authEnabledValue === 'yes' && (
         <Alert icon={<IconAlertCircle size={16} />} color="violet" radius="md" variant="light" mt="sm">
           <Text size="sm" weight={600} mb={4}>
-            ¡Modo de Cuentas Desbloqueado!
+            {t('auth.unlockedTitle', '¡Modo de Cuentas Desbloqueado!')}
           </Text>
           <Text size="xs">
-            La sección de <b>Cuentas</b> se ha vuelto visible en el menú de navegación principal.
+            {t('auth.unlockedDesc', 'La sección de Cuentas se ha vuelto visible en el menú de navegación principal.')}
           </Text>
           <Text size="xs" mt={4}>
-            💡 <b>Usuario por defecto</b>:{' '}
-            <code style={{ background: 'rgba(0,0,0,0.05)', padding: '2px 4px', borderRadius: 4 }}>admin</code> |{' '}
-            <b>Contraseña</b>:{' '}
-            <code style={{ background: 'rgba(0,0,0,0.05)', padding: '2px 4px', borderRadius: 4 }}>admin</code>
+            💡 {t('auth.unlockedDefault', 'Usuario por defecto: admin | Contraseña: admin', { user: 'admin', pass: 'admin' })}
           </Text>
           <Text size="xs" color="dimmed" mt={6} sx={{ fontStyle: 'italic' }}>
-            ⚠️ Te recomendamos encarecidamente acceder a la sección de <b>Cuentas</b> para cambiar la contraseña
-            predeterminada en tu primer reinicio o añadir usuarios con roles personalizados.
+            ⚠️ {t('auth.unlockedWarning', 'Te recomendamos encarecidamente acceder a la sección de Cuentas para cambiar la contraseña predeterminada en tu primer reinicio o añadir usuarios con roles personalizados.')}
           </Text>
         </Alert>
       )}

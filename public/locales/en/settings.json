@@ -27,5 +27,79 @@
       "successMessage": "GitHub credentials updated successfully",
       "error": "Failed to save settings"
     }
+  },
+  "auth": {
+    "title": "Authentication & Web Access Control",
+    "desc": "Protect your web interface by requiring credentials and establish a secure environment with exclusive access.",
+    "toggleLabel": "Require Web Login",
+    "apiEnabledLabel": "External REST API",
+    "apiEnabled": "Enabled",
+    "apiDisabled": "Disabled",
+    "docsButton": "View Docs",
+    "unlockedTitle": "User Account Mode Unlocked!",
+    "unlockedDesc": "The Accounts section is now visible in the main navigation menu.",
+    "unlockedDefault": "Default User: {{user}} | Password: {{pass}}",
+    "unlockedWarning": "We highly recommend visiting the Accounts section to change the default password upon first reload or add users with custom roles."
+  },
+  "users": {
+    "title": "Accounts Center & Access Control",
+    "description": "Manage security and authorization levels for all users of the Kaizen platform.",
+    "defaultPasswordAlert": {
+      "title": "Warning! Default Admin Password Active",
+      "desc": "We have detected that your main admin account is still using the default password. For absolute security, please change it now using the form below."
+    },
+    "adminPassword": {
+      "title": "Update Main Admin Password",
+      "desc": "Change the password of the root admin account to secure downloader settings.",
+      "newPassword": "New Password",
+      "newPasswordPlaceholder": "Enter secure new password",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "Re-enter password",
+      "saveButton": "Save Password"
+    },
+    "management": {
+      "title": "Local User Management",
+      "desc": "Create sub-accounts with specific access roles: Admin (full control), Manager (downloads & library) or Reader (read-only library access).",
+      "addAccount": "Add New Account",
+      "username": "Username",
+      "usernamePlaceholder": "e.g., editor",
+      "password": "Password",
+      "role": "Permissions Level",
+      "addButton": "Add User"
+    },
+    "roles": {
+      "superadmin": "Admin",
+      "manager": "Manager",
+      "reader": "Reader"
+    },
+    "list": {
+      "title": "Active Registered Users",
+      "id": "ID",
+      "username": "User",
+      "role": "Assigned Role",
+      "apiToken": "API Token",
+      "actions": "Actions",
+      "regenerate": "Regenerate",
+      "generate": "Generate Token",
+      "regenerateConfirmTitle": "Regenerate API Token",
+      "regenerateConfirm": "Are you sure you want to regenerate the API token for this user? Any applications using the old token will lose access."
+    },
+    "delete": {
+      "confirmTitle": "Confirm Account Deletion",
+      "confirmDesc": "Are you completely sure you want to revoke and delete access for user {{username}}?",
+      "confirmButton": "Delete",
+      "cancelButton": "Cancel"
+    },
+    "notifications": {
+      "passwordUpdatedTitle": "Password Updated",
+      "passwordUpdatedDesc": "Admin password has been changed successfully.",
+      "tokenGeneratedTitle": "Token Generated",
+      "tokenGeneratedDesc": "The API Token was successfully generated.",
+      "tokenErrorTitle": "Error Generating Token",
+      "userCreatedTitle": "User Created",
+      "userCreatedDesc": "The new user account has been successfully registered.",
+      "userDeletedTitle": "Account Deleted",
+      "userDeletedDesc": "User access has been permanently revoked."
+    }
   }
 }
