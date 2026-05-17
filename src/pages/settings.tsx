@@ -27,6 +27,7 @@ import { MetadataSettings } from '../components/kaizen/MetadataSettings';
 import { StatusAuditSettings } from '../components/kaizen/StatusAuditSettings';
 import { AuthSettings } from '../components/kaizen/AuthSettings';
 import { DeveloperSettings } from '../components/kaizen/DeveloperSettings';
+import ServerLogViewer from '../components/kaizen/ServerLogViewer';
 import { trpc } from '../utils/trpc';
 
 export default function SettingsPage() {
@@ -176,6 +177,7 @@ export default function SettingsPage() {
               <Paper withBorder p="md" radius="md">
                 <MetadataSettings />
               </Paper>
+              <ServerLogViewer />
               <Paper withBorder p="md" radius="md">
                 <Stack spacing="sm">
                   <Group position="apart">

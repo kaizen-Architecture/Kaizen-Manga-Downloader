@@ -97,4 +97,99 @@ export const settingsRouter = t.router({
       // Placeholder for others
       return { status: 'healthy', message: 'Connection successful' };
     }),
+  getLogs: t.procedure
+    .input(
+      z.object({
+        limit: z.number().default(100),
+        level: z.string().optional(),
+        search: z.string().optional(),
+      })
+    )
+    .query(async ({ input }) => {
+      const fs = await import('fs/promises');
+      const path = await import('path');
+      
+      const logPath = path.resolve(
+        process.cwd(),
+        path.relative(
+          process.cwd(),
+          path.resolve(process.env.KAIZEN_LOG_PATH || process.env.KAIZOKU_LOG_PATH || '', 'kaizen.log')
+        )
+      );
+
+      try {
+        const fileContent = await fs.readFile(logPath, 'utf-8');
+        const lines = fileContent.trim().split('\n');
+        
+        const levelMap: Record<number, string> = {
+          10: 'trace',
+          20: 'debug',
+          30: 'info',
+          40: 'warn',
+          50: 'error',
+          60: 'fatal',
+        };
+
+        const parsedLogs = lines
+          .map((line, idx) => {
+            try {
+              const obj = JSON.parse(line);
+              return {
+                id: idx,
+                time: obj.time ? new Date(obj.time).toISOString() : new Date().toISOString(),
+                level: levelMap[obj.level as number] || 'info',
+                msg: obj.msg || '',
+                raw: line,
+              };
+            } catch (err) {
+              return {
+                id: idx,
+                time: new Date().toISOString(),
+                level: line.toLowerCase().includes('error') ? 'error' : 'info',
+                msg: line,
+                raw: line,
+              };
+            }
+          })
+          .reverse();
+
+        let filtered = parsedLogs;
+        if (input.level && input.level !== 'all') {
+          filtered = filtered.filter((log) => log.level === input.level);
+        }
+
+        if (input.search) {
+          const searchLower = input.search.toLowerCase();
+          if (searchLower === 'kavita' || searchLower === 'sync') {
+            filtered = filtered.filter(
+              (log) =>
+                log.msg.toLowerCase().includes('kavita') ||
+                log.msg.toLowerCase().includes('sync') ||
+                log.msg.toLowerCase().includes('integration')
+            );
+          } else if (searchLower === 'download' || searchLower === 'capitulo') {
+            filtered = filtered.filter(
+              (log) =>
+                log.msg.toLowerCase().includes('download') ||
+                log.msg.toLowerCase().includes('chapter') ||
+                log.msg.toLowerCase().includes('capitulo')
+            );
+          } else {
+            filtered = filtered.filter((log) => log.msg.toLowerCase().includes(searchLower));
+          }
+        }
+
+        return filtered.slice(0, input.limit);
+      } catch (err) {
+        return [
+          {
+            id: 0,
+            time: new Date().toISOString(),
+            level: 'error',
+            msg: `No se pudieron cargar los logs o el archivo kaizen.log está vacío. (Ruta: ${logPath}). Detalle: ${(err as Error).message}`,
+            raw: '',
+          },
+        ];
+      }
+    }),
 });

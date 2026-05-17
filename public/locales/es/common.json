@@ -123,6 +123,24 @@
         "completed": "Completado",
         "failed": "Fallido"
       }
+    },
+    "failedJobs": {
+      "title": "Tareas de Descarga Fallidas de Kaizen",
+      "filterPlaceholder": "Filtrar por Fuente",
+      "retryAll": "Reintentar Todas",
+      "retrySelected": "Reintentar Fallidas de {{source}}",
+      "noFailed": "No se encontraron tareas fallidas.",
+      "retry": "Reintentar",
+      "alternatives": "Alternativas",
+      "recoveryTitle": "Opciones de Recuperación y Fuentes",
+      "recoveryDesc": "Las fuentes con ✅ han sido configuradas/verificadas para este manga",
+      "selectLabel": "Seleccionar Fuente Alternativa",
+      "downloadBtn": "Bajar Capítulo",
+      "switchBtn": "Cambiar Fuente",
+      "failedSource": "Fuente actual con error:",
+      "failedChapter": "Capítulo fallido:",
+      "groupVerified": "Fuentes Verificadas para este Manga",
+      "groupOther": "Otras Fuentes del Sistema (Sin Verificar)"
     }
   }
 }

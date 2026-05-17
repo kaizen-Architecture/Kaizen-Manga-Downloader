@@ -465,28 +465,28 @@ export const downloadChapter = async (
       source,
       '--query',
       currentQuery,
-      '--chapters',
-      `${chapterPos}`, // Use the 0-indexed position
-      '-d',
     ];
 
     // CRITICAL: Always include --manga flag to prevent "required flag(s) 'manga' not set"
     if (usedExact) {
-      downloadArgs.splice(5, 0, '--manga', 'exact');
+      downloadArgs.push('--manga', 'exact');
     } else if (manga?.name) {
       // Use index 1 as a safer fallback if the name has special characters that might break the picker
       // but try name first if it looks clean
       const cleanName = manga.name.replace(/[^\w\s-]/g, '');
       if (cleanName === manga.name) {
-        downloadArgs.splice(5, 0, '--manga', manga.name);
+        downloadArgs.push('--manga', manga.name);
       } else {
         logger.warn(`Manga name "${manga.name}" contains special characters. Using index picker "1" for stability.`);
-        downloadArgs.splice(5, 0, '--manga', '1');
+        downloadArgs.push('--manga', '1');
       }
     } else {
       // Last resort fallback to ensure flag is present
-      downloadArgs.splice(5, 0, '--manga', '1');
+      downloadArgs.push('--manga', '1');
     }
+
+    // Append chapters selector and download flag
+    downloadArgs.push('--chapters', `${chapterPos}`, '-d');
 
     const { stdout, stderr, escapedCommand } = await mangalExec(downloadArgs, {
       cwd: libraryPath,

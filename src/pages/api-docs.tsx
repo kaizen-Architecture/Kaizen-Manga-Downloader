@@ -108,14 +108,14 @@ export default function ApiDocs() {
 
               <Divider opacity={0.1} />
 
-              <Stack spacing="md">
+              <Stack spacing="lg">
                 <Group spacing="xs" sx={{ flexWrap: 'wrap' }}>
                   <Badge color="blue" size="lg" radius="sm">
                     GET
                   </Badge>
                   <Code sx={{ fontSize: 14, fontWeight: 700 }}>/api/v1/mangas</Code>
                   <Text size="sm" color="dimmed">
-                    - Obtener el catálogo completo de mangas descargados
+                    - Obtener catálogo de mangas con filtros avanzados y progreso de lectura
                   </Text>
                 </Group>
 
@@ -146,6 +146,45 @@ export default function ApiDocs() {
                           Formato: <Code>Bearer &lt;API_TOKEN&gt;</Code>
                         </td>
                       </tr>
+                      <tr>
+                        <td>
+                          <Code>genre</Code>
+                        </td>
+                        <td>
+                          <Text size="xs" color="dimmed">
+                            string | string[]
+                          </Text>
+                        </td>
+                        <td>Query</td>
+                        <td>No</td>
+                        <td>Filtra los mangas por uno o varios géneros coincidentes</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <Code>author</Code>
+                        </td>
+                        <td>
+                          <Text size="xs" color="dimmed">
+                            string | string[]
+                          </Text>
+                        </td>
+                        <td>Query</td>
+                        <td>No</td>
+                        <td>Filtra los mangas por uno o varios autores coincidentes</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <Code>status</Code>
+                        </td>
+                        <td>
+                          <Text size="xs" color="dimmed">
+                            string
+                          </Text>
+                        </td>
+                        <td>Query</td>
+                        <td>No</td>
+                        <td>Filtra por estado del manga (ej: <Code>Ongoing</Code>, <Code>Completed</Code>)</td>
+                      </tr>
                     </tbody>
                   </Table>
                 </Box>
@@ -159,7 +198,16 @@ export default function ApiDocs() {
     "id": 1,
     "title": "Manga Name",
     "source": "asuratoon",
-    "coverUrl": "/manga-covers/1.jpg"
+    "genres": ["Action", "Adventure"],
+    "authors": ["Author Name"],
+    "status": "ONGOING",
+    "readingStatus": {
+      "totalChapters": 120,
+      "readChapters": 95,
+      "unreadChapters": 25,
+      "percentageComplete": 79,
+      "isFullyRead": false
+    }
   }
 ]`}
                 </Code>
@@ -174,7 +222,7 @@ export default function ApiDocs() {
                   </Badge>
                   <Code sx={{ fontSize: 14, fontWeight: 700 }}>/api/v1/mangas/{"{id}"}</Code>
                   <Text size="sm" color="dimmed">
-                    - Obtener los detalles y capítulos de un manga específico
+                    - Obtener detalles del manga y el listado de capítulos con estado de lectura
                   </Text>
                 </Group>
 
@@ -201,7 +249,7 @@ export default function ApiDocs() {
                         </td>
                         <td>Path</td>
                         <td>Sí</td>
-                        <td>Identificador único del manga en la base de datos</td>
+                        <td>Identificador único del manga</td>
                       </tr>
                       <tr>
                         <td>
@@ -230,15 +278,112 @@ export default function ApiDocs() {
   "id": 1,
   "title": "Manga Name",
   "source": "asuratoon",
-  "coverUrl": "/manga-covers/1.jpg",
+  "genres": ["Action"],
+  "readingStatus": {
+    "totalChapters": 1,
+    "readChapters": 0,
+    "unreadChapters": 1,
+    "percentageComplete": 0,
+    "isFullyRead": false
+  },
   "chapters": [
     {
       "id": 42,
-      "index": 1,
-      "fileName": "Chapter 1.cbz",
-      "downloadedAt": "2026-05-12T09:00:00.000Z"
+      "index": 0,
+      "fileName": "Chapter 0.cbz",
+      "isRead": false,
+      "lastReadAt": null
     }
   ]
+}`}
+                </Code>
+              </Stack>
+
+              <Divider opacity={0.1} />
+
+              <Stack spacing="md">
+                <Group spacing="xs" sx={{ flexWrap: 'wrap' }}>
+                  <Badge color="orange" size="lg" radius="sm">
+                    PATCH
+                  </Badge>
+                  <Code sx={{ fontSize: 14, fontWeight: 700 }}>/api/v1/mangas/{"{id}"}</Code>
+                  <Text size="sm" color="dimmed">
+                    - Actualizar estado de lectura del manga o capítulos específicos
+                  </Text>
+                </Group>
+
+                <Box sx={{ overflowX: 'auto' }}>
+                  <Table verticalSpacing="xs" fontSize="xs" highlightOnHover>
+                    <thead>
+                      <tr>
+                        <th>Parámetro</th>
+                        <th>Tipo</th>
+                        <th>Ubicación</th>
+                        <th>Requerido</th>
+                        <th>Descripción</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <Code>id</Code>
+                        </td>
+                        <td>
+                          <Text size="xs" color="dimmed">
+                            integer
+                          </Text>
+                        </td>
+                        <td>Path</td>
+                        <td>Sí</td>
+                        <td>Identificador único del manga</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <Code>Authorization</Code>
+                        </td>
+                        <td>
+                          <Text size="xs" color="dimmed">
+                            string
+                          </Text>
+                        </td>
+                        <td>Header</td>
+                        <td>Sí</td>
+                        <td>
+                          Formato: <Code>Bearer &lt;API_TOKEN&gt;</Code>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </Box>
+
+                <Text size="xs" weight={600} mt="xs">
+                  Cuerpo de Petición (Request Body) - Formato A (Marcar todo el manga):
+                </Text>
+                <Code block color="gray" sx={{ fontSize: 11 }}>
+                  {`{
+  "isRead": true
+}`}
+                </Code>
+
+                <Text size="xs" weight={600} mt="xs">
+                  Cuerpo de Petición (Request Body) - Formato B (Capítulos específicos):
+                </Text>
+                <Code block color="gray" sx={{ fontSize: 11 }}>
+                  {`{
+  "chapters": [
+    { "id": 42, "isRead": true },
+    { "id": 43, "isRead": false }
+  ]
+}`}
+                </Code>
+
+                <Text size="xs" weight={600} mt="xs">
+                  Respuesta Exitosa (200 OK):
+                </Text>
+                <Code block color="gray" sx={{ fontSize: 11 }}>
+                  {`{
+  "success": true,
+  "updatedChaptersCount": 2
 }`}
                 </Code>
               </Stack>

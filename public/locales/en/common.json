@@ -123,6 +123,24 @@
         "completed": "Completed",
         "failed": "Failed"
       }
+    },
+    "failedJobs": {
+      "title": "Kaizen Failed Download Jobs",
+      "filterPlaceholder": "Filter by Source",
+      "retryAll": "Retry All Failed",
+      "retrySelected": "Retry {{source}} Failed",
+      "noFailed": "No failed jobs found.",
+      "retry": "Retry",
+      "alternatives": "Alternatives",
+      "recoveryTitle": "Recovery Options & Sources",
+      "recoveryDesc": "Sources marked with ✅ have been configured/verified for this manga",
+      "selectLabel": "Select Alternative Source",
+      "downloadBtn": "Download Chapter",
+      "switchBtn": "Switch Source",
+      "failedSource": "Current failing source:",
+      "failedChapter": "Failed chapter:",
+      "groupVerified": "Verified Sources for this Manga",
+      "groupOther": "Other System Sources (Unverified)"
     }
   }
 }

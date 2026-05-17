@@ -12,14 +12,66 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!isValid) return;
 
   try {
+    const { genre, author, status } = req.query;
+
+    const where: any = {};
+
+    if (genre || author || status) {
+      where.metadata = {};
+      
+      if (genre) {
+        const genreList = Array.isArray(genre) ? genre : [genre];
+        where.metadata.genres = {
+          hasSome: genreList,
+        };
+      }
+      
+      if (author) {
+        const authorList = Array.isArray(author) ? author : [author];
+        where.metadata.authors = {
+          hasSome: authorList,
+        };
+      }
+      
+      if (status) {
+        where.metadata.status = {
+          equals: String(status),
+          mode: 'insensitive',
+        };
+      }
+    }
+
     const mangas = await prisma.manga.findMany({
+      where,
       include: {
         metadata: true,
         library: true,
+        chapters: {
+          select: {
+            isRead: true,
+          },
+        },
       },
     });
 
-    return res.status(200).json(mangas);
+    const response = mangas.map((manga) => {
+      const totalChapters = manga.chapters.length;
+      const readChapters = manga.chapters.filter((c) => c.isRead).length;
+
+      const { chapters, ...mangaWithoutChapters } = manga;
+      return {
+        ...mangaWithoutChapters,
+        readingStatus: {
+          totalChapters,
+          readChapters,
+          unreadChapters: totalChapters - readChapters,
+          percentageComplete: totalChapters > 0 ? Math.round((readChapters / totalChapters) * 100) : 0,
+          isFullyRead: totalChapters > 0 && readChapters === totalChapters,
+        },
+      };
+    });
+
+    return res.status(200).json(response);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error fetching mangas:', error);

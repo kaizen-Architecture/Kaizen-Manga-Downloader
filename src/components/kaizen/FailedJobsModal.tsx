@@ -17,6 +17,7 @@ import { IconRefresh, IconDotsVertical, IconDownload, IconSwitchHorizontal } fro
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'next-i18next';
 import { trpc } from '../../utils/trpc';
 
 dayjs.extend(relativeTime);
@@ -29,6 +30,7 @@ function RecoveryOptionsModal({
   onSwitchSource,
   isLoadingDownload,
   isLoadingSwitch,
+  t,
 }: {
   job: any | null;
   availableSources: string[];
@@ -37,6 +39,7 @@ function RecoveryOptionsModal({
   onSwitchSource: (source: string) => void;
   isLoadingDownload: boolean;
   isLoadingSwitch: boolean;
+  t: any;
 }) {
   const configuredSources: string[] = job?.configuredSources || [];
   const otherSources: string[] = availableSources.filter((s) => !configuredSources.includes(s));
@@ -61,13 +64,13 @@ function RecoveryOptionsModal({
   const selectData = [
     ...configuredSources.map((s) => ({
       value: s,
-      label: s === job.source ? `✅ ${s} (Configurada / Fallida)` : `✅ ${s} (Configurada Verificada)`,
-      group: 'Fuentes Verificadas para este Manga',
+      label: s === job.source ? `✅ ${s}` : `✅ ${s}`,
+      group: t('failedJobs.groupVerified', 'Verified Sources for this Manga'),
     })),
     ...otherSources.map((s) => ({
       value: s,
-      label: s === job.source ? `${s} (Actual Fallida)` : s,
-      group: 'Otras Fuentes del Sistema (Sin Verificar)',
+      label: s,
+      group: t('failedJobs.groupOther', 'Other System Sources (Unverified)'),
     })),
   ];
 
@@ -75,7 +78,7 @@ function RecoveryOptionsModal({
     <Modal
       opened={!!job}
       onClose={onClose}
-      title={<Title order={4}>Opciones de Recuperación y Fuentes</Title>}
+      title={<Title order={4}>{t('failedJobs.recoveryTitle', 'Recovery Options & Sources')}</Title>}
       centered
       size="md"
       overlayOpacity={0.55}
@@ -91,13 +94,13 @@ function RecoveryOptionsModal({
           })}
         >
           <Text size="sm" weight={600} lineClamp={1}>
-            📖 Manga: {job.mangaTitle}
+            📖 {t('common.manga', 'Manga')}: {job.mangaTitle}
           </Text>
           <Text size="xs" color="dimmed" mt={4}>
-            🔖 Capítulo fallido: #{job.chapterIndex}
+            🔖 {t('failedJobs.failedChapter', 'Failed chapter:')} #{job.chapterIndex}
           </Text>
           <Text size="xs" color="dimmed" mt={2}>
-            🔌 Fuente actual con error:{' '}
+            🔌 {t('failedJobs.failedSource', 'Current failing source:')}{' '}
             <Text component="span" weight={600} color="red">
               {job.source}
             </Text>
@@ -105,8 +108,8 @@ function RecoveryOptionsModal({
         </Box>
 
         <Select
-          label="Seleccionar Fuente Alternativa"
-          description="Las fuentes con ✅ han sido configuradas/verificadas para este manga"
+          label={t('failedJobs.selectLabel', 'Select Alternative Source')}
+          description={t('failedJobs.recoveryDesc', 'Sources marked with ✅ have been configured/verified for this manga')}
           data={selectData}
           value={selectedSource}
           onChange={(val) => setSelectedSource(val || '')}
@@ -123,7 +126,7 @@ function RecoveryOptionsModal({
             loading={isLoadingDownload}
             disabled={!selectedSource}
           >
-            Bajar Capítulo
+            {t('failedJobs.downloadBtn', 'Download Chapter')}
           </Button>
           <Button
             color="indigo"
@@ -133,7 +136,7 @@ function RecoveryOptionsModal({
             loading={isLoadingSwitch}
             disabled={!selectedSource}
           >
-            Cambiar Fuente
+            {t('failedJobs.switchBtn', 'Switch Source')}
           </Button>
         </Group>
       </Stack>
@@ -147,6 +150,7 @@ export interface FailedJobsModalProps {
 }
 
 export function FailedJobsModal({ opened, onClose }: FailedJobsModalProps) {
+  const { t } = useTranslation('common');
   const [failedSourceFilter, setFailedSourceFilter] = useState<string | null>(null);
   const [selectedRecoveryJob, setSelectedRecoveryJob] = useState<any | null>(null);
 
@@ -205,14 +209,14 @@ export function FailedJobsModal({ opened, onClose }: FailedJobsModalProps) {
     <Modal
       opened={opened}
       onClose={onClose}
-      title={<Title order={3}>Kaizen Failed Download Jobs</Title>}
+      title={<Title order={3}>{t('failedJobs.title', 'Kaizen Failed Download Jobs')}</Title>}
       size="75%"
       overlayOpacity={0.5}
       overlayBlur={3}
     >
       <Group mb="md" position="apart">
         <Select
-          placeholder="Filter by Source"
+          placeholder={t('failedJobs.filterPlaceholder', 'Filter by Source')}
           data={sourcesList}
           value={failedSourceFilter}
           onChange={setFailedSourceFilter}
@@ -224,7 +228,9 @@ export function FailedJobsModal({ opened, onClose }: FailedJobsModalProps) {
           loading={retryAllJobsMutation.isLoading}
           disabled={!failedJobsQuery.data || filteredJobs.length === 0}
         >
-          {failedSourceFilter ? `Retry ${failedSourceFilter} Failed` : 'Retry All Failed'}
+          {failedSourceFilter
+            ? t('failedJobs.retrySelected', { defaultValue: `Retry ${failedSourceFilter} Failed`, source: failedSourceFilter })
+            : t('failedJobs.retryAll', 'Retry All Failed')}
         </Button>
       </Group>
 
@@ -232,12 +238,12 @@ export function FailedJobsModal({ opened, onClose }: FailedJobsModalProps) {
         <Table highlightOnHover verticalSpacing="sm">
           <thead>
             <tr>
-              <th>Manga</th>
-              <th>Chapter</th>
-              <th>Source</th>
-              <th>Error</th>
-              <th>Time</th>
-              <th>Actions</th>
+              <th>{t('common.manga', 'Manga')}</th>
+              <th>{t('dashboard.queue.col.chapter', 'Chapter')}</th>
+              <th>{t('common.source', 'Source')}</th>
+              <th>{t('dashboard.queue.col.reason', 'Error')}</th>
+              <th>{t('dashboard.queue.col.time', 'Time')}</th>
+              <th>{t('common.actions', 'Actions')}</th>
             </tr>
           </thead>
           <tbody>
@@ -245,7 +251,7 @@ export function FailedJobsModal({ opened, onClose }: FailedJobsModalProps) {
               <tr>
                 <td colSpan={6}>
                   <Text align="center" color="dimmed" py="md">
-                    No failed jobs found.
+                    {t('failedJobs.noFailed', 'No failed jobs found.')}
                   </Text>
                 </td>
               </tr>
@@ -274,7 +280,7 @@ export function FailedJobsModal({ opened, onClose }: FailedJobsModalProps) {
                         onClick={() => retryJobMutation.mutate({ jobId: job.id! })}
                         loading={retryJobMutation.isLoading && retryJobMutation.variables?.jobId === job.id}
                       >
-                        Retry
+                        {t('failedJobs.retry', 'Retry')}
                       </Button>
 
                       <Button
@@ -285,7 +291,7 @@ export function FailedJobsModal({ opened, onClose }: FailedJobsModalProps) {
                         leftIcon={<IconSwitchHorizontal size={14} />}
                         onClick={() => setSelectedRecoveryJob(job)}
                       >
-                        Alternativas
+                        {t('failedJobs.alternatives', 'Alternatives')}
                       </Button>
                     </Group>
                   </td>
@@ -322,6 +328,7 @@ export function FailedJobsModal({ opened, onClose }: FailedJobsModalProps) {
         }}
         isLoadingDownload={downloadAlternativeMutation.isLoading}
         isLoadingSwitch={switchSourceMutation.isLoading}
+        t={t}
       />
     </Modal>
   );

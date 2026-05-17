@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -8,6 +8,7 @@ import {
   Stack,
   Text,
   TextInput,
+  Textarea,
   Title,
   Badge,
   Code,
@@ -23,19 +24,53 @@ export function ApiExplorer() {
   const [endpoint, setEndpoint] = useState('/api/v1/mangas');
   const [token, setToken] = useState('');
   const [mangaId, setMangaId] = useState('1');
+  const [queryParams, setQueryParams] = useState('');
+  const [requestBody, setRequestBody] = useState('{\n  "isRead": true\n}');
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
   const [copied, setCopied] = useState(false);
+
+  // Prepopulate template bodies when endpoint changes
+  useEffect(() => {
+    if (endpoint === 'PATCH /api/v1/mangas/{id}') {
+      setRequestBody('{\n  "isRead": true\n}');
+    }
+  }, [endpoint]);
 
   const handleSend = async () => {
     setLoading(true);
     setResponse(null);
     try {
-      const targetUrl = endpoint === '/api/v1/mangas' ? '/api/v1/mangas' : `/api/v1/mangas/${mangaId}`;
+      let targetUrl = '';
+      let method = 'GET';
+
+      if (endpoint === '/api/v1/mangas') {
+        targetUrl = '/api/v1/mangas';
+        if (queryParams.trim()) {
+          const cleanQuery = queryParams.trim().startsWith('?') ? queryParams.trim() : `?${queryParams.trim()}`;
+          targetUrl += cleanQuery;
+        }
+      } else if (endpoint === '/api/v1/mangas/{id}') {
+        targetUrl = `/api/v1/mangas/${mangaId}`;
+      } else if (endpoint === 'PATCH /api/v1/mangas/{id}') {
+        targetUrl = `/api/v1/mangas/${mangaId}`;
+        method = 'PATCH';
+      }
+
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      let body: string | undefined = undefined;
+      if (method === 'PATCH') {
+        headers['Content-Type'] = 'application/json';
+        body = requestBody;
+      }
+
       const res = await fetch(targetUrl, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        method,
+        headers,
+        body,
       });
 
       const status = res.status;
@@ -105,8 +140,9 @@ export function ApiExplorer() {
               value={endpoint}
               onChange={(val) => setEndpoint(val || '/api/v1/mangas')}
               data={[
-                { value: '/api/v1/mangas', label: 'GET /api/v1/mangas (Listar Mangas)' },
-                { value: '/api/v1/mangas/{id}', label: 'GET /api/v1/mangas/{id} (Detalles del Manga)' },
+                { value: '/api/v1/mangas', label: 'GET /api/v1/mangas (Listar / Filtrar)' },
+                { value: '/api/v1/mangas/{id}', label: 'GET /api/v1/mangas/{id} (Detalles con Lectura)' },
+                { value: 'PATCH /api/v1/mangas/{id}', label: 'PATCH /api/v1/mangas/{id} (Actualizar Estado de Lectura)' },
               ]}
               size="sm"
             />
@@ -119,7 +155,17 @@ export function ApiExplorer() {
             />
           </Group>
 
-          {endpoint === '/api/v1/mangas/{id}' && (
+          {endpoint === '/api/v1/mangas' && (
+            <TextInput
+              label={t('auth.queryParamsLabel', 'Parámetros de Búsqueda / Filtros (Opcional)')}
+              placeholder="ej. genre=Acción&status=Ongoing o author=Jules"
+              value={queryParams}
+              onChange={(e) => setQueryParams(e.currentTarget.value)}
+              size="sm"
+            />
+          )}
+
+          {(endpoint === '/api/v1/mangas/{id}' || endpoint === 'PATCH /api/v1/mangas/{id}') && (
             <TextInput
               label={t('auth.mangaIdLabel', 'ID del Manga')}
               placeholder="ej. 1"
@@ -127,6 +173,19 @@ export function ApiExplorer() {
               onChange={(e) => setMangaId(e.currentTarget.value)}
               size="sm"
               style={{ maxWidth: '50%' }}
+            />
+          )}
+
+          {endpoint === 'PATCH /api/v1/mangas/{id}' && (
+            <Textarea
+              label={t('auth.requestBodyLabel', 'Cuerpo de la Petición (JSON Request Body)')}
+              placeholder="ej. { 'isRead': true }"
+              value={requestBody}
+              onChange={(e) => setRequestBody(e.currentTarget.value)}
+              minRows={3}
+              maxRows={6}
+              autosize
+              styles={{ input: { fontFamily: 'monospace', fontSize: '12px' } }}
             />
           )}
 
