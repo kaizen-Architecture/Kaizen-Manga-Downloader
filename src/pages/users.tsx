@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Container,
+  Grid,
   Group,
   Paper,
   PasswordInput,
@@ -222,27 +223,39 @@ export default function UsersPage() {
             </Text>
 
             <form onSubmit={handlePasswordSubmit}>
-              <Group align="flex-end" spacing="md">
-                <PasswordInput
-                  label={t('users.adminPassword.newPassword', 'Nueva Contraseña')}
-                  placeholder={t('users.adminPassword.newPasswordPlaceholder', 'Escribe la nueva clave segura')}
-                  value={adminNewPassword}
-                  onChange={(e) => setAdminNewPassword(e.currentTarget.value)}
-                  required
-                  sx={{ flex: 1 }}
-                />
-                <PasswordInput
-                  label={t('users.adminPassword.confirmPassword', 'Confirmar Contraseña')}
-                  placeholder={t('users.adminPassword.confirmPasswordPlaceholder', 'Vuelve a escribir la clave')}
-                  value={adminConfirmPassword}
-                  onChange={(e) => setAdminConfirmPassword(e.currentTarget.value)}
-                  required
-                  sx={{ flex: 1 }}
-                />
-                <Button type="submit" color="violet" loading={updatePasswordMutation.isLoading}>
-                  {t('users.adminPassword.saveButton', 'Guardar Contraseña')}
-                </Button>
-              </Group>
+              <Grid align="flex-end" gutter="md">
+                <Grid.Col xs={12} md={4}>
+                  <PasswordInput
+                    size="sm"
+                    label={t('users.adminPassword.newPassword', 'Nueva Contraseña')}
+                    placeholder={t('users.adminPassword.newPasswordPlaceholder', 'Escribe la nueva clave segura')}
+                    value={adminNewPassword}
+                    onChange={(e) => setAdminNewPassword(e.currentTarget.value)}
+                    required
+                  />
+                </Grid.Col>
+                <Grid.Col xs={12} md={4}>
+                  <PasswordInput
+                    size="sm"
+                    label={t('users.adminPassword.confirmPassword', 'Confirmar Contraseña')}
+                    placeholder={t('users.adminPassword.confirmPasswordPlaceholder', 'Vuelve a escribir la clave')}
+                    value={adminConfirmPassword}
+                    onChange={(e) => setAdminConfirmPassword(e.currentTarget.value)}
+                    required
+                  />
+                </Grid.Col>
+                <Grid.Col xs={12} md={4}>
+                  <Button
+                    type="submit"
+                    size="sm"
+                    fullWidth
+                    color="violet"
+                    loading={updatePasswordMutation.isLoading}
+                  >
+                    {t('users.adminPassword.saveButton', 'Guardar Contraseña')}
+                  </Button>
+                </Grid.Col>
+              </Grid>
             </form>
           </Paper>
         </motion.div>
@@ -270,31 +283,33 @@ export default function UsersPage() {
                 {t('users.management.addAccount', 'Añadir Nueva Cuenta')}
               </Text>
               <form onSubmit={handleCreateSubmit}>
-                <Group align="flex-end" spacing="xs">
-                  <TextInput
-                    size="xs"
-                    label={t('users.management.username', 'Nombre de Usuario')}
-                    placeholder={t('users.management.usernamePlaceholder', 'ej. editor')}
-                    value={newUsername}
-                    onChange={(e) => setNewUsername(e.currentTarget.value)}
-                    required
-                    sx={{ flex: 1 }}
-                  />
-                  <PasswordInput
-                    size="xs"
-                    label={t('users.management.password', 'Contraseña')}
-                    placeholder="••••••••"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.currentTarget.value)}
-                    required
-                    sx={{ flex: 1 }}
-                  />
-                  <Box sx={{ flex: 1 }}>
-                    <Text size="xs" weight={500} sx={{ fontSize: 11 }}>
+                <Grid align="flex-end" gutter="md">
+                  <Grid.Col xs={12} sm={6} md={3}>
+                    <TextInput
+                      size="sm"
+                      label={t('users.management.username', 'Nombre de Usuario')}
+                      placeholder={t('users.management.usernamePlaceholder', 'ej. editor')}
+                      value={newUsername}
+                      onChange={(e) => setNewUsername(e.currentTarget.value)}
+                      required
+                    />
+                  </Grid.Col>
+                  <Grid.Col xs={12} sm={6} md={3}>
+                    <PasswordInput
+                      size="sm"
+                      label={t('users.management.password', 'Contraseña')}
+                      placeholder="••••••••"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.currentTarget.value)}
+                      required
+                    />
+                  </Grid.Col>
+                  <Grid.Col xs={12} sm={6} md={3}>
+                    <Text size="xs" weight={500} mb={5} sx={{ fontSize: 12 }}>
                       {t('users.management.role', 'Nivel de Permisos')}
                     </Text>
                     <SegmentedControl
-                      size="xs"
+                      size="sm"
                       fullWidth
                       value={newRole}
                       onChange={(val: any) => setNewRole(val)}
@@ -304,17 +319,20 @@ export default function UsersPage() {
                         { value: 'READER', label: t('users.roles.reader', 'Lector') },
                       ]}
                     />
-                  </Box>
-                  <Button
-                    type="submit"
-                    size="xs"
-                    color="violet"
-                    leftIcon={<IconPlus size={14} />}
-                    loading={createUser.isLoading}
-                  >
-                    {t('users.management.addButton', 'Añadir Usuario')}
-                  </Button>
-                </Group>
+                  </Grid.Col>
+                  <Grid.Col xs={12} sm={6} md={3}>
+                    <Button
+                      type="submit"
+                      size="sm"
+                      fullWidth
+                      color="violet"
+                      leftIcon={<IconPlus size={14} />}
+                      loading={createUser.isLoading}
+                    >
+                      {t('users.management.addButton', 'Añadir Usuario')}
+                    </Button>
+                  </Grid.Col>
+                </Grid>
               </form>
             </Box>
 
