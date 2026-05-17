@@ -1,13 +1,14 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Kaizen API",
-    "description": "REST API for integrating with the Kaizen manga downloader.",
-    "version": "1.0.0"
+    "title": "Kaizen REST API",
+    "description": "REST API for integrating with the Kaizen manga downloader. Manage libraries, query manga lists with advanced filters, inspect reading progress, and update reading states for mangas or individual chapters in real time.",
+    "version": "1.10.0"
   },
   "servers": [
     {
-      "url": "/api/v1"
+      "url": "/api/v1",
+      "description": "Base REST URL"
     }
   ],
   "components": {
@@ -15,7 +16,55 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "bearerFormat": "API Token"
+      }
+    },
+    "schemas": {
+      "ReadingStatus": {
+        "type": "object",
+        "properties": {
+          "totalChapters": { "type": "integer", "example": 120 },
+          "readChapters": { "type": "integer", "example": 95 },
+          "unreadChapters": { "type": "integer", "example": 25 },
+          "percentageComplete": { "type": "integer", "example": 79 },
+          "isFullyRead": { "type": "boolean", "example": false }
+        }
+      },
+      "MangaShort": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "title": { "type": "string", "example": "Manga Name" },
+          "source": { "type": "string", "example": "asuratoon" },
+          "genres": { "type": "array", "items": { "type": "string" }, "example": ["Action", "Adventure"] },
+          "authors": { "type": "array", "items": { "type": "string" }, "example": ["Author Name"] },
+          "status": { "type": "string", "example": "ONGOING" },
+          "readingStatus": { "$ref": "#/components/schemas/ReadingStatus" }
+        }
+      },
+      "Chapter": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 42 },
+          "index": { "type": "integer", "example": 0 },
+          "fileName": { "type": "string", "example": "Chapter 0.cbz" },
+          "isRead": { "type": "boolean", "example": false },
+          "lastReadAt": { "type": "string", "format": "date-time", "nullable": true, "example": null }
+        }
+      },
+      "MangaDetail": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "title": { "type": "string", "example": "Manga Name" },
+          "source": { "type": "string", "example": "asuratoon" },
+          "genres": { "type": "array", "items": { "type": "string" }, "example": ["Action"] },
+          "readingStatus": { "$ref": "#/components/schemas/ReadingStatus" },
+          "chapters": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Chapter" }
+          }
+        }
       }
     }
   },
@@ -28,40 +77,69 @@
     "/mangas": {
       "get": {
         "summary": "Get all mangas",
-        "description": "Retrieve a list of all mangas in the Kaizen library.",
+        "description": "Retrieve a list of all mangas in the Kaizen library with reading progress and advanced filtering.",
+        "parameters": [
+          {
+            "name": "genre",
+            "in": "query",
+            "description": "Filter mangas by matching one or multiple genres.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Action"
+          },
+          {
+            "name": "author",
+            "in": "query",
+            "description": "Filter mangas by matching one or multiple authors.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Author Name"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter mangas by publishing status.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["Ongoing", "Completed", "Hiatus", "Dropped"]
+            },
+            "example": "Ongoing"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "A list of mangas",
+            "description": "A list of mangas with reading progress",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": { "type": "integer" },
-                      "title": { "type": "string" },
-                      "source": { "type": "string" }
-                    }
+                    "$ref": "#/components/schemas/MangaShort"
                   }
                 }
               }
             }
           },
-          "401": { "description": "Unauthorized" },
-          "403": { "description": "Forbidden (API disabled)" }
+          "401": { "description": "Unauthorized - Invalid or missing Bearer token" },
+          "403": { "description": "Forbidden - REST API disabled in settings" }
         }
       }
     },
     "/mangas/{id}": {
       "get": {
         "summary": "Get manga details",
-        "description": "Retrieve details of a specific manga by its ID.",
+        "description": "Retrieve details of a specific manga by its ID, including all chapters and their read/unread status.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "The unique manga ID",
             "schema": {
               "type": "integer"
             }
@@ -69,34 +147,83 @@
         ],
         "responses": {
           "200": {
-            "description": "Manga details",
+            "description": "Detailed manga object",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": { "type": "integer" },
-                    "title": { "type": "string" },
-                    "source": { "type": "string" },
-                    "chapters": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": { "type": "integer" },
-                          "index": { "type": "integer" },
-                          "fileName": { "type": "string" }
-                        }
-                      }
-                    }
-                  }
+                  "$ref": "#/components/schemas/MangaDetail"
                 }
               }
             }
           },
           "400": { "description": "Invalid ID format" },
           "401": { "description": "Unauthorized" },
-          "403": { "description": "Forbidden (API disabled)" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Manga not found" }
+        }
+      },
+      "patch": {
+        "summary": "Update reading status",
+        "description": "Update the reading status (read/unread) for the entire manga series or select individual chapters.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique manga ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Update reading state. Provide either 'isRead' to toggle the whole manga, or 'chapters' to update specific items.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "isRead": {
+                    "type": "boolean",
+                    "description": "Mark the entire series as read (true) or unread (false)",
+                    "example": true
+                  },
+                  "chapters": {
+                    "type": "array",
+                    "description": "List of specific chapter updates",
+                    "items": {
+                      "type": "object",
+                      "required": ["id", "isRead"],
+                      "properties": {
+                        "id": { "type": "integer", "description": "The unique chapter ID", "example": 42 },
+                        "isRead": { "type": "boolean", "description": "Mark chapter as read (true) or unread (false)", "example": true }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "updatedChaptersCount": { "type": "integer", "example": 2 }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid request body or parameters" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
           "404": { "description": "Manga not found" }
         }
       }
