@@ -8,7 +8,8 @@
     "sourceRepository": "Source Repository",
     "mangalCore": "Mangal Core",
     "downloads": "Downloads",
-    "accounts": "Security & Accounts"
+    "accounts": "Security & Accounts",
+    "developer": "Development"
   },
   "downloads": {
     "retryDelay": {
@@ -40,7 +41,11 @@
     "unlockedTitle": "User Account Mode Unlocked!",
     "unlockedDesc": "The Accounts section is now visible in the main navigation menu.",
     "unlockedDefault": "Default User: {{user}} | Password: {{pass}}",
-    "unlockedWarning": "We highly recommend visiting the Accounts section to change the default password upon first reload or add users with custom roles."
+    "unlockedWarning": "We highly recommend visiting the Accounts section to change the default password upon first reload or add users with custom roles.",
+    "developerTitle": "Developer API Options",
+    "developerDesc": "Enable external access to your library metadata via a secure REST API for third-party clients and custom scripts.",
+    "docsTitle": "Interactive API Documentation",
+    "docsDesc": "Browse and test the available REST endpoints live using our Swagger interface."
   },
   "users": {
     "title": "Accounts Center & Access Control",

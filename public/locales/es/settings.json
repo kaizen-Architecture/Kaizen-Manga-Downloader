@@ -8,7 +8,8 @@
     "sourceRepository": "Repositorio de Fuentes",
     "mangalCore": "Núcleo Mangal",
     "downloads": "Descargas",
-    "accounts": "Seguridad y Cuentas"
+    "accounts": "Seguridad y Cuentas",
+    "developer": "Desarrollo"
   },
   "downloads": {
     "retryDelay": {
@@ -40,7 +41,11 @@
     "unlockedTitle": "¡Modo de Cuentas Desbloqueado!",
     "unlockedDesc": "La sección de Cuentas se ha vuelto visible en el menú de navegación principal.",
     "unlockedDefault": "Usuario por defecto: {{user}} | Contraseña: {{pass}}",
-    "unlockedWarning": "Te recomendamos encarecidamente acceder a la sección de Cuentas para cambiar la contraseña predeterminada en tu primer reinicio o añadir usuarios con roles personalizados."
+    "unlockedWarning": "Te recomendamos encarecidamente acceder a la sección de Cuentas para cambiar la contraseña predeterminada en tu primer reinicio o añadir usuarios con roles personalizados.",
+    "developerTitle": "Opciones de la API de Desarrollo",
+    "developerDesc": "Habilita el acceso externo a los metadatos de tu biblioteca mediante una REST API segura para clientes de terceros y scripts personalizados.",
+    "docsTitle": "Documentación Interactiva de la API",
+    "docsDesc": "Explora y prueba las rutas REST disponibles en vivo usando nuestra interfaz de Swagger."
   },
   "users": {
     "title": "Centro de Cuentas y Control de Acceso",

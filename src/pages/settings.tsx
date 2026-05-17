@@ -11,6 +11,7 @@ import {
   IconAlertCircle,
   IconRefresh,
   IconUsers,
+  IconCode,
 } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'next-i18next';
@@ -25,6 +26,7 @@ import { DownloadSettings } from '../components/kaizen/DownloadSettings';
 import { MetadataSettings } from '../components/kaizen/MetadataSettings';
 import { StatusAuditSettings } from '../components/kaizen/StatusAuditSettings';
 import { AuthSettings } from '../components/kaizen/AuthSettings';
+import { DeveloperSettings } from '../components/kaizen/DeveloperSettings';
 import { trpc } from '../utils/trpc';
 
 export default function SettingsPage() {
@@ -81,6 +83,9 @@ export default function SettingsPage() {
           </Tabs.Tab>
           <Tabs.Tab value="accounts" icon={<IconUsers size={16} />}>
             {t('tabs.accounts', 'Seguridad y Cuentas')}
+          </Tabs.Tab>
+          <Tabs.Tab value="developer" icon={<IconCode size={16} />}>
+            {t('tabs.developer', 'Desarrollo')}
           </Tabs.Tab>
           <Tabs.Tab value="maintenance" icon={<IconDatabaseImport size={16} />}>
             Maintenance
@@ -151,6 +156,15 @@ export default function SettingsPage() {
                 {t('tabs.accounts', 'Seguridad y Cuentas')}
               </Title>
               <AuthSettings />
+            </Paper>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="developer">
+            <Paper withBorder p="md" radius="md">
+              <Title order={4} mb="md">
+                {t('tabs.developer', 'Desarrollo')}
+              </Title>
+              <DeveloperSettings />
             </Paper>
           </Tabs.Panel>
 
