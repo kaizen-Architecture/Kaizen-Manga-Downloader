@@ -1,5 +1,15 @@
 import path from 'path';
 import pino from 'pino';
+import fs from 'fs';
+
+const getLogDir = () => {
+  if (typeof process !== 'undefined') {
+    if (process.env.KAIZEN_LOG_PATH) return process.env.KAIZEN_LOG_PATH;
+    if (process.env.KAIZOKU_LOG_PATH) return process.env.KAIZOKU_LOG_PATH;
+  }
+  if (fs.existsSync('/logs')) return '/logs';
+  return '';
+};
 
 export const logger = pino({
   level: 'debug',
@@ -19,13 +29,7 @@ export const logger = pino({
         target: 'pino/file',
         level: 'debug',
         options: {
-          destination: path.resolve(
-            process.cwd(),
-            path.relative(
-              process.cwd(),
-              path.resolve(process.env.KAIZEN_LOG_PATH || process.env.KAIZOKU_LOG_PATH || '', 'kaizen.log'),
-            ),
-          ),
+          destination: path.resolve(getLogDir(), 'kaizen.log'),
         },
       },
     ],

@@ -109,13 +109,15 @@ export const settingsRouter = t.router({
       const fs = await import('fs/promises');
       const path = await import('path');
       
-      const logPath = path.resolve(
-        process.cwd(),
-        path.relative(
-          process.cwd(),
-          path.resolve(process.env.KAIZEN_LOG_PATH || process.env.KAIZOKU_LOG_PATH || '', 'kaizen.log')
-        )
-      );
+      const getLogDir = () => {
+        if (process.env.KAIZEN_LOG_PATH) return process.env.KAIZEN_LOG_PATH;
+        if (process.env.KAIZOKU_LOG_PATH) return process.env.KAIZOKU_LOG_PATH;
+        const fsSync = require('fs');
+        if (fsSync.existsSync('/logs')) return '/logs';
+        return '';
+      };
+
+      const logPath = path.resolve(getLogDir(), 'kaizen.log');
 
       try {
         const fileContent = await fs.readFile(logPath, 'utf-8');
