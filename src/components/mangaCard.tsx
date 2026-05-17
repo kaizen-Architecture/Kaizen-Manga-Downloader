@@ -299,7 +299,7 @@ export function MangaCard({ manga, onRemove, onUpdate, onRefresh, onClick }: Man
         title={manga.title}
         classes={classes}
         integrationStatus={
-          manga._count?.chapters > 0 && manga.chapters?.every((c: any) => c.metadataInjected) ? 'ready' : 'pending'
+          manga._count?.chapters > 0 && manga.chapters?.length === 0 ? 'ready' : 'pending'
         }
       />
     </Paper>

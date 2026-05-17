@@ -3,9 +3,7 @@ import { useTranslation } from 'next-i18next';
 import { IntegrationHealthCard } from './IntegrationHealthCard';
 import { trpc } from '../../utils/trpc';
 import { useState } from 'react';
-import dynamic from 'next/dynamic';
-
-const SwaggerUI = dynamic(() => import('swagger-ui-react'), { ssr: false });
+import { ApiExplorer } from './ApiExplorer';
 
 export function IntegrationStatusGrid() {
   const { t } = useTranslation('settings');
@@ -26,8 +24,9 @@ export function IntegrationStatusGrid() {
   const mangas = mangaQuery.data || [];
   const totalMangas = mangas.length;
 
+  // Optimized sync check using the non-injected query constraint
   const syncedMangas = mangas.filter(
-    (m) => m.chapters && m.chapters.length > 0 && m.chapters.every((c: any) => c.metadataInjected),
+    (m) => m._count && m._count.chapters > 0 && m.chapters && m.chapters.length === 0,
   ).length;
 
   return (
@@ -98,112 +97,13 @@ export function IntegrationStatusGrid() {
           mt="md"
           radius="md"
           shadow="md"
+          withBorder
           sx={(theme) => ({
             backgroundColor: theme.colorScheme === 'dark' ? '#1e293b' : '#ffffff',
-            border: `1px solid ${theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}`,
-            overflow: 'hidden',
-
-            '& .swagger-ui': {
-              fontFamily: 'inherit',
-              color: theme.colorScheme === 'dark' ? '#f1f5f9' : '#0f172a',
-
-              '& .info': {
-                margin: '10px 0',
-                '& .title': {
-                  color: theme.colorScheme === 'dark' ? '#ffffff' : '#0f172a',
-                  fontFamily: 'inherit',
-                  fontWeight: 800,
-                  fontSize: '20px',
-                },
-                '& p, & li, & a, & td': {
-                  color: theme.colorScheme === 'dark' ? '#94a3b8' : '#475569',
-                },
-              },
-
-              '& .scheme-container': {
-                backgroundColor: theme.colorScheme === 'dark' ? '#0f172a' : '#f8fafc',
-                border: `1px solid ${theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}`,
-                borderRadius: theme.radius.md,
-                boxShadow: 'none',
-                padding: '16px',
-                '& select': {
-                  backgroundColor: theme.colorScheme === 'dark' ? '#1e293b' : '#ffffff',
-                  color: theme.colorScheme === 'dark' ? '#f1f5f9' : '#0f172a',
-                  border: `1px solid ${theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                  borderRadius: theme.radius.sm,
-                },
-              },
-
-              '& .opblock': {
-                backgroundColor: theme.colorScheme === 'dark' ? '#0f172a' : '#f8fafc',
-                borderRadius: theme.radius.md,
-                border: `1px solid ${theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}`,
-                '& .opblock-summary': {
-                  borderBottom: `1px solid ${theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}`,
-                },
-                '& .opblock-summary-path': {
-                  color: theme.colorScheme === 'dark' ? '#f1f5f9' : '#0f172a',
-                  fontWeight: 600,
-                },
-                '& .opblock-summary-description': {
-                  color: theme.colorScheme === 'dark' ? '#94a3b8' : '#64748b',
-                },
-              },
-
-              '& input[type=text], & textarea, & select': {
-                backgroundColor: theme.colorScheme === 'dark' ? '#0f172a' : '#ffffff',
-                color: theme.colorScheme === 'dark' ? '#f1f5f9' : '#0f172a',
-                border: `1px solid ${theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                borderRadius: theme.radius.sm,
-                padding: '8px 12px',
-              },
-
-              '& .btn': {
-                backgroundColor: theme.colorScheme === 'dark' ? '#1e293b' : '#ffffff',
-                color: theme.colorScheme === 'dark' ? '#f1f5f9' : '#0f172a',
-                border: `1px solid ${theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                borderRadius: theme.radius.sm,
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                  backgroundColor: theme.colorScheme === 'dark' ? '#334155' : '#f1f5f9',
-                },
-                '&.execute': {
-                  background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)',
-                  color: '#ffffff',
-                  border: 'none',
-                  '&:hover': {
-                    background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-                  },
-                },
-              },
-
-              '& table thead tr td, & table thead tr th': {
-                color: theme.colorScheme === 'dark' ? '#f1f5f9' : '#0f172a',
-                borderBottom: `2px solid ${theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-              },
-              '& .response-col_status': {
-                color: theme.colorScheme === 'dark' ? '#f1f5f9' : '#0f172a',
-                fontWeight: 700,
-              },
-              '& .parameter__name': {
-                color: theme.colorScheme === 'dark' ? '#f1f5f9' : '#0f172a',
-                fontWeight: 600,
-              },
-              '& .parameter__type, & .parameter__in': {
-                color: theme.colorScheme === 'dark' ? '#94a3b8' : '#64748b',
-              },
-              '& .model-box-control:focus, & .servers-control:focus': {
-                outline: 'none',
-              },
-              '& .opblock-bodypre': {
-                backgroundColor: theme.colorScheme === 'dark' ? '#020617' : '#0f172a',
-                color: '#38bdf8',
-                borderRadius: theme.radius.sm,
-              },
-            },
+            borderColor: theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
           })}
         >
-          <SwaggerUI url="/swagger.json" />
+          <ApiExplorer />
         </Paper>
       </Collapse>
     </Stack>

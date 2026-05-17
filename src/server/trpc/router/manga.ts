@@ -50,8 +50,11 @@ export const mangaRouter = t.router({
         },
         library: true,
         chapters: {
+          where: {
+            metadataInjected: false,
+          },
           select: {
-            metadataInjected: true,
+            id: true,
           },
         },
         _count: {

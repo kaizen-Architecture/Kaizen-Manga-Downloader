@@ -1,14 +1,25 @@
-import { Box, Container, Paper, Stack, Title, Text, Button, Group, ThemeIcon } from '@mantine/core';
+import {
+  Box,
+  Container,
+  Paper,
+  Stack,
+  Title,
+  Text,
+  Button,
+  Group,
+  ThemeIcon,
+  Table,
+  Code,
+  Badge,
+  Divider,
+  List,
+} from '@mantine/core';
 import Head from 'next/head';
-import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { IconChevronLeft, IconTerminal } from '@tabler/icons-react';
-import 'swagger-ui-react/swagger-ui.css';
-
-// Dynamically import Swagger UI to avoid SSR issues
-const SwaggerUI = dynamic(() => import('swagger-ui-react'), { ssr: false });
+import { IconChevronLeft, IconTerminal, IconBook, IconKey } from '@tabler/icons-react';
+import { ApiExplorer } from '../components/kaizen/ApiExplorer';
 
 export default function ApiDocs() {
   const router = useRouter();
@@ -61,117 +72,203 @@ export default function ApiDocs() {
             </Group>
           </Paper>
 
-          {/* Swagger UI container with custom light/dark styling overrides */}
+          {/* Interactive API Tester Panel */}
           <Paper
-            p="md"
+            p="xl"
             radius="md"
+            withBorder
             shadow="md"
             sx={(theme) => ({
               backgroundColor: theme.colorScheme === 'dark' ? '#1e293b' : '#ffffff',
-              border: `1px solid ${theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}`,
-              overflow: 'hidden',
-
-              // Override styles of Swagger UI dynamically
-              '& .swagger-ui': {
-                fontFamily: 'inherit',
-                color: theme.colorScheme === 'dark' ? '#f1f5f9' : '#0f172a',
-
-                '& .info': {
-                  margin: '20px 0',
-                  '& .title': {
-                    color: theme.colorScheme === 'dark' ? '#ffffff' : '#0f172a',
-                    fontFamily: 'inherit',
-                    fontWeight: 800,
-                  },
-                  '& p, & li, & a, & td': {
-                    color: theme.colorScheme === 'dark' ? '#94a3b8' : '#475569',
-                  },
-                },
-
-                '& .scheme-container': {
-                  backgroundColor: theme.colorScheme === 'dark' ? '#0f172a' : '#f8fafc',
-                  border: `1px solid ${theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}`,
-                  borderRadius: theme.radius.md,
-                  boxShadow: 'none',
-                  padding: '16px',
-                  '& select': {
-                    backgroundColor: theme.colorScheme === 'dark' ? '#1e293b' : '#ffffff',
-                    color: theme.colorScheme === 'dark' ? '#f1f5f9' : '#0f172a',
-                    border: `1px solid ${theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                    borderRadius: theme.radius.sm,
-                  },
-                },
-
-                '& .opblock': {
-                  backgroundColor: theme.colorScheme === 'dark' ? '#0f172a' : '#f8fafc',
-                  borderRadius: theme.radius.md,
-                  border: `1px solid ${theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}`,
-                  '& .opblock-summary': {
-                    borderBottom: `1px solid ${theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}`,
-                  },
-                  '& .opblock-summary-path': {
-                    color: theme.colorScheme === 'dark' ? '#f1f5f9' : '#0f172a',
-                    fontWeight: 600,
-                  },
-                  '& .opblock-summary-description': {
-                    color: theme.colorScheme === 'dark' ? '#94a3b8' : '#64748b',
-                  },
-                },
-
-                '& input[type=text], & textarea, & select': {
-                  backgroundColor: theme.colorScheme === 'dark' ? '#0f172a' : '#ffffff',
-                  color: theme.colorScheme === 'dark' ? '#f1f5f9' : '#0f172a',
-                  border: `1px solid ${theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                  borderRadius: theme.radius.sm,
-                  padding: '8px 12px',
-                },
-
-                '& .btn': {
-                  backgroundColor: theme.colorScheme === 'dark' ? '#1e293b' : '#ffffff',
-                  color: theme.colorScheme === 'dark' ? '#f1f5f9' : '#0f172a',
-                  border: `1px solid ${theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                  borderRadius: theme.radius.sm,
-                  transition: 'all 0.2s ease',
-                  '&:hover': {
-                    backgroundColor: theme.colorScheme === 'dark' ? '#334155' : '#f1f5f9',
-                  },
-                  '&.execute': {
-                    background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)',
-                    color: '#ffffff',
-                    border: 'none',
-                    '&:hover': {
-                      background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-                    },
-                  },
-                },
-
-                '& table thead tr td, & table thead tr th': {
-                  color: theme.colorScheme === 'dark' ? '#f1f5f9' : '#0f172a',
-                  borderBottom: `2px solid ${theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                },
-                '& .response-col_status': {
-                  color: theme.colorScheme === 'dark' ? '#f1f5f9' : '#0f172a',
-                  fontWeight: 700,
-                },
-                '& .parameter__name': {
-                  color: theme.colorScheme === 'dark' ? '#f1f5f9' : '#0f172a',
-                  fontWeight: 600,
-                },
-                '& .parameter__type, & .parameter__in': {
-                  color: theme.colorScheme === 'dark' ? '#94a3b8' : '#64748b',
-                },
-                '& .model-box-control:focus, & .servers-control:focus': {
-                  outline: 'none',
-                },
-                '& .opblock-bodypre': {
-                  backgroundColor: theme.colorScheme === 'dark' ? '#020617' : '#0f172a',
-                  color: '#38bdf8',
-                  borderRadius: theme.radius.sm,
-                },
-              },
+              borderColor: theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
             })}
           >
-            <SwaggerUI url="/swagger.json" />
+            <ApiExplorer />
+          </Paper>
+
+          {/* Structured Reference Section */}
+          <Paper
+            p="xl"
+            radius="md"
+            withBorder
+            shadow="md"
+            sx={(theme) => ({
+              backgroundColor: theme.colorScheme === 'dark' ? '#1e293b' : '#ffffff',
+              borderColor: theme.colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+            })}
+          >
+            <Stack spacing="lg">
+              <Group spacing="sm">
+                <IconBook size={22} style={{ color: '#6366f1' }} />
+                <Title order={4}>Referencia Técnica de Endpoints</Title>
+              </Group>
+              <Text size="xs" color="dimmed">
+                La API REST de Kaizen permite a desarrolladores y scripts de terceros consultar de forma automatizada los contenidos de la biblioteca local.
+              </Text>
+
+              <Divider opacity={0.1} />
+
+              <Stack spacing="md">
+                <Group spacing="xs" sx={{ flexWrap: 'wrap' }}>
+                  <Badge color="blue" size="lg" radius="sm">
+                    GET
+                  </Badge>
+                  <Code sx={{ fontSize: 14, fontWeight: 700 }}>/api/v1/mangas</Code>
+                  <Text size="sm" color="dimmed">
+                    - Obtener el catálogo completo de mangas descargados
+                  </Text>
+                </Group>
+
+                <Box sx={{ overflowX: 'auto' }}>
+                  <Table verticalSpacing="xs" fontSize="xs" highlightOnHover>
+                    <thead>
+                      <tr>
+                        <th>Parámetro</th>
+                        <th>Tipo</th>
+                        <th>Ubicación</th>
+                        <th>Requerido</th>
+                        <th>Descripción</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <Code>Authorization</Code>
+                        </td>
+                        <td>
+                          <Text size="xs" color="dimmed">
+                            string
+                          </Text>
+                        </td>
+                        <td>Header</td>
+                        <td>Sí</td>
+                        <td>
+                          Formato: <Code>Bearer &lt;API_TOKEN&gt;</Code>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </Box>
+
+                <Text size="xs" weight={600} mt="xs">
+                  Respuesta Exitosa (200 OK):
+                </Text>
+                <Code block color="gray" sx={{ fontSize: 11 }}>
+                  {`[
+  {
+    "id": 1,
+    "title": "Manga Name",
+    "source": "asuratoon",
+    "coverUrl": "/manga-covers/1.jpg"
+  }
+]`}
+                </Code>
+              </Stack>
+
+              <Divider opacity={0.1} />
+
+              <Stack spacing="md">
+                <Group spacing="xs" sx={{ flexWrap: 'wrap' }}>
+                  <Badge color="blue" size="lg" radius="sm">
+                    GET
+                  </Badge>
+                  <Code sx={{ fontSize: 14, fontWeight: 700 }}>/api/v1/mangas/{"{id}"}</Code>
+                  <Text size="sm" color="dimmed">
+                    - Obtener los detalles y capítulos de un manga específico
+                  </Text>
+                </Group>
+
+                <Box sx={{ overflowX: 'auto' }}>
+                  <Table verticalSpacing="xs" fontSize="xs" highlightOnHover>
+                    <thead>
+                      <tr>
+                        <th>Parámetro</th>
+                        <th>Tipo</th>
+                        <th>Ubicación</th>
+                        <th>Requerido</th>
+                        <th>Descripción</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <Code>id</Code>
+                        </td>
+                        <td>
+                          <Text size="xs" color="dimmed">
+                            integer
+                          </Text>
+                        </td>
+                        <td>Path</td>
+                        <td>Sí</td>
+                        <td>Identificador único del manga en la base de datos</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <Code>Authorization</Code>
+                        </td>
+                        <td>
+                          <Text size="xs" color="dimmed">
+                            string
+                          </Text>
+                        </td>
+                        <td>Header</td>
+                        <td>Sí</td>
+                        <td>
+                          Formato: <Code>Bearer &lt;API_TOKEN&gt;</Code>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </Box>
+
+                <Text size="xs" weight={600} mt="xs">
+                  Respuesta Exitosa (200 OK):
+                </Text>
+                <Code block color="gray" sx={{ fontSize: 11 }}>
+                  {`{
+  "id": 1,
+  "title": "Manga Name",
+  "source": "asuratoon",
+  "coverUrl": "/manga-covers/1.jpg",
+  "chapters": [
+    {
+      "id": 42,
+      "index": 1,
+      "fileName": "Chapter 1.cbz",
+      "downloadedAt": "2026-05-12T09:00:00.000Z"
+    }
+  ]
+}`}
+                </Code>
+              </Stack>
+
+              <Divider opacity={0.1} />
+
+              {/* Security and Tokens guide */}
+              <Stack spacing="sm">
+                <Group spacing="xs">
+                  <IconKey size={20} style={{ color: '#eab308' }} />
+                  <Title order={5}>Seguridad y Autenticación</Title>
+                </Group>
+                <Text size="xs" color="dimmed">
+                  Todas las solicitudes a los endpoints de la API deben estar autenticadas mediante un Bearer
+                  Token. Sigue estos pasos para interactuar con la API:
+                </Text>
+                <List size="xs" color="dimmed" spacing="xs">
+                  <List.Item>
+                    Ve a la pestaña <b>Cuentas</b> en el menú lateral de Kaizen.
+                  </List.Item>
+                  <List.Item>
+                    Genera un nuevo <b>API Token</b> para el usuario correspondiente.
+                  </List.Item>
+                  <List.Item>
+                    Copia el token e inclúyelo en la cabecera HTTP de tus peticiones:{' '}
+                    <Code>Authorization: Bearer &lt;tu_token&gt;</Code>.
+                  </List.Item>
+                </List>
+              </Stack>
+            </Stack>
           </Paper>
         </Stack>
       </Container>

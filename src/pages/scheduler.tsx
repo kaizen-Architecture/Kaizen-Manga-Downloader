@@ -70,7 +70,25 @@ export default function SchedulerPage() {
     refetchInterval: 500, // Poll every 500ms while staggering
   });
 
-  const schedules = useMemo(() => schedulesQuery.data || [], [schedulesQuery.data]);
+  const schedules = useMemo(() => {
+    if (!schedulesQuery.data) return [];
+    return schedulesQuery.data.map((m) => {
+      let parsedHour: number | null = null;
+      if (m.interval !== 'never') {
+        try {
+          const interval = cronParser.parseExpression(m.interval);
+          const next = interval.next().toDate();
+          parsedHour = next.getHours();
+        } catch (e) {
+          // Ignore invalid crons
+        }
+      }
+      return {
+        ...m,
+        parsedHour,
+      };
+    });
+  }, [schedulesQuery.data]);
 
   const tabFilteredSchedules = useMemo(() => {
     let result = schedules;
@@ -98,16 +116,7 @@ export default function SchedulerPage() {
   const filteredSchedules = useMemo(() => {
     let result = tabFilteredSchedules;
     if (selectedHour !== null) {
-      result = result.filter((m) => {
-        if (m.interval === 'never') return false;
-        try {
-          const interval = cronParser.parseExpression(m.interval);
-          const next = interval.next().toDate();
-          return next.getHours() === selectedHour;
-        } catch (e) {
-          return false;
-        }
-      });
+      result = result.filter((m) => m.parsedHour === selectedHour);
     }
     return result;
   }, [tabFilteredSchedules, selectedHour]);
@@ -130,13 +139,8 @@ export default function SchedulerPage() {
   const distribution = useMemo(() => {
     const dist = Array(24).fill(0);
     tabFilteredSchedules.forEach((m) => {
-      if (m.interval === 'never') return;
-      try {
-        const interval = cronParser.parseExpression(m.interval);
-        const next = interval.next().toDate();
-        dist[next.getHours()] += 1;
-      } catch (e) {
-        // Ignore invalid crons
+      if (m.parsedHour !== null) {
+        dist[m.parsedHour] += 1;
       }
     });
     return dist;
