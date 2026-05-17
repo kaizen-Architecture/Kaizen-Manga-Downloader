@@ -3,7 +3,7 @@ import { Job, Queue, Worker } from 'bullmq';
 import { sanitizer } from '../../utils';
 import { logger } from '../../utils/logging';
 import { prisma } from '../db/client';
-import { downloadChapter, getChapterFromLocal } from '../utils/mangal';
+import { downloadChapter, getChapterFromLocal, getChaptersFromRemote } from '../utils/mangal';
 import { integrationQueue } from './integration';
 import { notificationQueue } from './notify';
 
@@ -40,6 +40,26 @@ export const downloadWorker = new Worker(
       const finalTitle = sourceTitle || mangaInDb.title;
 
       const sanitizedChapterIndex = String(chapterIndex).replace('@', '');
+
+      // Check if the source actually has this chapter index before attempting download
+      try {
+        const remoteChapters = await getChaptersFromRemote(finalSource, finalTitle);
+        if (remoteChapters.length > 0) {
+          const indexNum = Number(sanitizedChapterIndex);
+          if (indexNum >= remoteChapters.length) {
+            logger.warn(
+              `[SKIP] Source ${finalSource} only has ${remoteChapters.length} chapters. Skipping download of chapter index ${indexNum} for "${mangaInDb.title}" as it exceeds available chapters.`
+            );
+            await job.log(
+              `Skipped download: chapter index ${indexNum} is not available on source ${finalSource} (total chapters: ${remoteChapters.length})`
+            );
+            await job.updateProgress(100);
+            return;
+          }
+        }
+      } catch (err) {
+        logger.error(`Failed to pre-check chapter availability on source ${finalSource} for "${mangaInDb.title}". err: ${err}`);
+      }
 
       filePath = await downloadChapter(
         mangaInDb.title,

@@ -1109,7 +1109,12 @@ export const mangaRouter = t.router({
     });
   }),
   cleanQueue: t.procedure.mutation(async () => {
-    await Promise.all([downloadQueue.clean(0, 0, 'completed'), downloadQueue.clean(0, 0, 'failed')]);
+    await Promise.all([
+      downloadQueue.clean(0, 0, 'completed'),
+      downloadQueue.clean(0, 0, 'failed'),
+      checkChaptersQueue.clean(0, 0, 'completed'),
+      checkChaptersQueue.clean(0, 0, 'failed'),
+    ]);
     return { success: true };
   }),
   deleteChapter: t.procedure.input(z.object({ id: z.number() })).mutation(async ({ input, ctx }) => {

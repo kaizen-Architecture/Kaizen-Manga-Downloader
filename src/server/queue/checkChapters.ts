@@ -5,7 +5,7 @@ import path from 'path';
 import { sanitizer } from '../../utils';
 import { logger } from '../../utils/logging';
 import { prisma } from '../db/client';
-import { findMissingChapterFiles, getChaptersFromLocal } from '../utils/mangal';
+import { findMissingChapterFiles, getChaptersFromLocal, getChaptersFromRemote } from '../utils/mangal';
 import { downloadQueue } from './download';
 
 const mangaWithLibraryAndMetadata = Prisma.validator<Prisma.MangaArgs>()({
@@ -70,10 +70,63 @@ const checkChapters = async (manga: MangaForCheck) => {
   const mangaDir = path.resolve(manga.library.path, sanitizer(manga.title));
 
   // Determine sources to check: use the new 'sources' table or fallback to the legacy fields
-  const sourcesToCheck =
+  let sourcesToCheck =
     manga.sources.length > 0
       ? manga.sources.sort((a, b) => a.priority - b.priority)
       : [{ source: manga.source, title: manga.title }];
+
+  // 1. Auto-swap sources if any alternative source has more chapters
+  if (sourcesToCheck.length > 1) {
+    let bestSource = sourcesToCheck[0];
+    let maxChaptersCount = 0;
+
+    for (const s of sourcesToCheck) {
+      try {
+        const chapters = await getChaptersFromRemote(s.source, s.title);
+        if (chapters.length > maxChaptersCount) {
+          maxChaptersCount = chapters.length;
+          bestSource = s;
+        }
+      } catch (err) {
+        logger.error(`Failed to fetch chapters from remote source ${s.source} for ${manga.title}. err: ${err}`);
+      }
+    }
+
+    if (bestSource && bestSource.source !== manga.source) {
+      logger.info(`[AUTO-SWAP] Promoting source ${bestSource.source} (${maxChaptersCount} chapters) over ${manga.source} as primary for manga ${manga.title}`);
+
+      await prisma.manga.update({
+        where: { id: manga.id },
+        data: { source: bestSource.source },
+      });
+
+      const dbSources = await prisma.mangaSource.findMany({
+        where: { mangaId: manga.id },
+      });
+
+      await prisma.$transaction(
+        dbSources.map((ds) => {
+          const priority = ds.source === bestSource.source ? 0 : 1;
+          return prisma.mangaSource.update({
+            where: { id: ds.id },
+            data: { priority },
+          });
+        })
+      );
+
+      // Update local variables and sort sourcesToCheck again
+      manga.source = bestSource.source;
+      if (manga.sources) {
+        manga.sources = manga.sources.map((s) => ({
+          ...s,
+          priority: s.source === bestSource.source ? 0 : 1,
+        }));
+        sourcesToCheck = manga.sources.sort((a, b) => a.priority - b.priority);
+      } else {
+        sourcesToCheck = [{ source: bestSource.source, title: manga.title }];
+      }
+    }
+  }
 
   await syncDbWithFiles(manga);
 
