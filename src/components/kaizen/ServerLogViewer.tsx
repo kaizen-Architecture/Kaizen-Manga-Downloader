@@ -39,6 +39,13 @@ export default function ServerLogViewer() {
   const [customSearch, setCustomSearch] = useState<string>('');
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [limit, setLimit] = useState<string>('100');
+  
+  const serverLogLevel = trpc.settings.getLogLevel.useQuery();
+  const setLogLevelMutation = trpc.settings.setLogLevel.useMutation({
+    onSuccess: () => {
+      serverLogLevel.refetch();
+    },
+  });
 
   // Trigger query with state
   const logsQuery = trpc.settings.getLogs.useQuery(
@@ -98,6 +105,31 @@ export default function ServerLogViewer() {
             </Group>
 
             <Group spacing={8}>
+              <Select
+                placeholder="Nivel de Servidor"
+                value={serverLogLevel.data || 'info'}
+                onChange={(val) => val && setLogLevelMutation.mutate(val as any)}
+                data={[
+                  { value: 'trace', label: 'Server: TRACE' },
+                  { value: 'debug', label: 'Server: DEBUG' },
+                  { value: 'info', label: 'Server: INFO' },
+                  { value: 'warn', label: 'Server: WARN' },
+                  { value: 'error', label: 'Server: ERROR' },
+                ]}
+                size="xs"
+                sx={{ width: 130 }}
+                styles={(theme) => ({
+                  input: {
+                    borderColor: theme.colors.indigo[4],
+                    fontWeight: 600,
+                    fontSize: '11px',
+                    '&:focus': {
+                      borderColor: theme.colors.indigo[6],
+                    },
+                  },
+                })}
+              />
+
               <Tooltip label={isPaused ? t('maintenance.logs.play', 'Activar actualización') : t('maintenance.logs.pause', 'Pausar actualización')}>
                 <ActionIcon
                   variant="light"

@@ -192,4 +192,16 @@ export const settingsRouter = t.router({
         ];
       }
     }),
+  getLogLevel: t.procedure.query(async () => {
+    const { logger } = await import('../../../utils/logging');
+    return logger.level;
+  }),
+  setLogLevel: t.procedure
+    .input(z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal']))
+    .mutation(async ({ input }) => {
+      const { logger } = await import('../../../utils/logging');
+      logger.level = input;
+      logger.info(`Log level changed dynamically to ${input} via trpc mutation.`);
+      return { success: true, level: logger.level };
+    }),
 });
