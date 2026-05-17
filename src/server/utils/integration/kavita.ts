@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 import execa from 'execa';
 import { prisma } from '../../db/client';
 import { getCachedSettings } from '../settings-cache';
@@ -76,7 +77,7 @@ export const injectMetadata = async (chapterId: number) => {
 
   let tempXmlPath = '';
   try {
-    tempXmlPath = path.join(__dirname, `temp_comicinfo_${chapterId}.xml`);
+    tempXmlPath = path.join(os.tmpdir(), `temp_comicinfo_${chapterId}.xml`);
     const comicInfo = `<?xml version="1.0"?>
 <ComicInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Title>${chapter.fileName.replace('.cbz', '')}</Title>
