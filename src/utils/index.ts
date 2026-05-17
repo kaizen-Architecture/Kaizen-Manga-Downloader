@@ -1,6 +1,5 @@
 import cronParser from 'cron-parser';
 import cronstrue from 'cronstrue';
-import { logger } from './logging';
 
 export const sanitizer = (value: string): string => {
   return value
@@ -17,7 +16,12 @@ export const getCronLabel = (cron: string): string | undefined => {
   try {
     return cronstrue.toString(cron, { use24HourTimeFormat: true });
   } catch (err) {
-    logger.error('failed to parse cron');
+    if (typeof window === 'undefined') {
+      const { logger } = require('./logging');
+      logger.error('failed to parse cron');
+    } else {
+      console.error('failed to parse cron');
+    }
   }
 
   return undefined;
