@@ -53,10 +53,22 @@ export const authRouter = t.router({
         createdAt: true,
         username: true,
         role: true,
+        apiToken: true,
       },
       orderBy: { id: 'asc' },
     });
     return users;
+  }),
+
+  generateApiToken: t.procedure.input(z.object({ id: z.number() })).mutation(async ({ ctx, input }) => {
+    const { randomBytes } = await import('crypto');
+    const newToken = randomBytes(32).toString('hex');
+
+    return ctx.prisma.user.update({
+      where: { id: input.id },
+      data: { apiToken: newToken },
+      select: { id: true, apiToken: true },
+    });
   }),
 
   createUser: t.procedure

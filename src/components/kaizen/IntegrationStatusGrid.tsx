@@ -61,6 +61,18 @@ export function IntegrationStatusGrid() {
             />
           </Grid.Col>
         )}
+
+        {appConfig.apiEnabled && (
+          <Grid.Col md={4}>
+            <IntegrationHealthCard
+              name="REST API"
+              status="healthy"
+              syncedCount={totalMangas}
+              totalCount={totalMangas}
+              onSync={() => window.open('/api-docs', '_blank')}
+            />
+          </Grid.Col>
+        )}
       </Grid>
     </Stack>
   );

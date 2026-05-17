@@ -13,6 +13,7 @@ export function AuthSettings() {
   });
 
   const authEnabledValue = (settings.data?.appConfig as any)?.authEnabled === true ? 'yes' : 'no';
+  const apiEnabledValue = (settings.data?.appConfig as any)?.apiEnabled === true ? 'yes' : 'no';
 
   const handleAuthToggle = (val: string) => {
     const isEnabled = val === 'yes';
@@ -21,6 +22,10 @@ export function AuthSettings() {
       setCookie('kaizen-session', 'admin-default-session', { path: '/' });
     }
     update.mutate({ updateType: 'app', key: 'authEnabled' as any, value: isEnabled });
+  };
+
+  const handleApiToggle = (val: string) => {
+    update.mutate({ updateType: 'app', key: 'apiEnabled' as any, value: val === 'yes' });
   };
 
   if (settings.isLoading || !settings.data) return null;
@@ -54,6 +59,22 @@ export function AuthSettings() {
           data={[
             { value: 'yes', label: t('common.enabled', 'Activado (Pide Credenciales)') },
             { value: 'no', label: t('common.disabled', 'Desactivado (Acceso Directo Sin Login)') },
+          ]}
+        />
+      </Stack>
+
+      <Stack spacing="xs" mt="sm">
+        <Text size="xs" weight={500} color="dimmed">
+          REST API Externa
+        </Text>
+        <SegmentedControl
+          fullWidth
+          value={apiEnabledValue}
+          onChange={handleApiToggle}
+          disabled={update.isLoading}
+          data={[
+            { value: 'yes', label: 'Activada' },
+            { value: 'no', label: 'Desactivada' },
           ]}
         />
       </Stack>

@@ -23,25 +23,21 @@
 
 ## 🔌 API Integration
 
-Kaizen exposes a REST API that allows other applications to integrate with it.
+Kaizen exposes a modular REST API that allows other applications to integrate with it. The API is documented interactively using Swagger.
 
-### Authentication
+### Getting Started
 
-To authenticate with the API, you must provide a Bearer token in the `Authorization` header.
-You can configure this token in two ways:
-1. Setting the `KAIZEN_API_TOKEN` environment variable.
-2. Saving an API Token in the Database via Settings.
+1. **Enable the API**: Log in to Kaizen, go to **Settings > Access Control**, and toggle **External REST API** to "On".
+2. **Generate a Token**: Go to the **Accounts** (Users) page and generate an API Token for your specific user account.
+3. **Authenticate**: Provide this Bearer token in the `Authorization` header of your HTTP requests.
 
 ```bash
-curl -H "Authorization: Bearer YOUR_API_TOKEN" http://localhost:3000/api/v1/mangas
+curl -H "Authorization: Bearer YOUR_USER_API_TOKEN" http://localhost:3000/api/v1/mangas
 ```
 
-### Endpoints
+### Documentation
 
-- `GET /api/v1/mangas`
-  Returns a list of all mangas in the database, including metadata and library information.
-- `GET /api/v1/mangas/:id`
-  Returns details for a specific manga, including its chapters.
+You can view the full interactive OpenAPI (Swagger) documentation, test endpoints, and explore the schema by navigating to `/api-docs` on your Kaizen instance (e.g., `http://localhost:3000/api-docs`).
 
 ## 🔄 Migration & Compatibility
 

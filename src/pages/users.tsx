@@ -66,6 +66,25 @@ export default function UsersPage() {
     },
   });
 
+  const generateTokenMutation = trpc.auth.generateApiToken.useMutation({
+    onSuccess: () => {
+      users.refetch();
+      showNotification({
+        title: 'Token Generado',
+        message: 'El API Token ha sido generado correctamente.',
+        color: 'teal',
+        icon: <IconCheck size={18} />,
+      });
+    },
+    onError: (err) => {
+      showNotification({
+        title: 'Error Generando Token',
+        message: err.message,
+        color: 'red',
+      });
+    },
+  });
+
   const createUser = trpc.auth.createUser.useMutation({
     onSuccess: () => {
       users.refetch();
@@ -311,6 +330,7 @@ export default function UsersPage() {
                   <th style={{ width: 60 }}>ID</th>
                   <th>Usuario</th>
                   <th>Rol Asignado</th>
+                  <th>API Token</th>
                   <th style={{ width: 80, textAlign: 'right' }}>Acciones</th>
                 </tr>
               </thead>
@@ -326,6 +346,47 @@ export default function UsersPage() {
                       >
                         {u.role}
                       </Badge>
+                    </td>
+                    <td>
+                      {u.apiToken ? (
+                        <Group spacing="xs">
+                          <Text size="xs" color="dimmed" sx={{ fontFamily: 'monospace' }}>
+                            {u.apiToken.substring(0, 8)}...
+                          </Text>
+                          <Button
+                            variant="subtle"
+                            size="xs"
+                            compact
+                            onClick={() => {
+                              modals.openConfirmModal({
+                                title: 'Regenerate API Token',
+                                children: (
+                                  <Text size="sm">
+                                    Are you sure you want to regenerate the API token for this user? Any applications
+                                    using the old token will lose access.
+                                  </Text>
+                                ),
+                                labels: { confirm: 'Regenerate', cancel: 'Cancel' },
+                                confirmProps: { color: 'red' },
+                                onConfirm: () => {
+                                  generateTokenMutation.mutate({ id: u.id });
+                                },
+                              });
+                            }}
+                          >
+                            Regenerate
+                          </Button>
+                        </Group>
+                      ) : (
+                        <Button
+                          variant="light"
+                          size="xs"
+                          compact
+                          onClick={() => generateTokenMutation.mutate({ id: u.id })}
+                        >
+                          Generate Token
+                        </Button>
+                      )}
                     </td>
                     <td style={{ textAlign: 'right' }}>
                       <ActionIcon

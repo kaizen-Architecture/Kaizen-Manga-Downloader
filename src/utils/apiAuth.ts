@@ -11,21 +11,23 @@ export async function validateApiToken(req: NextApiRequest, res: NextApiResponse
 
   const token = authHeader.substring(7);
 
-  // Check against environment variable first
-  const envToken = process.env.KAIZEN_API_TOKEN;
-  if (envToken && token === envToken) {
-    return true;
-  }
-
-  // Fallback to checking against database settings
   try {
     const settings = await prisma.settings.findFirst();
-    if (settings && settings.apiToken && token === settings.apiToken) {
+    if (!settings || !settings.apiEnabled) {
+      res.status(403).json({ error: 'Forbidden: API is disabled' });
+      return false;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { apiToken: token },
+    });
+
+    if (user) {
       return true;
     }
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.error('Error fetching settings for API auth:', e);
+    console.error('Error validating API token:', e);
   }
 
   res.status(401).json({ error: 'Unauthorized: Invalid token' });
