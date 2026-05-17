@@ -7,7 +7,8 @@
     "integrations": "Integrations",
     "sourceRepository": "Source Repository",
     "mangalCore": "Mangal Core",
-    "downloads": "Downloads"
+    "downloads": "Downloads",
+    "accounts": "Security & Accounts"
   },
   "downloads": {
     "retryDelay": {

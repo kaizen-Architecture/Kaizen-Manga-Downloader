@@ -7,7 +7,8 @@
     "integrations": "Integraciones",
     "sourceRepository": "Repositorio de Fuentes",
     "mangalCore": "Núcleo Mangal",
-    "downloads": "Descargas"
+    "downloads": "Descargas",
+    "accounts": "Seguridad y Cuentas"
   },
   "downloads": {
     "retryDelay": {
