@@ -12,12 +12,16 @@
 
 ---
 
-## 🧠 Estado Actual - 18/05/2026 (feat/rest-api-logs → staging-latest)
+## 🧠 Estado Actual - 18/05/2026 (main - Unificado, Consolidado y Estable) ✅
 
-### 0. Failed Integrations Tracking & Connection Pool Fix - EN STAGING ✅
-- **Estado**: Compilado y publicado en `staging-latest` (commit `bef3831`). Pendiente de `docker compose up --force-recreate`.
-- **Problema resuelto**: El `integrationWorker` tenía `concurrency: 30`, lo que provocaba 30 `scanLibrary()` simultáneos, agotando el connection pool de Prisma (límite: 9 conexiones). Resultado: cascada de `Timed out fetching a new connection`.
-- **Cambios**:
+### 0. Unified REST API, Real-time Logs & i18n Unification - DESPLEGADO EN MAIN ✅
+- **Estado**: Totalmente consolidado, fusionado mediante fast-forward a `main` (commit `ce59dc7`). Build de staging y producción compilados con éxito en GitHub Actions.
+- **Problema resuelto**: Consolidación definitiva de la REST API avanzada, visor de logs en tiempo real, integración secuencial de inyección de metadatos de Kavita libre de database connection pool timeouts, responsive layouts de tablas de Jules (PR #8) y visuales de Swagger de Jules (PR #9).
+- **Parches y Mejoras Críticas**:
+  - **S6-Overlay Environment Bake**: Solucionado el problema por el cual `/api/v1/info` devolvía `"unknown"` en `gitCommit` debido a que `s6-setuidgid` limpia las variables de entorno de Node en caliente. Ahora el backend utiliza de forma segura `NEXT_PUBLIC_GIT_COMMIT_SHORT` y `NEXT_PUBLIC_BUILD_DATE` como fallback, los cuales se inyectan estáticamente a nivel de compilación tanto en frontend como en backend.
+  - **Sidebar Sub-menu Translation Retention**: Corregido el bug por el cual el sub-menú de ajustes perdía su traducción al navegar al Dashboard (`/`), biblioteca (`/library`), planificador (`/scheduler`), fuentes (`/sources`) o ficha de manga (`/manga/[id]`). Se agregó el namespace de traducción `'settings'` en el array de `serverSideTranslations` de todos estos archivos de servidor.
+  - **Swagger.json Restoration**: Restaurado el archivo `public/swagger.json` que fue erróneamente eliminado en el PR #9 para evitar errores de fetch 404 al abrir el panel interactivo "Ver Docs" en Ajustes de Desarrollo.
+- **Kavita Failed Integrations Tracking & Connection Pool Fix**:
   - `integration.ts`: Concurrencia reducida a **1**. Limiter bajado a `max: 1`.
   - `download.ts`: `integrationQueue.add()` ahora usa `jobId: 'run_integrations'` fijo → BullMQ **deduplica** automáticamente los jobs, evitando que 10 descargas simultáneas lancen 10 escaneos de biblioteca.
   - `kavita.ts`: Se añade **validación de magic bytes PK** del CBZ antes de ejecutar Python. Si el archivo está corrupto, se lanza error inmediato sin gastar un proceso Python.
@@ -36,11 +40,11 @@
   - `info.ts`: Nuevo endpoint de API REST público `GET /api/v1/info` que retorna la versión actual, el hash completo del commit Git y la fecha de build.
   - `header.tsx`: Se lee el commit corto (`NEXT_PUBLIC_GIT_COMMIT_SHORT`) y se añade junto a la versión en la cabecera (ej. `v1.10.0 · 3746b85`) con un Mantine Tooltip con la marca de tiempo de compilación.
   - `Dockerfile` & `check.yml`: Inyección automatizada de `GIT_COMMIT` y `BUILD_DATE` durante el build de Next.js y variables del backend.
-- **Jules' Mobile Tables & Responsiveness Integration (PR #8)**:
-  - **Estado**: Integrado y fusionado (merged) directamente en la rama activa `feat/rest-api-logs`.
+- **Jules' Mobile Tables & Responsiveness Integration (PR #8 & #9)**:
+  - **Estado**: Totalmente integrados, pulidos y fusionados directamente en la rama activa.
   - **Cambios**:
     - Se añade `overflowX: 'auto'` y `minWidth: 600` a las tablas del sistema (como `library.tsx`, `scheduler.tsx`, `users.tsx`, `FailedJobsModal.tsx`, `DownloadQueueModal.tsx`) para asegurar que en pantallas móviles o tabletas no haya cortes visuales y se pueda hacer scroll horizontal limpio.
-    - Se reemplazó `height: 'calc(100vh - 88px)'` por `minHeight: 'calc(100dvh - 88px)'` usando *dynamic viewport height* (`dvh`) para erradicar los molestos saltos visuales y cortes en la interfaz móvil por el redimensionamiento del teclado o barras de navegación móviles.
+    - Se reemplazó `height: 'calc(100vh - 88px)'` por `minHeight: 'calc(100dvh - 88px)'` usando *dynamic viewport height* (`dvh`) para erradicar los cortes de la interfaz móvil.
 - **CBZ Corruptos identificados en Staging**: `Solo_Max-Level_Newbie [0149][0164]`, `World_s_Strongest_Troll [0119][0120]`, `Surviving_as_a_Barbarian [0056]`, `Magic_Emperor [0677]`. Marcar como `metadataFailed` al desplegar y re-descargar desde fuente alternativa.
 - **Limpieza LXC**: Docker build cache (4.79 GB) + imágenes viejas (5.27 GB) eliminados. Disco: 99% → ~75%.
 
@@ -135,6 +139,7 @@
 ---
 
 ## 📦 Versioning de la App
+- `v2.2.27-kaizen` = Docker `staging-latest` / `latest` (REST API Unificada + Real-time Log Viewer + i18n Submenu sidebar fixes + SwaggerUI dark mode + Jules' Responsive tables)
 - `v2.2.7-kaizen` = Docker `staging-latest` (UI Recuperación Modal + Scrapers Verificados Agrupados + Next.js 4MB Payload Fix)
 - `v2.2.6-kaizen` = Docker `v23-kaizen` (Metadata Override + Modular Fallback Settings)
 - `v2.2.5-kaizen` = Docker `v22-kaizen` (PR #22 + GitHub Sync + Manual Upload + Favicon Fix)
@@ -152,8 +157,8 @@
 
 | Tag | Versión | Estado |
 |---|---|---|
-| **`latest`** | v22-kaizen | ✅ **Producción Estable (bracket fix + GitHub Sync + Auto-Deactivation)** |
-| **`staging-latest`** | Current | ✅ Versión de staging activa con UI de alternativas y optimización de límite JSON |
+| **`latest`** | v2.2.27-kaizen | ✅ **Producción Estable (REST API + Real-time Logs + Swagger + Responsive Submenu Sidebar)** |
+| **`staging-latest`** | Current | ✅ Versión de staging activa consolidada con todos los fixes de traducción e inyección secuencial |
 | **`v23-kaizen`** | Previous | ✅ Versión de metadatos manual y prioridad modular |
 | **`v22-kaizen`** | Previous | ✅ Versión anterior estable |
 | `v19-kaizen` | Base | 🧊 Imagen Base Estable (Ubuntu Jammy) |
@@ -173,6 +178,7 @@ Para desplegar la última versión de desarrollo en el entorno de staging:
 ---
 
 ## 📋 Historial de Cambios Recientes (Resumen)
+- **18/05/2026 (v2.2.27-kaizen)**: Versión **v2.2.27-kaizen**. Fusión de la rama `feat/rest-api-logs` a la rama de producción `main` consolidando la REST API Avanzada, el **Real-Time Server Log Viewer** con hot-swapping de logs de backend, el motor de inyección secuencial de metadatos de Kavita libre de database connection pool timeouts, y la integración completa de los parches visuales responsivos de Jules (PR #8) y Swagger UI en modo oscuro (PR #9). Se resolvieron errores de traducción del submenú sidebar al navegar fuera de settings cargando el namespace `'settings'` en las props de servidor de todas las páginas principales, y se corrigió el error de Git Commit `"unknown"` en el s6-overlay haciendo fallback estático a variables de compilación `NEXT_PUBLIC_` en la API REST de `/info`.
 - **17/05/2026 (v2.2.26-kaizen)**: Versión **v2.2.26-kaizen**. Implementación del API REST Avanzada (búsqueda avanzada por género/autor/estado, bloque de estadísticas de lectura `readingStatus` y mutación transactional `PATCH` para estados de lectura de capítulos y mangas), integración del premium **Real-Time Server Log Viewer** en la pestaña de Mantenimiento, localización multi-idioma (ES/EN) de los botones y modal de alternativas en la cola de fallidas, y refactorización y estabilización robusta de la construcción de argumentos de `mangal.ts` (`downloadArgs` por push) para evitar errores del flag requerido `--manga` en búsquedas difusas.
 - **17/05/2026 (v2.2.25-kaizen)**: Versión **v2.2.19-kaizen**. Modularización de la **REST API Externa** y el selector Swagger a una pestaña de primer nivel llamada **Desarrollo / Development** en Ajustes. Limpieza del panel de seguridad de cuentas (`AuthSettings.tsx`) para centrarse exclusivamente en la protección web. Además, se actualizó la canalización CI/CD (`check.yml`) para compilar y subir a Docker Hub la versión de Staging (`staging-latest`) en cada push de ramas de desarrollo, posibilitando pruebas en caliente en el servidor antes del merge a `main`.
 - **15/05/2026 (v2.2.24-kaizen)**: Versión **v2.2.18-kaizen**. Creación e integración del scraper nativo en Lua para **TopManhua (`www.topmanhua.fan`)** siguiendo estrictamente el `IA_Scrapper_Prompt` de Mangal. Se implementó una lógica de extracción directa sin necesidad de headless browser, ya que la plataforma expone el listado de capítulos e imágenes de forma nativa en el código HTML de las páginas bajo el estándar Madara. Validado y añadido localmente al repositorio de origen de Kaizen (`Scrappers/TopManhua.lua`).

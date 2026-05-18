@@ -13,6 +13,8 @@
 - **✏️ Manual Metadata Control**: Surgical editing capabilities for covers (URLs or local uploads) and custom synopses with automated disk-level persistence.
 - **📱 Ultra-Stable Layout Integration**: Verified horizontal and vertical viewport rendering logic to prevent mobile rotation panics.
 - **🔗 Universal Reader Interoperability**: Automatic `cover.jpg` extraction for absolute native compatibility with **Kavita**, **Komga**, and other media servers.
+- **📁 Extensible REST API**: Premium HTTP REST endpoints supporting advanced filtering (`genre`, `author`, `status`), real-time computed read progress states, and secure transaction-level updates (`PATCH` actions) via Bearer tokens. Features an interactive Swagger API playground and query builder at `/api-docs`.
+- **🖥️ Real-time Server Log Viewer**: Integrated terminal under **Settings > Maintenance** allowing users to query, search, and live-filter server logs by level or preset tags, with dynamic runtime log-level switching.
 - **📅 Smart Background Scheduler**: Optimized asynchronous concurrency checks preventing database saturation or rate-limiting.
 
 ## 📸 Interface Previews
