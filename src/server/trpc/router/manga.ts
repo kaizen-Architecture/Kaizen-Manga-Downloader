@@ -61,8 +61,8 @@ export const mangaRouter = t.router({
           select: { chapters: true, outOfSyncChapters: true },
         },
       },
-      orderBy: { title: 'asc' },
     });
+  }),
   scanLibrary: t.procedure.mutation(async () => {
     await scanLibrary();
   }),
