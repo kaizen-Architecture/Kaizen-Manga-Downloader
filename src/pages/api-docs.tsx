@@ -103,7 +103,8 @@ export default function ApiDocs() {
                 <Title order={4}>Referencia Técnica de Endpoints</Title>
               </Group>
               <Text size="xs" color="dimmed">
-                La API REST de Kaizen permite a desarrolladores y scripts de terceros consultar de forma automatizada los contenidos de la biblioteca local.
+                La API REST de Kaizen permite a desarrolladores y scripts de terceros consultar de forma automatizada
+                los contenidos de la biblioteca local.
               </Text>
 
               <Divider opacity={0.1} />
@@ -172,7 +173,7 @@ export default function ApiDocs() {
                   <Badge color="blue" size="lg" radius="sm">
                     GET
                   </Badge>
-                  <Code sx={{ fontSize: 14, fontWeight: 700 }}>/api/v1/mangas/{"{id}"}</Code>
+                  <Code sx={{ fontSize: 14, fontWeight: 700 }}>/api/v1/mangas/{'{id}'}</Code>
                   <Text size="sm" color="dimmed">
                     - Obtener los detalles y capítulos de un manga específico
                   </Text>
@@ -252,8 +253,8 @@ export default function ApiDocs() {
                   <Title order={5}>Seguridad y Autenticación</Title>
                 </Group>
                 <Text size="xs" color="dimmed">
-                  Todas las solicitudes a los endpoints de la API deben estar autenticadas mediante un Bearer
-                  Token. Sigue estos pasos para interactuar con la API:
+                  Todas las solicitudes a los endpoints de la API deben estar autenticadas mediante un Bearer Token.
+                  Sigue estos pasos para interactuar con la API:
                 </Text>
                 <List size="xs" color="dimmed" spacing="xs">
                   <List.Item>

@@ -38,8 +38,8 @@ export function ApiExplorer() {
         },
       });
 
-      const status = res.status;
-      const statusText = res.statusText;
+      const { status } = res;
+      const { statusText } = res;
       let data: any;
       try {
         data = await res.json();
@@ -131,13 +131,7 @@ export function ApiExplorer() {
           )}
 
           <Group position="right" mt="xs">
-            <Button
-              onClick={handleSend}
-              loading={loading}
-              leftIcon={<IconSend size={16} />}
-              color="indigo"
-              size="sm"
-            >
+            <Button onClick={handleSend} loading={loading} leftIcon={<IconSend size={16} />} color="indigo" size="sm">
               {t('auth.sendRequestButton', 'Enviar Petición')}
             </Button>
           </Group>
