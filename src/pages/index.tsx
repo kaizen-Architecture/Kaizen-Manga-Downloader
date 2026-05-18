@@ -30,7 +30,7 @@ export default function DashboardPage() {
   const isAuthEnabled = settingsQuery.data?.appConfig.authEnabled;
 
   return (
-    <ScrollArea sx={{ height: 'calc(100vh - 88px)' }}>
+    <ScrollArea sx={{ minHeight: 'calc(100dvh - 88px)' }}>
       <Container fluid px="md" py="md">
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
           <Title order={2} mb={4}>

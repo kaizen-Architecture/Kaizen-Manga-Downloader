@@ -339,92 +339,94 @@ export default function UsersPage() {
             <Text size="sm" weight={600} mb="xs">
               {t('users.list.title', 'Usuarios Registrados Activos')}
             </Text>
-            <Table fontSize="sm" highlightOnHover verticalSpacing="sm">
-              <thead>
-                <tr>
-                  <th style={{ width: 60 }}>{t('users.list.id', 'ID')}</th>
-                  <th>{t('users.list.username', 'Usuario')}</th>
-                  <th>{t('users.list.role', 'Rol Asignado')}</th>
-                  <th>{t('users.list.apiToken', 'API Token')}</th>
-                  <th style={{ width: 80, textAlign: 'right' }}>{t('users.list.actions', 'Acciones')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.data?.map((u) => (
-                  <tr key={u.id}>
-                    <td>{u.id}</td>
-                    <td style={{ fontWeight: 600 }}>{u.username}</td>
-                    <td>
-                      <Badge
-                        color={u.role === 'SUPERADMIN' ? 'violet' : u.role === 'MANAGER' ? 'teal' : 'gray'}
-                        variant="light"
-                      >
-                        {u.role === 'SUPERADMIN'
-                          ? t('users.roles.superadmin', 'Admin')
-                          : u.role === 'MANAGER'
-                          ? t('users.roles.manager', 'Gestor')
-                          : t('users.roles.reader', 'Lector')}
-                      </Badge>
-                    </td>
-                    <td>
-                      {u.apiToken ? (
-                        <Group spacing="xs">
-                          <Text size="xs" color="dimmed" sx={{ fontFamily: 'monospace' }}>
-                            {u.apiToken.substring(0, 8)}...
-                          </Text>
+            <Box sx={{ overflowX: 'auto' }}>
+              <Table fontSize="sm" highlightOnHover verticalSpacing="sm" sx={{ minWidth: 600 }}>
+                <thead>
+                  <tr>
+                    <th style={{ width: 60 }}>{t('users.list.id', 'ID')}</th>
+                    <th>{t('users.list.username', 'Usuario')}</th>
+                    <th>{t('users.list.role', 'Rol Asignado')}</th>
+                    <th>{t('users.list.apiToken', 'API Token')}</th>
+                    <th style={{ width: 80, textAlign: 'right' }}>{t('users.list.actions', 'Acciones')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.data?.map((u) => (
+                    <tr key={u.id}>
+                      <td>{u.id}</td>
+                      <td style={{ fontWeight: 600 }}>{u.username}</td>
+                      <td>
+                        <Badge
+                          color={u.role === 'SUPERADMIN' ? 'violet' : u.role === 'MANAGER' ? 'teal' : 'gray'}
+                          variant="light"
+                        >
+                          {u.role === 'SUPERADMIN'
+                            ? t('users.roles.superadmin', 'Admin')
+                            : u.role === 'MANAGER'
+                            ? t('users.roles.manager', 'Gestor')
+                            : t('users.roles.reader', 'Lector')}
+                        </Badge>
+                      </td>
+                      <td>
+                        {u.apiToken ? (
+                          <Group spacing="xs">
+                            <Text size="xs" color="dimmed" sx={{ fontFamily: 'monospace' }}>
+                              {u.apiToken.substring(0, 8)}...
+                            </Text>
+                            <Button
+                              variant="subtle"
+                              size="xs"
+                              compact
+                              onClick={() => {
+                                modals.openConfirmModal({
+                                  title: t('users.list.regenerateConfirmTitle', 'Regenerate API Token'),
+                                  children: (
+                                    <Text size="sm">
+                                      {t('users.list.regenerate', 'Are you sure you want to regenerate the API token for this user? Any applications using the old token will lose access.')}
+                                    </Text>
+                                  ),
+                                  labels: { confirm: t('users.list.regenerate', 'Regenerate'), cancel: t('users.delete.cancelButton', 'Cancel') },
+                                  confirmProps: { color: 'red' },
+                                  onConfirm: () => {
+                                    generateTokenMutation.mutate({ id: u.id });
+                                  },
+                                });
+                              }}
+                            >
+                              {t('users.list.regenerate', 'Regenerate')}
+                            </Button>
+                          </Group>
+                        ) : (
                           <Button
-                            variant="subtle"
+                            variant="light"
                             size="xs"
                             compact
-                            onClick={() => {
-                              modals.openConfirmModal({
-                                title: t('users.list.regenerateConfirmTitle', 'Regenerate API Token'),
-                                children: (
-                                  <Text size="sm">
-                                    {t('users.list.regenerate', 'Are you sure you want to regenerate the API token for this user? Any applications using the old token will lose access.')}
-                                  </Text>
-                                ),
-                                labels: { confirm: t('users.list.regenerate', 'Regenerate'), cancel: t('users.delete.cancelButton', 'Cancel') },
-                                confirmProps: { color: 'red' },
-                                onConfirm: () => {
-                                  generateTokenMutation.mutate({ id: u.id });
-                                },
-                              });
-                            }}
+                            onClick={() => generateTokenMutation.mutate({ id: u.id })}
                           >
-                            {t('users.list.regenerate', 'Regenerate')}
+                            {t('users.list.generate', 'Generate Token')}
                           </Button>
-                        </Group>
-                      ) : (
-                        <Button
-                          variant="light"
-                          size="xs"
-                          compact
-                          onClick={() => generateTokenMutation.mutate({ id: u.id })}
+                        )}
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
+                        <ActionIcon
+                          color="red"
+                          variant="subtle"
+                          disabled={u.username === 'admin'}
+                          onClick={() => confirmDelete(u.id, u.username)}
+                          title={
+                            u.username === 'admin'
+                              ? t('users.delete.disabledAdmin', 'La cuenta principal no puede ser eliminada')
+                              : t('users.delete.confirmButton', 'Eliminar usuario')
+                          }
                         >
-                          {t('users.list.generate', 'Generate Token')}
-                        </Button>
-                      )}
-                    </td>
-                    <td style={{ textAlign: 'right' }}>
-                      <ActionIcon
-                        color="red"
-                        variant="subtle"
-                        disabled={u.username === 'admin'}
-                        onClick={() => confirmDelete(u.id, u.username)}
-                        title={
-                          u.username === 'admin'
-                            ? t('users.delete.disabledAdmin', 'La cuenta principal no puede ser eliminada')
-                            : t('users.delete.confirmButton', 'Eliminar usuario')
-                        }
-                      >
-                        <IconTrash size={16} />
-                      </ActionIcon>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+                          <IconTrash size={16} />
+                        </ActionIcon>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Box>
           </Paper>
         </motion.div>
       </Stack>

@@ -164,7 +164,7 @@ export default function LibraryPage() {
     });
 
   return (
-    <ScrollArea sx={{ height: 'calc(100vh - 88px)' }}>
+    <ScrollArea sx={{ minHeight: 'calc(100dvh - 88px)' }}>
       <Container fluid p={0} m={0}>
         <Group mb="md">
           <Paper withBorder p="xs" radius="md">
@@ -335,44 +335,46 @@ export default function LibraryPage() {
               </Stack>
             ) : (
               <Paper withBorder p={0} radius="md" sx={{ overflow: 'hidden' }}>
-                <Table highlightOnHover verticalSpacing="sm" horizontalSpacing="md">
-                  <thead>
-                    <tr>
-                      <th>{t('common:common.manga')}</th>
-                      <th>{t('common:common.source')}</th>
-                      <th>{t('library:stats.chapters')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filtered?.map((manga) => (
-                      <Box
-                        component="tr"
-                        key={manga.id}
-                        onClick={() => router.push(`/manga/${manga.id}`)}
-                        sx={{ cursor: 'pointer' }}
-                      >
-                        <td>
-                          <Text weight={500}>{manga.title}</Text>
-                        </td>
-                        <td>
-                          <Text size="sm" color="dimmed">
-                            {manga.source}
-                          </Text>
-                        </td>
-                        <td>
-                          <Text size="sm">{manga._count?.chapters || 0}</Text>
-                        </td>
-                      </Box>
-                    ))}
-                    {(!filtered || filtered.length === 0) && (
+                <Box sx={{ overflowX: 'auto' }}>
+                  <Table highlightOnHover verticalSpacing="sm" horizontalSpacing="md" sx={{ minWidth: 600 }}>
+                    <thead>
                       <tr>
-                        <td colSpan={3} style={{ textAlign: 'center', padding: '24px' }}>
-                          <Text color="dimmed">{t('library:noMangas')}</Text>
-                        </td>
+                        <th>{t('common:common.manga')}</th>
+                        <th>{t('common:common.source')}</th>
+                        <th>{t('library:stats.chapters')}</th>
                       </tr>
-                    )}
-                  </tbody>
-                </Table>
+                    </thead>
+                    <tbody>
+                      {filtered?.map((manga) => (
+                        <Box
+                          component="tr"
+                          key={manga.id}
+                          onClick={() => router.push(`/manga/${manga.id}`)}
+                          sx={{ cursor: 'pointer' }}
+                        >
+                          <td>
+                            <Text weight={500}>{manga.title}</Text>
+                          </td>
+                          <td>
+                            <Text size="sm" color="dimmed">
+                              {manga.source}
+                            </Text>
+                          </td>
+                          <td>
+                            <Text size="sm">{manga._count?.chapters || 0}</Text>
+                          </td>
+                        </Box>
+                      ))}
+                      {(!filtered || filtered.length === 0) && (
+                        <tr>
+                          <td colSpan={3} style={{ textAlign: 'center', padding: '24px' }}>
+                            <Text color="dimmed">{t('library:noMangas')}</Text>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </Table>
+                </Box>
               </Paper>
             )}
           </Stack>
