@@ -13,7 +13,7 @@
 - **✏️ Manual Metadata Control**: Surgical editing capabilities for covers (URLs or local uploads) and custom synopses with automated disk-level persistence.
 - **📱 Ultra-Stable Layout Integration**: Verified horizontal and vertical viewport rendering logic to prevent mobile rotation panics.
 - **🔗 Universal Reader Interoperability**: Automatic `cover.jpg` extraction for absolute native compatibility with **Kavita**, **Komga**, and other media servers.
-- **📁 Extensible REST API**: Premium HTTP REST endpoints supporting advanced filtering (`genre`, `author`, `status`), real-time computed read progress states, and secure transaction-level updates (`PATCH` actions) via Bearer tokens. Features an interactive Swagger API playground and query builder at `/api-docs`.
+- **📁 Extensible REST API**: Premium HTTP REST endpoints supporting advanced filtering (`genre`, `author`, `status`), real-time computed read progress states, secure transaction-level updates (`PATCH` actions) via Bearer tokens, and in-memory direct reading page extraction from `.cbz` files (fully optimized for integrations like **Paperback**). Features an interactive Swagger API playground and query builder at `/api-docs`.
 - **🖥️ Real-time Server Log Viewer**: Integrated terminal under **Settings > Maintenance** allowing users to query, search, and live-filter server logs by level or preset tags, with dynamic runtime log-level switching.
 - **📅 Smart Background Scheduler**: Optimized asynchronous concurrency checks preventing database saturation or rate-limiting.
 
@@ -40,6 +40,18 @@ curl -H "Authorization: Bearer YOUR_USER_API_TOKEN" http://localhost:3000/api/v1
 ### Documentation
 
 You can view the full interactive OpenAPI (Swagger) documentation, test endpoints, and explore the schema by navigating to `/api-docs` on your Kaizen instance (e.g., `http://localhost:3000/api-docs`).
+
+### 📖 Direct Reading & Page Streaming (e.g. Paperback Integration)
+
+Kaizen supports extracting pages on-the-fly directly from downloaded `.cbz` files in local storage without extracting them to disk. This is ideal for lightweight mobile reader integrations like **Paperback** (iOS):
+
+* **List Pages (JSON):**
+  `GET /api/v1/mangas/{id}/chapters/{chapterId}/pages`
+  *Returns an ordered list of all pages in the chapter along with their direct image URLs.*
+  
+* **Stream Image (Binary):**
+  `GET /api/v1/mangas/{id}/chapters/{chapterId}/pages?pageIndex={index}`
+  *Streams the raw binary image (JPEG/PNG/WebP/GIF/BMP) with highly optimized cache headers directly to the reader.*
 
 ## 🔄 Migration & Compatibility
 

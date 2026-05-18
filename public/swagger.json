@@ -227,6 +227,77 @@
           "404": { "description": "Manga not found" }
         }
       }
+    },
+    "/mangas/{id}/chapters/{chapterId}/pages": {
+      "get": {
+        "summary": "Get pages from chapter",
+        "description": "Retrieve the list of pages from a chapter's CBZ file (as JSON), or extract and serve the raw binary of a specific page when the 'pageIndex' query parameter is provided.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique manga ID",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "chapterId",
+            "in": "path",
+            "required": true,
+            "description": "The unique chapter ID",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "pageIndex",
+            "in": "query",
+            "required": false,
+            "description": "The 0-based index of the page to extract and stream as binary",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON list of pages, or the raw binary image data (JPEG/PNG/WebP/GIF/BMP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "chapterId": { "type": "integer", "example": 42 },
+                    "totalPages": { "type": "integer", "example": 25 },
+                    "pages": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "index": { "type": "integer", "example": 0 },
+                          "name": { "type": "string", "example": "page_001.jpg" },
+                          "url": { "type": "string", "example": "/api/v1/mangas/1/chapters/42/pages?pageIndex=0" }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "image/jpeg": { "schema": { "type": "string", "format": "binary" } },
+              "image/png": { "schema": { "type": "string", "format": "binary" } },
+              "image/webp": { "schema": { "type": "string", "format": "binary" } },
+              "image/gif": { "schema": { "type": "string", "format": "binary" } },
+              "image/bmp": { "schema": { "type": "string", "format": "binary" } }
+            }
+          },
+          "400": { "description": "Invalid parameters or page index out of range" },
+          "401": { "description": "Unauthorized - Invalid or missing Bearer token" },
+          "403": { "description": "Forbidden - REST API disabled in settings" },
+          "404": { "description": "Manga, chapter, or CBZ file not found" }
+        }
+      }
     }
   }
 }
