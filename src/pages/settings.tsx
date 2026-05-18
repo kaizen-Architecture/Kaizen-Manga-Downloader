@@ -16,6 +16,7 @@ import {
 import { motion } from 'framer-motion';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { IntegrationSettings } from '../components/settings/integration';
 import { MangalSettings } from '../components/settings/mangal';
@@ -43,6 +44,13 @@ export default function SettingsPage() {
     onSuccess: (data) => setRefreshResult(data),
   });
 
+  const router = useRouter();
+  const activeTab = (router.query.tab as string) || 'general';
+
+  const handleTabChange = (val: string) => {
+    router.push(`/settings?tab=${val}`, undefined, { shallow: true });
+  };
+
   return (
     <Container size="xl" py="md">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
@@ -62,37 +70,7 @@ export default function SettingsPage() {
         </Stack>
       </motion.div>
 
-      <Tabs defaultValue="general" orientation="vertical" variant="pills" radius="md">
-        <Tabs.List sx={{ minWidth: 200, marginRight: 24 }}>
-          <Tabs.Tab value="general" icon={<IconPalette size={16} />}>
-            {t('tabs.appearance')}
-          </Tabs.Tab>
-          <Tabs.Tab value="notifications" icon={<IconBell size={16} />}>
-            {t('tabs.notifications')}
-          </Tabs.Tab>
-          <Tabs.Tab value="integrations" icon={<IconWorld size={16} />}>
-            {t('tabs.integrations')}
-          </Tabs.Tab>
-          <Tabs.Tab value="sources" icon={<IconPuzzle size={16} />}>
-            {t('tabs.sourceRepository')}
-          </Tabs.Tab>
-          <Tabs.Tab value="mangal" icon={<IconAdjustments size={16} />}>
-            {t('tabs.mangalCore')}
-          </Tabs.Tab>
-          <Tabs.Tab value="downloads" icon={<IconDownload size={16} />}>
-            {t('tabs.downloads')}
-          </Tabs.Tab>
-          <Tabs.Tab value="accounts" icon={<IconUsers size={16} />}>
-            {t('tabs.accounts', 'Seguridad y Cuentas')}
-          </Tabs.Tab>
-          <Tabs.Tab value="developer" icon={<IconCode size={16} />}>
-            {t('tabs.developer', 'Desarrollo')}
-          </Tabs.Tab>
-          <Tabs.Tab value="maintenance" icon={<IconDatabaseImport size={16} />}>
-            Maintenance
-          </Tabs.Tab>
-        </Tabs.List>
-
+      <Tabs value={activeTab} onTabChange={handleTabChange} radius="md">
         <Box sx={{ flex: 1 }}>
           <Tabs.Panel value="general">
             <Paper withBorder p="md" radius="md">

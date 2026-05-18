@@ -8,6 +8,15 @@ import {
   IconSettings,
   IconUsers,
   IconLogout,
+  IconChevronDown,
+  IconChevronUp,
+  IconPalette,
+  IconBell,
+  IconWorld,
+  IconAdjustments,
+  IconDownload,
+  IconDatabaseImport,
+  IconCode,
 } from '@tabler/icons-react';
 import { getCookie, deleteCookie } from 'cookies-next';
 import { useTranslation } from 'next-i18next';
@@ -15,6 +24,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { MadeWith } from './madeWith';
 import { trpc } from '../utils/trpc';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface KaizenNavbarProps {
   opened: boolean;
@@ -62,19 +72,53 @@ export function KaizenNavbar({ opened, setOpened }: KaizenNavbarProps) {
     });
   };
 
+  const [settingsOpened, setSettingsOpened] = useState(false);
+
+  useEffect(() => {
+    if (router.pathname.startsWith('/settings')) {
+      setSettingsOpened(true);
+    }
+  }, [router.pathname]);
+
   const navItems = [
     { label: t('nav.dashboard'), icon: IconLayoutDashboard, href: '/' },
     { label: t('nav.library'), icon: IconBooks, href: '/library' },
     { label: t('nav.planner'), icon: IconCalendarStats, href: '/scheduler' },
     { label: t('nav.sources'), icon: IconPuzzle, href: '/sources' },
     ...(showUsersMenu ? [{ label: t('nav.users', 'Cuentas'), icon: IconUsers, href: '/users' }] : []),
-    { label: t('nav.settings'), icon: IconSettings, href: '/settings' },
+  ];
+
+  const settingsSubItems = [
+    { value: 'general', label: tSettings('tabs.appearance'), icon: IconPalette },
+    { value: 'notifications', label: tSettings('tabs.notifications'), icon: IconBell },
+    { value: 'integrations', label: tSettings('tabs.integrations'), icon: IconWorld },
+    { value: 'sources', label: tSettings('tabs.sourceRepository'), icon: IconPuzzle },
+    { value: 'mangal', label: tSettings('tabs.mangalCore'), icon: IconAdjustments },
+    { value: 'downloads', label: tSettings('tabs.downloads'), icon: IconDownload },
+    { value: 'accounts', label: tSettings('tabs.accounts', 'Seguridad y Cuentas'), icon: IconUsers },
+    { value: 'developer', label: tSettings('tabs.developer', 'Desarrollo'), icon: IconCode },
+    { value: 'maintenance', label: tSettings('tabs.maintenance', 'Mantenimiento'), icon: IconDatabaseImport },
   ];
 
   const handleNav = (href: string) => {
     router.push(href);
     setOpened(false); // cerrar al navegar en móvil
   };
+
+  const handleSubNav = (tab: string) => {
+    router.push(`/settings?tab=${tab}`);
+    setOpened(false);
+  };
+
+  const handleSettingsToggle = () => {
+    setSettingsOpened(!settingsOpened);
+    if (!router.pathname.startsWith('/settings')) {
+      router.push('/settings?tab=general');
+    }
+  };
+
+  const isSettingsActive = router.pathname.startsWith('/settings');
+  const activeTab = (router.query.tab as string) || 'general';
 
   return (
     <Navbar
@@ -121,6 +165,77 @@ export function KaizenNavbar({ opened, setOpened }: KaizenNavbarProps) {
               </UnstyledButton>
             );
           })}
+
+          {/* Settings Collapsible Link */}
+          <UnstyledButton
+            onClick={handleSettingsToggle}
+            sx={(theme) => ({
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '10px 12px',
+              borderRadius: theme.radius.md,
+              color: isSettingsActive ? theme.white : 'rgba(255,255,255,0.65)',
+              backgroundColor: isSettingsActive ? 'rgba(255,255,255,0.15)' : 'transparent',
+              fontWeight: isSettingsActive ? 600 : 400,
+              fontSize: theme.fontSizes.sm,
+              transition: 'all 0.15s ease',
+              '&:hover': {
+                backgroundColor: 'rgba(255,255,255,0.1)',
+                color: theme.white,
+              },
+            })}
+          >
+            <Group spacing={12}>
+              <IconSettings size={20} strokeWidth={isSettingsActive ? 2 : 1.5} />
+              <Text>{t('nav.settings')}</Text>
+            </Group>
+            {settingsOpened ? <IconChevronUp size={16} opacity={0.7} /> : <IconChevronDown size={16} opacity={0.7} />}
+          </UnstyledButton>
+
+          {/* Settings Sub-items with smooth sliding motion */}
+          <AnimatePresence initial={false}>
+            {settingsOpened && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2, ease: 'easeInOut' }}
+                style={{ overflow: 'hidden', paddingLeft: 12 }}
+              >
+                <Stack spacing={2} sx={{ borderLeft: '1px solid rgba(255, 255, 255, 0.15)', paddingLeft: 8, marginTop: 4, marginBottom: 4 }}>
+                  {settingsSubItems.map((subItem) => {
+                    const isSubActive = isSettingsActive && activeTab === subItem.value;
+                    return (
+                      <UnstyledButton
+                        key={subItem.value}
+                        onClick={() => handleSubNav(subItem.value)}
+                        sx={(theme) => ({
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 10,
+                          padding: '6px 10px',
+                          borderRadius: theme.radius.sm,
+                          color: isSubActive ? theme.white : 'rgba(255,255,255,0.5)',
+                          backgroundColor: isSubActive ? 'rgba(255,255,255,0.08)' : 'transparent',
+                          fontWeight: isSubActive ? 600 : 400,
+                          fontSize: '13px',
+                          transition: 'all 0.1s ease',
+                          '&:hover': {
+                            backgroundColor: 'rgba(255,255,255,0.04)',
+                            color: theme.white,
+                          },
+                        })}
+                      >
+                        <subItem.icon size={16} strokeWidth={isSubActive ? 2 : 1.5} />
+                        <Text>{subItem.label}</Text>
+                      </UnstyledButton>
+                    );
+                  })}
+                </Stack>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </Stack>
       </Navbar.Section>
 
