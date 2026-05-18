@@ -38,11 +38,11 @@ RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
 
 ##### BUILDER
 
+FROM base AS builder
+
 # Build-time arguments passed from CI
 ARG GIT_COMMIT=unknown
 ARG BUILD_DATE=unknown
-
-FROM base AS builder
 
 WORKDIR /app
 
@@ -58,11 +58,11 @@ RUN --mount=type=cache,target=/app/.next/cache pnpm build
 
 ##### RUNNER
 
+FROM base as runner
+
 # Build-time arguments for version tracking
 ARG GIT_COMMIT=unknown
 ARG BUILD_DATE=unknown
-
-FROM base as runner
 
 WORKDIR /tmp
 
