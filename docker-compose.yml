@@ -11,7 +11,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile
     environment:
-      - DATABASE_URL=postgresql://${DATABASE_USER:-kaizoku}:${DATABASE_PASSWORD:-kaizoku}@db:${DATABASE_PORT:-5432}/${DATABASE_SCHEMA:-kaizoku}
+      - DATABASE_URL=postgresql://${DATABASE_USER:-kaizoku}:${DATABASE_PASSWORD:-kaizoku}@db:${DATABASE_PORT:-5432}/${DATABASE_SCHEMA:-kaizoku}?connection_limit=25
       - REDIS_HOST=redis
       - PUID=1000
       - PGID=1000
