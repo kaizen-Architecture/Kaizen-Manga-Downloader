@@ -580,7 +580,7 @@ export default function SchedulerPage() {
                 </Group>
               )}
 
-              <ScrollArea sx={{ height: 'calc(100vh - 520px)' }}>
+              <ScrollArea sx={{ minHeight: 300, flex: 1 }}>
                 {isMobile ? (
                   <Stack spacing="sm" p="sm">
                     {filteredSchedules.map((m) => (
@@ -658,28 +658,29 @@ export default function SchedulerPage() {
                     ))}
                   </Stack>
                 ) : (
-                  <Table verticalSpacing="sm" horizontalSpacing="md" highlightOnHover>
-                    <thead style={{ backgroundColor: 'rgba(0,0,0,0.05)', position: 'sticky', top: 0, zIndex: 1 }}>
-                      <tr>
-                        <th>{t('common.manga')}</th>
-                        <th>{t('scheduler.currentSchedule')}</th>
-                        <th>{t('common.source')}</th>
-                        <th style={{ width: 135 }}>Publication Status</th>
-                        <th style={{ width: 80 }}>Lock State</th>
-                        <th>{t('common.actions')}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredSchedules.map((m) => (
-                        <tr key={m.id}>
-                          <td>
-                            <Group spacing="sm">
-                              <Image src={m.metadata.cover} width={30} height={45} radius="xs" />
-                              <Text size="sm" weight={500} color={m.isLocked ? 'indigo' : undefined}>
-                                {m.title}
-                              </Text>
-                            </Group>
-                          </td>
+                  <Box sx={{ overflowX: 'auto' }}>
+                    <Table verticalSpacing="sm" horizontalSpacing="md" highlightOnHover sx={{ minWidth: 800 }}>
+                      <thead style={{ backgroundColor: 'rgba(0,0,0,0.05)', position: 'sticky', top: 0, zIndex: 1 }}>
+                        <tr>
+                          <th>{t('common.manga')}</th>
+                          <th>{t('scheduler.currentSchedule')}</th>
+                          <th>{t('common.source')}</th>
+                          <th style={{ width: 135 }}>Publication Status</th>
+                          <th style={{ width: 80 }}>Lock State</th>
+                          <th>{t('common.actions')}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredSchedules.map((m) => (
+                          <tr key={m.id}>
+                            <td>
+                              <Group spacing="sm">
+                                <Image src={m.metadata.cover} width={30} height={45} radius="xs" />
+                                <Text size="sm" weight={500} color={m.isLocked ? 'indigo' : undefined}>
+                                  {m.title}
+                                </Text>
+                              </Group>
+                            </td>
                           <td>
                             <Group spacing="xs">
                               <Badge
@@ -747,6 +748,7 @@ export default function SchedulerPage() {
                       ))}
                     </tbody>
                   </Table>
+                </Box>
                 )}
               </ScrollArea>
             </Tabs>

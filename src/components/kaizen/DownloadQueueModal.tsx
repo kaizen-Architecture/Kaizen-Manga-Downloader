@@ -110,8 +110,8 @@ export function DownloadQueueModal({ opened, onClose }: DownloadQueueModalProps)
     }
 
     return (
-      <ScrollArea sx={{ maxHeight: 400 }}>
-        <Table highlightOnHover verticalSpacing="sm" fontSize="sm">
+      <ScrollArea sx={{ maxHeight: 400, overflowX: 'auto' }}>
+        <Table highlightOnHover verticalSpacing="sm" fontSize="sm" sx={{ minWidth: 600 }}>
           <thead>
             <tr>
               <th>{t('dashboard.queue.col.manga')}</th>

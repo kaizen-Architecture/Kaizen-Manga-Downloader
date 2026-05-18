@@ -234,8 +234,8 @@ export function FailedJobsModal({ opened, onClose }: FailedJobsModalProps) {
         </Button>
       </Group>
 
-      <ScrollArea sx={{ height: 400 }}>
-        <Table highlightOnHover verticalSpacing="sm">
+      <ScrollArea sx={{ height: 400, overflowX: 'auto' }}>
+        <Table highlightOnHover verticalSpacing="sm" sx={{ minWidth: 600 }}>
           <thead>
             <tr>
               <th>{t('common.manga', 'Manga')}</th>

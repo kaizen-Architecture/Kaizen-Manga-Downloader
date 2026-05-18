@@ -8,7 +8,7 @@ import { trpc } from '../../utils/trpc';
 
 function MangaPageSkeleton() {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 88px)' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100dvh - 88px)' }}>
       <Box sx={{ flexBasis: 'fit-content' }}>
         <Grid>
           <Grid.Col span="auto" style={{ maxWidth: 300 }}>
@@ -78,7 +78,7 @@ export default function MangaPage() {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 88px)' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100dvh - 88px)' }}>
       <Box sx={{ flexBasis: 'fit-content' }}>
         <MangaDetail manga={mangaQuery.data} />
         <MangaSources manga={mangaQuery.data} onUpdate={() => mangaQuery.refetch()} />
