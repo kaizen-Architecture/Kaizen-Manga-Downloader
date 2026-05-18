@@ -78,41 +78,82 @@ interface ChapterFile {
 
 export const getMangaPath = (libraryPath: string, title: string) => path.resolve(libraryPath, sanitizer(title));
 
-export async function mangalExec(args: string[], options: Options = {}, retries = 3, initialDelay = 5000) {
-  let delay = initialDelay;
-  const sourceIndex = args.indexOf('--source');
-  const source = sourceIndex !== -1 ? args[sourceIndex + 1] : undefined;
+const mangalActivePromises = new Map<string, Promise<any>>();
+const mangalCache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes TTL
 
-  for (let i = 0; i < retries; i++) {
-    try {
-      const result = await execa('mangal', args, options);
-      if (source) {
-        resetSourceFailure(source);
-      }
-      return result;
-    } catch (err: any) {
-      const errorText = `${err.message || ''} ${err.stdout || ''} ${err.stderr || ''}`;
-      const isRateLimit = errorText.includes('429') || errorText.toLowerCase().includes('rate limit');
+export async function mangalExec(args: string[], options: Options = {}, retries = 3, initialDelay = 5000): Promise<any> {
+  const isReadOnly = args.includes('-j') && !args.includes('-d') && !args.includes('set') && !args.includes('update');
+  const cacheKey = args.join(' ') + '::' + (options.cwd || '');
 
-      if (isRateLimit && i < retries - 1) {
-        logger.warn(
-          `Rate limit hit (429) while running mangal ${args.join(' ')}. Retrying in ${delay / 1000}s... (Attempt ${
-            i + 1
-          }/${retries})`,
-        );
-        await new Promise((resolve) => setTimeout(resolve, delay));
-        delay *= 2; // Exponential backoff
-        continue;
-      }
+  if (isReadOnly) {
+    const cached = mangalCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      logger.debug(`[CACHE HIT] Returning cached result for: mangal ${args.join(' ')}`);
+      return cached.data;
+    }
 
-      if (source && !isRateLimit) {
-        await trackSourceFailure(source, errorText);
-      }
-
-      throw err;
+    const activePromise = mangalActivePromises.get(cacheKey);
+    if (activePromise) {
+      logger.debug(`[COALESCE] Reusing active in-flight promise for: mangal ${args.join(' ')}`);
+      return activePromise;
     }
   }
-  throw new Error('Failed to execute mangal after retries');
+
+  const execute = async () => {
+    let delay = initialDelay;
+    const sourceIndex = args.indexOf('--source');
+    const source = sourceIndex !== -1 ? args[sourceIndex + 1] : undefined;
+
+    for (let i = 0; i < retries; i++) {
+      try {
+        const result = await execa('mangal', args, options);
+        if (source) {
+          resetSourceFailure(source);
+        }
+        return {
+          stdout: result.stdout,
+          stderr: result.stderr,
+          escapedCommand: result.escapedCommand,
+        };
+      } catch (err: any) {
+        const errorText = `${err.message || ''} ${err.stdout || ''} ${err.stderr || ''}`;
+        const isRateLimit = errorText.includes('429') || errorText.toLowerCase().includes('rate limit');
+
+        if (isRateLimit && i < retries - 1) {
+          logger.warn(
+            `Rate limit hit (429) while running mangal ${args.join(' ')}. Retrying in ${delay / 1000}s... (Attempt ${
+              i + 1
+            }/${retries})`,
+          );
+          await new Promise((resolve) => setTimeout(resolve, delay));
+          delay *= 2; // Exponential backoff
+          continue;
+        }
+
+        if (source && !isRateLimit) {
+          await trackSourceFailure(source, errorText);
+        }
+
+        throw err;
+      }
+    }
+    throw new Error('Failed to execute mangal after retries');
+  };
+
+  if (isReadOnly) {
+    const promise = execute();
+    mangalActivePromises.set(cacheKey, promise);
+    try {
+      const result = await promise;
+      mangalCache.set(cacheKey, { data: result, timestamp: Date.now() });
+      return result;
+    } finally {
+      mangalActivePromises.delete(cacheKey);
+    }
+  }
+
+  return execute();
 }
 
 export const getAvailableSources = async () => {
