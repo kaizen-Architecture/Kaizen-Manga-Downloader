@@ -42,8 +42,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await tx.manga.deleteMany();
       await tx.library.deleteMany();
       await tx.metadata.deleteMany();
-      await tx.session.deleteMany();
-      await tx.token.deleteMany();
       await tx.user.deleteMany();
       await tx.settings.deleteMany();
 
