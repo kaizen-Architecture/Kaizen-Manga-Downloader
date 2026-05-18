@@ -160,10 +160,10 @@ export const getAvailableSources = async () => {
   try {
     const { stdout, escapedCommand } = await mangalExec(['sources', 'list', '-r']);
     logger.info(`Get available sources with following command: ${escapedCommand}`);
-    return stdout
+    return (stdout as string)
       .split('\n')
-      .map((s) => s.trim())
-      .filter((s) => !!s);
+      .map((s: string) => s.trim())
+      .filter((s: string) => !!s);
   } catch (err) {
     logger.error(`Failed to get available sources. err: ${err}`);
   }
