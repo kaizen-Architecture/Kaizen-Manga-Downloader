@@ -52,7 +52,8 @@ function MyApp(props: AppProps) {
       <Head>
         <title>Kaizen Manga Downloader</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
-        <link rel="icon" href="/kaizen.png?v=2" />
+        <link rel="shortcut icon" href="/favicon.ico?v=kaizen-v3" />
+        <link rel="icon" type="image/png" href="/kaizen.png?v=kaizen-v3" />
       </Head>
 
       <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
