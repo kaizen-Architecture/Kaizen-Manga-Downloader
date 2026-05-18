@@ -1,3 +1,4 @@
+import 'swagger-ui-react/swagger-ui.css';
 import { AppShell, ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
 import { useColorScheme, useHotkeys } from '@mantine/hooks';
 import { ModalsProvider } from '@mantine/modals';
@@ -7,15 +8,14 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { appWithTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { KaizenHeader } from '../components/header';
 import { KaizenNavbar } from '../components/navbar';
 import { AuthGuard } from '../components/kaizen/AuthGuard';
 import '../styles/globals.css';
 import { trpc } from '../utils/trpc';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
 import 'dayjs/locale/es';
 
 dayjs.extend(relativeTime);
@@ -23,7 +23,6 @@ dayjs.extend(localizedFormat);
 
 function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
-  const router = useRouter();
   const preferredColorScheme = useColorScheme();
   const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
   const [navOpened, setNavOpened] = useState(false);
