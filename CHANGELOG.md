@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.1](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/compare/kaizen-manga-downloader-v1.11.0...kaizen-manga-downloader-v1.11.1) (2026-05-18)
+
+
+### Bug Fixes
+
+* **db:** increase database connection pool limit to 25 to prevent timeouts ([7574011](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/757401159d451d5acf0d122b7696eecf4da337e7))
+
 ## [1.11.0](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/compare/kaizen-manga-downloader-v1.10.0...kaizen-manga-downloader-v1.11.0) (2026-05-18)
 
 
