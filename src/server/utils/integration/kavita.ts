@@ -103,7 +103,20 @@ export const injectMetadata = async (chapterId: number) => {
         }
       }
     }
+    // Fast zip integrity check: CBZ must start with the PK magic bytes (0x50 0x4B)
+    if (!fs.existsSync(filePath)) {
+      throw new Error(`CBZ file not found on disk: ${filePath}`);
+    }
+    const fd = fs.openSync(filePath, 'r');
+    const magic = Buffer.alloc(2);
+    fs.readSync(fd, magic, 0, 2, 0);
+    fs.closeSync(fd);
+    if (magic[0] !== 0x50 || magic[1] !== 0x4b) {
+      throw new Error(`CBZ file is corrupt or not a valid zip (bad magic bytes): ${filePath}`);
+    }
+
     await execa('python3', [scriptPath, filePath, tempXmlPath]);
+
 
     await prisma.chapter.update({
       where: { id: chapterId },
