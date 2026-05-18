@@ -28,6 +28,7 @@ import { MetadataSettings } from '../components/kaizen/MetadataSettings';
 import { StatusAuditSettings } from '../components/kaizen/StatusAuditSettings';
 import { AuthSettings } from '../components/kaizen/AuthSettings';
 import { DeveloperSettings } from '../components/kaizen/DeveloperSettings';
+import { DatabaseSettings } from '../components/kaizen/DatabaseSettings';
 import ServerLogViewer from '../components/kaizen/ServerLogViewer';
 import { trpc } from '../utils/trpc';
 
@@ -144,6 +145,15 @@ export default function SettingsPage() {
                 {t('tabs.developer', 'Desarrollo')}
               </Title>
               <DeveloperSettings />
+            </Paper>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="database">
+            <Paper withBorder p="md" radius="md">
+              <Title order={4} mb="md">
+                {t('tabs.database', 'Base de Datos')}
+              </Title>
+              <DatabaseSettings />
             </Paper>
           </Tabs.Panel>
 
