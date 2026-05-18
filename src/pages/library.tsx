@@ -386,7 +386,7 @@ export default function LibraryPage() {
 export async function getServerSideProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common', 'library'])),
+      ...(await serverSideTranslations(locale, ['common', 'library', 'settings'])),
     },
   };
 }

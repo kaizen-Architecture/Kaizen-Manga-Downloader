@@ -389,7 +389,7 @@ export default function SourcesPage() {
 export async function getServerSideProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common', 'sources'])),
+      ...(await serverSideTranslations(locale, ['common', 'sources', 'settings'])),
     },
   };
 }

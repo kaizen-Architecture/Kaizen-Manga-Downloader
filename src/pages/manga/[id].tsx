@@ -92,7 +92,7 @@ export default function MangaPage() {
 export async function getServerSideProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common', 'manga'])),
+      ...(await serverSideTranslations(locale, ['common', 'manga', 'settings'])),
     },
   };
 }
