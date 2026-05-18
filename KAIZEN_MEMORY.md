@@ -36,6 +36,11 @@
   - `info.ts`: Nuevo endpoint de API REST público `GET /api/v1/info` que retorna la versión actual, el hash completo del commit Git y la fecha de build.
   - `header.tsx`: Se lee el commit corto (`NEXT_PUBLIC_GIT_COMMIT_SHORT`) y se añade junto a la versión en la cabecera (ej. `v1.10.0 · 3746b85`) con un Mantine Tooltip con la marca de tiempo de compilación.
   - `Dockerfile` & `check.yml`: Inyección automatizada de `GIT_COMMIT` y `BUILD_DATE` durante el build de Next.js y variables del backend.
+- **Jules' Mobile Tables & Responsiveness Integration (PR #8)**:
+  - **Estado**: Integrado y fusionado (merged) directamente en la rama activa `feat/rest-api-logs`.
+  - **Cambios**:
+    - Se añade `overflowX: 'auto'` y `minWidth: 600` a las tablas del sistema (como `library.tsx`, `scheduler.tsx`, `users.tsx`, `FailedJobsModal.tsx`, `DownloadQueueModal.tsx`) para asegurar que en pantallas móviles o tabletas no haya cortes visuales y se pueda hacer scroll horizontal limpio.
+    - Se reemplazó `height: 'calc(100vh - 88px)'` por `minHeight: 'calc(100dvh - 88px)'` usando *dynamic viewport height* (`dvh`) para erradicar los molestos saltos visuales y cortes en la interfaz móvil por el redimensionamiento del teclado o barras de navegación móviles.
 - **CBZ Corruptos identificados en Staging**: `Solo_Max-Level_Newbie [0149][0164]`, `World_s_Strongest_Troll [0119][0120]`, `Surviving_as_a_Barbarian [0056]`, `Magic_Emperor [0677]`. Marcar como `metadataFailed` al desplegar y re-descargar desde fuente alternativa.
 - **Limpieza LXC**: Docker build cache (4.79 GB) + imágenes viejas (5.27 GB) eliminados. Disco: 99% → ~75%.
 
