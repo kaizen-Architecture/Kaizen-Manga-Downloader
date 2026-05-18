@@ -38,6 +38,10 @@ RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
 
 ##### BUILDER
 
+# Build-time arguments passed from CI
+ARG GIT_COMMIT=unknown
+ARG BUILD_DATE=unknown
+
 FROM base AS builder
 
 WORKDIR /app
@@ -46,10 +50,17 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
+# Bake commit SHA and build date into the Next.js client bundle
+ENV NEXT_PUBLIC_GIT_COMMIT_SHORT=${GIT_COMMIT}
+ENV NEXT_PUBLIC_BUILD_DATE=${BUILD_DATE}
 
 RUN --mount=type=cache,target=/app/.next/cache pnpm build
 
 ##### RUNNER
+
+# Build-time arguments for version tracking
+ARG GIT_COMMIT=unknown
+ARG BUILD_DATE=unknown
 
 FROM base as runner
 
@@ -75,6 +86,8 @@ ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV HOME="/config"
 ENV KAIZEN_LOG_PATH="/logs"
+ENV KAIZEN_GIT_COMMIT=$GIT_COMMIT
+ENV KAIZEN_BUILD_DATE=$BUILD_DATE
 
 COPY --from=builder /app/next.config.mjs ./
 COPY --from=builder /app/next-i18next.config.js ./

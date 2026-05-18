@@ -80,6 +80,9 @@ jobs:
           platforms: linux/amd64,linux/arm64
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          build-args: |
+            GIT_COMMIT=${{ github.sha }}
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:staging-latest
             ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:staging-v1.7.0
