@@ -1,5 +1,61 @@
 # Changelog
 
+## [1.11.0](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/compare/kaizen-manga-downloader-v1.10.0...kaizen-manga-downloader-v1.11.0) (2026-05-18)
+
+
+### Features
+
+* add detailed server diagnostics and logs for Kavita and Komga scans ([972b6bc](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/972b6bce8d0b9aec3d31819892f036ff6b6fecb6))
+* add REST API to integrate with other apps ([b72ba02](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/b72ba02feb956212dab35fb5daaba1d564371577))
+* add users translation key to common locales for correct sidebar switching ([85eb0dc](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/85eb0dc95edf98ace15b2147cade6af4a3482e7b))
+* **api:** add public /api/v1/info endpoint and display build commit in header ([3746b85](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/3746b8511854730ddad78064825be81a1e7145f7))
+* **api:** expand REST API filters, PATCH mutations, real-time ServerLogViewer settings, and failed recovery i18n ([86f78b5](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/86f78b598f7dfcfdd0c9991fb656e7cb45452093))
+* decouple web login auth from rest api toggle while keeping users page visible ([2445378](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/2445378f3fe251c7410a77377dc92485e63fdee3))
+* embed Swagger UI documentation directly on-page and fix users session activation UX ([2c84df0](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/2c84df05ddfcfd520b91511959d97bd9d509af6d))
+* enforce consistent api and auth enabling and disabling state dependencies ([b870dd4](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/b870dd4be3503fd4837174a64123af530ecd5514))
+* implement automatic source swapping and pre-download chapter index validation ([6acc65f](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/6acc65ff537f01b8682a2e605f88937a0b2986ca))
+* implement premium user profile card and working logout flow in navbar ([ec8b8b5](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/ec8b8b54ac845643f7682439c1ca261087d2fc8f))
+* **integrations:** add manual retry table and percentage tracking for failed metadata integrations, fix prisma connection pool exhaustion ([c756002](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/c756002911c8355c8a07ae35c310ce863edefc0b))
+* **logs:** add dynamic runtime server log level selector ([c3dc18b](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/c3dc18b710e5c6f118b9016a7cd22ec359a82066))
+* modular REST API with per-user token authentication ([a410441](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/a410441828ee14f6ff98d677380b102be3fe58c7))
+* native integration support, dashboard modular refactor, and CI fix ([d941f62](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/d941f622e01380011284eaa0f14f1fec5f82cb04))
+* split developer settings and REST API toggle to a premium dedicated Desarrollo tab ([99c7cfa](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/99c7cfa4d7d82cafcae4e6a1073f71108e2ade23))
+* **ui:** convert settings menu into a collapsible sidebar accordion and expand page layout ([243e16e](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/243e16eeb27fdbab26b31b0a98833daf3a8304d2))
+
+
+### Bug Fixes
+
+* add python3 to Dockerfile and copy kavita_inject.py to dist during build ([58a48ba](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/58a48bafcf06179d3314d566b4de1338cc316fbb))
+* apply ultra-safe download logic to prevent missing flags and chapter mismatch ([3e2fa3c](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/3e2fa3c8bc7ff0b5d29947f259e203582b768067))
+* **build:** dynamic import logger in index.ts to fix nextjs webpack browser build ([66f9df5](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/66f9df556aef829745b40ac7ece7ad40cde9ce4d))
+* connect kavita sync button and improve integration logging ([ce31a6e](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/ce31a6eaa4a3f5b95ea437d78ac0193c23880325))
+* correct logger import paths in integration utils ([f5a906c](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/f5a906c3d29f2b3988c0349862b92f8abe513434))
+* **db:** restrict prisma query logs to development environment ([a568bce](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/a568bce74788a24d465d369c9c4cf70899a86ab1))
+* **docker:** declare ARG after FROM to fix unknown gitCommit and buildDate gotcha ([79de543](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/79de54361183636dd33eeffb78884837867618d1))
+* **i18n:** load settings namespace on all sidebar pages, bake git commit into info.ts API ([ce59dc7](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/ce59dc74d3dc515a26e21ca540969c8951db35ac))
+* **kavita:** add robust fallback path resolution for kavita_inject.py inside nextjs trpc router context ([bef3e01](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/bef3e015fa5ac0df7fa64d41a97c2ff1517eef0f))
+* **kavita:** use os.tmpdir() for tempXmlPath to avoid EACCES permission denied errors in read-only production directories ([83c94b0](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/83c94b0097b2f8b1c67053d5953c1cb17d82c61c))
+* **kavita:** validate CBZ magic bytes before python injection to skip corrupt files early ([40b4baf](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/40b4baf91fe54e272bd2bb633a4de01da9e77c39))
+* **logs:** replace worker-based pino transports with custom synchronous write stream to bypass nextjs webpack thread resolution bugs ([3a5fe18](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/3a5fe187172a5d489f492c7898179f0079155f51))
+* **logs:** resolve Docker container log file path to /logs/kaizen.log by default if env is empty ([c504f1a](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/c504f1aa72bf50a53800b5621fb2afeb91a7fd6a))
+* **mangal:** always use index picker '1' for fuzzy fallback searches to prevent invalid manga picker pattern errors ([43bfaf2](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/43bfaf2d26977fde23cdcdd5e72a2a41f73c6648))
+* pin pnpm to version 8 for node 18 compatibility ([9a0fd6c](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/9a0fd6c9a306cb74c26b5f38408a030adb137305))
+* prevent duplicate downloads by matching chapter names in findMissingChapterFiles ([81a7ace](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/81a7ace0c386800ee9a6499236457e5b1e8add15))
+* remove CI cache to resolve path input error and ensure stability ([9f0f6fc](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/9f0f6fc5ca6f1f483dd6f6e81ea3a4ae9ea4b615))
+* remove ghcr.io tags to prevent 403 forbidden error on push ([6fba1f0](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/6fba1f0f9b387dd01dc3ca6ee2de864da552a9cf))
+* resolve vertical cutoff and horizontal overlap issues on mobile and tablet ([5284e5d](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/5284e5d5dc5bdd9ab432a02ecc692f849a87986e))
+* **router:** restore missing closing brace on manga query procedure ([bef3831](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/bef38315a9fa6b67eab23e4d5af6b5961fa1cdb9))
+* sanitize manga titles in kavita metadata injection and chapter deletion ([b640a19](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/b640a19bee4b6a8eb724270927d00eadc1790b0a))
+* **sidebar:** enable sidebar scrolling, translate maintenance to English, add insecure context logs copy fallback ([e7e63af](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/e7e63afb0c58def01faa2a04f93435131739d090))
+* **swagger:** restore public/swagger.json for Swagger UI docs ([b16f2b9](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/b16f2b9c36411d0ef581e74391e78876ed6501e4))
+* unify CI workflows with stable action versions to resolve pnpm installer failures ([5eb1ab3](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/5eb1ab3f1c2a9b721d13717860905c1286f15518))
+
+
+### Performance Improvements
+
+* **logs:** read huge log files backwards in chunks to avoid OOM and the 2 GiB limit error ([9544534](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/9544534f32bdb278dc6e6019c091b775a6f85f12))
+* optimize library db query and scheduler cron memoization, replace swagger with custom api explorer ([2274cc5](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/2274cc56a706e5529c4479beb531fcb567ac53a8))
+
 ## [1.10.0](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/compare/kaizoku-v1.9.0...kaizoku-v1.10.0) (2026-05-15)
 
 
