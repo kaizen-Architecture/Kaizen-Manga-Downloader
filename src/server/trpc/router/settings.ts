@@ -118,10 +118,52 @@ export const settingsRouter = t.router({
       };
 
       const logPath = path.resolve(getLogDir(), 'kaizen.log');
-
       try {
-        const fileContent = await fs.readFile(logPath, 'utf-8');
-        const lines = fileContent.trim().split('\n');
+        const fsSync = require('fs');
+
+        // High-performance backward reader that only reads the last 2000 lines, taking almost 0 RAM and working for files > 2 GiB
+        const readLastLinesSync = (filePath: string, maxLines: number): string[] => {
+          const fd = fsSync.openSync(filePath, 'r');
+          try {
+            const stat = fsSync.fstatSync(fd);
+            const fileSize = stat.size;
+            if (fileSize === 0) return [];
+
+            const chunkSize = 64 * 1024; // 64 KiB chunks
+            const buffer = Buffer.alloc(chunkSize);
+            const collectedLines: string[] = [];
+            let leftover = '';
+            let position = fileSize;
+
+            while (position > 0 && collectedLines.length < maxLines) {
+              const readSize = Math.min(chunkSize, position);
+              position -= readSize;
+
+              fsSync.readSync(fd, buffer, 0, readSize, position);
+              const chunkStr = buffer.toString('utf-8', 0, readSize) + leftover;
+              const chunkLines = chunkStr.split('\n');
+
+              leftover = chunkLines[0];
+              const validLines = chunkLines.slice(1);
+
+              for (let i = validLines.length - 1; i >= 0; i--) {
+                collectedLines.push(validLines[i]);
+                if (collectedLines.length >= maxLines) break;
+              }
+            }
+
+            if (leftover && collectedLines.length < maxLines) {
+              collectedLines.push(leftover);
+            }
+
+            return collectedLines.reverse();
+          } finally {
+            fsSync.closeSync(fd);
+          }
+        };
+
+        const rawLines = readLastLinesSync(logPath, 2000);
+        const lines = rawLines.filter(line => line.trim() !== '');
         
         const levelMap: Record<number, string> = {
           10: 'trace',
