@@ -248,4 +248,58 @@ export const settingsRouter = t.router({
       logger.info(`Log level changed dynamically to ${input} via trpc mutation.`);
       return { success: true, level: logger.level };
     }),
+  getDatabaseConfig: t.procedure.query(async () => {
+    const fs = await import('fs/promises');
+    const configPath = '/config/database.json';
+    try {
+      const content = await fs.readFile(configPath, 'utf-8');
+      const data = JSON.parse(content);
+      return {
+        connectionString: data.connectionString || '',
+        connectionLimit: data.connectionLimit || 25,
+        poolTimeout: data.poolTimeout || 30,
+      };
+    } catch (e) {
+      // Default fallback
+      const envUrl = process.env.DATABASE_URL || '';
+      return {
+        connectionString: envUrl.split('?')[0] || '',
+        connectionLimit: 25,
+        poolTimeout: 30,
+      };
+    }
+  }),
+  saveDatabaseConfig: t.procedure
+    .input(
+      z.object({
+        connectionString: z.string().min(1),
+        connectionLimit: z.number().min(1).max(200),
+        poolTimeout: z.number().min(1).max(600),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const fs = await import('fs/promises');
+      const path = await import('path');
+      const configPath = '/config/database.json';
+      try {
+        await fs.mkdir(path.dirname(configPath), { recursive: true });
+      } catch (err) {
+        // ignore
+      }
+      await fs.writeFile(
+        configPath,
+        JSON.stringify(
+          {
+            connectionString: input.connectionString,
+            connectionLimit: input.connectionLimit,
+            poolTimeout: input.poolTimeout,
+          },
+          null,
+          2,
+        ),
+        'utf-8',
+      );
+      return { success: true };
+    }),
 });
+

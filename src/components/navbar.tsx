@@ -16,6 +16,7 @@ import {
   IconAdjustments,
   IconDownload,
   IconDatabaseImport,
+  IconDatabase,
   IconCode,
 } from '@tabler/icons-react';
 import { getCookie, deleteCookie } from 'cookies-next';
@@ -97,6 +98,7 @@ export function KaizenNavbar({ opened, setOpened }: KaizenNavbarProps) {
     { value: 'downloads', label: tSettings('tabs.downloads'), icon: IconDownload },
     { value: 'accounts', label: tSettings('tabs.accounts'), icon: IconUsers },
     { value: 'developer', label: tSettings('tabs.developer'), icon: IconCode },
+    { value: 'database', label: tSettings('tabs.database', 'Base de Datos'), icon: IconDatabase },
     { value: 'maintenance', label: tSettings('tabs.maintenance'), icon: IconDatabaseImport },
   ];
 
