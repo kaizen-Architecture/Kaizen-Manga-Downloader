@@ -31,6 +31,7 @@ import dayjs from 'dayjs';
 import { useTranslation } from 'next-i18next';
 import { useEffect, useState } from 'react';
 import { trpc } from '../../utils/trpc';
+import { showNotification } from '@mantine/notifications';
 
 export default function ServerLogViewer() {
   const { t } = useTranslation('common');
@@ -64,7 +65,49 @@ export default function ServerLogViewer() {
   const handleCopyLogs = () => {
     if (!logsQuery.data) return;
     const text = logsQuery.data.map((l) => `[${l.time}] [${l.level.toUpperCase()}] ${l.msg}`).join('\n');
-    navigator.clipboard.writeText(text);
+    
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          showNotification({
+            title: t('maintenance.logs.copiedTitle', 'Logs Copiados'),
+            message: t('maintenance.logs.copiedDesc', 'Los registros se han copiado al portapapeles.'),
+            color: 'teal',
+          });
+        })
+        .catch(() => {
+          fallbackCopyText(text);
+        });
+    } else {
+      fallbackCopyText(text);
+    }
+  };
+
+  const fallbackCopyText = (text: string) => {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.top = '0';
+    textArea.style.left = '0';
+    textArea.style.position = 'fixed';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      showNotification({
+        title: t('maintenance.logs.copiedTitle', 'Logs Copiados'),
+        message: t('maintenance.logs.copiedDesc', 'Los registros se han copiado al portapapeles.'),
+        color: 'teal',
+      });
+    } catch (err) {
+      console.error('Fallback copy failed', err);
+      showNotification({
+        title: 'Error',
+        message: 'No se pudo copiar los logs al portapapeles.',
+        color: 'red',
+      });
+    }
+    document.body.removeChild(textArea);
   };
 
   const getLevelColor = (lvl: string) => {

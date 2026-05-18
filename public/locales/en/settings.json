@@ -9,7 +9,8 @@
     "mangalCore": "Mangal Core",
     "downloads": "Downloads",
     "accounts": "Security & Accounts",
-    "developer": "Development"
+    "developer": "Development",
+    "maintenance": "Maintenance"
   },
   "downloads": {
     "retryDelay": {

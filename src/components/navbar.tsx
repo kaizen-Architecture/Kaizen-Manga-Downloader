@@ -1,4 +1,4 @@
-import { Navbar, Stack, UnstyledButton, Text, Divider, Avatar, Group, Box, ActionIcon, Tooltip } from '@mantine/core';
+import { Navbar, Stack, UnstyledButton, Text, Divider, Avatar, Group, Box, ActionIcon, Tooltip, ScrollArea } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import {
   IconLayoutDashboard,
@@ -95,9 +95,9 @@ export function KaizenNavbar({ opened, setOpened }: KaizenNavbarProps) {
     { value: 'sources', label: tSettings('tabs.sourceRepository'), icon: IconPuzzle },
     { value: 'mangal', label: tSettings('tabs.mangalCore'), icon: IconAdjustments },
     { value: 'downloads', label: tSettings('tabs.downloads'), icon: IconDownload },
-    { value: 'accounts', label: tSettings('tabs.accounts', 'Seguridad y Cuentas'), icon: IconUsers },
-    { value: 'developer', label: tSettings('tabs.developer', 'Desarrollo'), icon: IconCode },
-    { value: 'maintenance', label: tSettings('tabs.maintenance', 'Mantenimiento'), icon: IconDatabaseImport },
+    { value: 'accounts', label: tSettings('tabs.accounts'), icon: IconUsers },
+    { value: 'developer', label: tSettings('tabs.developer'), icon: IconCode },
+    { value: 'maintenance', label: tSettings('tabs.maintenance'), icon: IconDatabaseImport },
   ];
 
   const handleNav = (href: string) => {
@@ -135,8 +135,8 @@ export function KaizenNavbar({ opened, setOpened }: KaizenNavbarProps) {
         zIndex: 200,
       })}
     >
-      <Navbar.Section grow>
-        <Stack spacing={4}>
+      <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
+        <Stack spacing={4} pb="xl">
           {navItems.map((item) => {
             const isActive = item.href === '/' ? router.pathname === '/' : router.pathname.startsWith(item.href);
             return (

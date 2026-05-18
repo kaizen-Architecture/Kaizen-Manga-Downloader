@@ -9,7 +9,8 @@
     "mangalCore": "Núcleo Mangal",
     "downloads": "Descargas",
     "accounts": "Seguridad y Cuentas",
-    "developer": "Desarrollo"
+    "developer": "Desarrollo",
+    "maintenance": "Mantenimiento"
   },
   "downloads": {
     "retryDelay": {
