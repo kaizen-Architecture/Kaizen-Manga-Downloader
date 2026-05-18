@@ -110,7 +110,7 @@ export const downloadWorker = new Worker(
         source: finalSource,
         url: mangaInDb.metadata.urls.find((url) => url.includes('anilist')),
       });
-      await integrationQueue.add('run_integrations', null);
+      await integrationQueue.add('run_integrations', null, { jobId: 'run_integrations' });
       await job.updateProgress(100);
     } catch (err) {
       await job.log(`${err}`);

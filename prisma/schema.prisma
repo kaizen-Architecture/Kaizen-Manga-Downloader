@@ -58,6 +58,8 @@ model Chapter {
   fileName         String
   size             Int
   metadataInjected Boolean  @default(false)
+  metadataFailed   Boolean  @default(false)
+  metadataError    String?
   lastReadAt       DateTime?
   isRead           Boolean  @default(false)
   manga            Manga    @relation(fields: [mangaId], references: [id], onDelete: Cascade)

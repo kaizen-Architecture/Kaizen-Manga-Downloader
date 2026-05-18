@@ -6,7 +6,10 @@ import { logger } from '../../../utils/logging';
 export const scanLibrary = async () => {
   // 1. Process pending metadata injections first
   const pendingChapters = await prisma.chapter.findMany({
-    where: { metadataInjected: false },
+    where: {
+      metadataInjected: false,
+      metadataFailed: false,
+    },
     select: { id: true },
   });
 

@@ -17,9 +17,9 @@ export const integrationWorker = new Worker(
       host: process.env.REDIS_HOST,
       port: parseInt(process.env.REDIS_PORT || '6379', 10),
     },
-    concurrency: 30,
+    concurrency: 1,
     limiter: {
-      max: 30,
+      max: 1,
       duration: 1000 * 2,
     },
   },

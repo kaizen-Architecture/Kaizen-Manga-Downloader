@@ -1,6 +1,7 @@
 import { Grid, Title, Stack, Button, Collapse, Paper } from '@mantine/core';
 import { useTranslation } from 'next-i18next';
 import { IntegrationHealthCard } from './IntegrationHealthCard';
+import { FailedIntegrationsModal } from './FailedIntegrationsModal';
 import { trpc } from '../../utils/trpc';
 import { useState } from 'react';
 import { ApiExplorer } from './ApiExplorer';
@@ -10,11 +11,14 @@ export function IntegrationStatusGrid() {
   const utils = trpc.useContext();
   const settingsQuery = trpc.settings.query.useQuery();
   const mangaQuery = trpc.manga.query.useQuery();
+  const failedQuery = trpc.manga.failedIntegrations.useQuery();
   const [showDocs, setShowDocs] = useState(false);
+  const [showFailedModal, setShowFailedModal] = useState(false);
 
   const scanMutation = trpc.manga.scanLibrary.useMutation({
     onSuccess: () => {
       utils.manga.query.invalidate();
+      utils.manga.failedIntegrations.invalidate();
     },
   });
 
@@ -23,6 +27,7 @@ export function IntegrationStatusGrid() {
   const { appConfig } = settingsQuery.data;
   const mangas = mangaQuery.data || [];
   const totalMangas = mangas.length;
+  const failedCount = failedQuery.data?.length || 0;
 
   // Optimized sync check using the non-injected query constraint
   const syncedMangas = mangas.filter(
@@ -40,7 +45,10 @@ export function IntegrationStatusGrid() {
               status="healthy"
               syncedCount={syncedMangas}
               totalCount={totalMangas}
+              failedCount={failedCount}
+              onViewFailed={() => setShowFailedModal(true)}
               onSync={() => scanMutation.mutate()}
+              isLoading={scanMutation.isLoading}
             />
           </Grid.Col>
         )}
@@ -53,6 +61,7 @@ export function IntegrationStatusGrid() {
               syncedCount={0}
               totalCount={totalMangas}
               onSync={() => scanMutation.mutate()}
+              isLoading={scanMutation.isLoading}
             />
           </Grid.Col>
         )}
@@ -106,6 +115,11 @@ export function IntegrationStatusGrid() {
           <ApiExplorer />
         </Paper>
       </Collapse>
+
+      <FailedIntegrationsModal
+        opened={showFailedModal}
+        onClose={() => setShowFailedModal(false)}
+      />
     </Stack>
   );
 }

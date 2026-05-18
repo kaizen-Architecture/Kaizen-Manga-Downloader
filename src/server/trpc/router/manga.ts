@@ -63,9 +63,59 @@ export const mangaRouter = t.router({
       },
       orderBy: { title: 'asc' },
     });
-  }),
   scanLibrary: t.procedure.mutation(async () => {
     await scanLibrary();
+  }),
+  failedIntegrations: t.procedure.query(async ({ ctx }) => {
+    return ctx.prisma.chapter.findMany({
+      where: { metadataFailed: true },
+      select: {
+        id: true,
+        index: true,
+        fileName: true,
+        metadataError: true,
+        createdAt: true,
+        manga: {
+          select: {
+            title: true,
+            source: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }),
+  retryFailedIntegration: t.procedure
+    .input(z.object({ chapterId: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.chapter.update({
+        where: { id: input.chapterId },
+        data: {
+          metadataFailed: false,
+          metadataError: null,
+        },
+      });
+      const { injectMetadata } = await import('../../utils/integration/kavita');
+      await injectMetadata(input.chapterId);
+    }),
+  retryAllFailedIntegrations: t.procedure.mutation(async ({ ctx }) => {
+    const failedChapters = await ctx.prisma.chapter.findMany({
+      where: { metadataFailed: true },
+      select: { id: true },
+    });
+
+    if (failedChapters.length > 0) {
+      await ctx.prisma.chapter.updateMany({
+        where: { id: { in: failedChapters.map(c => c.id) } },
+        data: {
+          metadataFailed: false,
+          metadataError: null,
+        },
+      });
+
+      const { integrationQueue } = await import('../../queue/integration');
+      await integrationQueue.add('run_integrations', null);
+    }
   }),
   sources: t.procedure.query(async () => {
     return getAvailableSources();

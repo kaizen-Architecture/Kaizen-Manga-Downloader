@@ -107,12 +107,28 @@ export const injectMetadata = async (chapterId: number) => {
 
     await prisma.chapter.update({
       where: { id: chapterId },
-      data: { metadataInjected: true },
+      data: {
+        metadataInjected: true,
+        metadataFailed: false,
+        metadataError: null,
+      },
     });
 
     logger.info(`Kavita: Successfully injected metadata into ${chapter.fileName}`);
   } catch (err) {
     logger.error(`Kavita: Failed to inject metadata into ${filePath}. Error: ${err}`);
+    try {
+      await prisma.chapter.update({
+        where: { id: chapterId },
+        data: {
+          metadataInjected: false,
+          metadataFailed: true,
+          metadataError: (err as Error).message || String(err),
+        },
+      });
+    } catch (updateErr) {
+      logger.error(`Kavita: Failed to save error status for chapter ${chapterId}: ${updateErr}`);
+    }
   } finally {
     if (tempXmlPath && fs.existsSync(tempXmlPath)) {
       try {
