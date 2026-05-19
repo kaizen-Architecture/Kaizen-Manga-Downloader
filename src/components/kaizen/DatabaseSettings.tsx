@@ -8,6 +8,7 @@ import {
   Stack,
   Text,
   TextInput,
+  PasswordInput,
   ThemeIcon,
   Title,
   Alert,
@@ -194,7 +195,7 @@ export function DatabaseSettings() {
               </Box>
             </Group>
 
-            <TextInput
+            <PasswordInput
               label="Database Connection URL"
               description="PostgreSQL connection string (e.g. postgresql://user:pass@host:5432/db)"
               value={connectionString}
