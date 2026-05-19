@@ -77,6 +77,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Get Short SHA and Date
+        id: vars
+        run: |
+          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "build_date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -114,6 +120,9 @@ jobs:
           platforms: linux/amd64,linux/arm64
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          build-args: |
+            GIT_COMMIT=${{ steps.vars.outputs.sha_short }}
+            BUILD_DATE=${{ steps.vars.outputs.build_date }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:staging-latest
             ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:staging-v1.7.0
@@ -128,6 +137,9 @@ jobs:
           platforms: linux/amd64,linux/arm64
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          build-args: |
+            GIT_COMMIT=${{ steps.vars.outputs.sha_short }}
+            BUILD_DATE=${{ steps.vars.outputs.build_date }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:v1.7.0

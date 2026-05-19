@@ -105,12 +105,12 @@ export function KaizenHeader({ opened, setOpened }: KaizenHeaderProps) {
                     <Tooltip
                       withArrow
                       position="bottom"
-                      label={`Build: ${process.env.NEXT_PUBLIC_GIT_COMMIT_SHORT || 'dev'} · ${process.env.NEXT_PUBLIC_BUILD_DATE ? new Date(process.env.NEXT_PUBLIC_BUILD_DATE).toLocaleDateString() : 'local'}`}
+                      label={`Build: ${process.env.NEXT_PUBLIC_GIT_COMMIT_SHORT || 'dev'} | ${process.env.NEXT_PUBLIC_BUILD_DATE ? new Date(process.env.NEXT_PUBLIC_BUILD_DATE).toLocaleDateString() : 'local'}`}
                     >
                       <Text className={classes.version}>
                         v{process.env.NEXT_PUBLIC_APP_VERSION}
                         {process.env.NEXT_PUBLIC_GIT_COMMIT_SHORT && (
-                          <> · {process.env.NEXT_PUBLIC_GIT_COMMIT_SHORT}</>
+                          <> | {process.env.NEXT_PUBLIC_GIT_COMMIT_SHORT}</>
                         )}
                       </Text>
                     </Tooltip>
