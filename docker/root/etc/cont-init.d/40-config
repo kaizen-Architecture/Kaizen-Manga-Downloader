@@ -18,8 +18,8 @@ done
 
 # Setup mangal data
 echo "[Kaizen] Syncing mangal configuration..."
-mkdir -p /config/.local/share
-cp -r /mangal /config/.local/share 2>/dev/null || true
+mkdir -p /config/.config
+cp -r /mangal /config/.config/ 2>/dev/null || true
 
 # Cleanup cache
 rm -f /config/.cache/mangal/Mangasee_custom_mangas.json
