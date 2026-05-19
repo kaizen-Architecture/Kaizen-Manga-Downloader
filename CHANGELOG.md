@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.12.0](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/compare/kaizen-manga-downloader-v1.11.1...kaizen-manga-downloader-v1.12.0) (2026-05-19)
+
+
+### Features
+
+* **db:** add dedicated database panel, backup export, and recovery/restore ([80fa761](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/80fa761520f96ee13dbcd742f733b6553b4f3a1c))
+* **db:** add dedicated database panel, backup export, and recovery/restore ([0b9c016](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/0b9c0167d3e991413aee2874c02381d8b5a9af53))
+
+
+### Bug Fixes
+
+* **build:** solve compilation errors on database restore and mangal sources list ([efdb5ec](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/efdb5ec8a3bf3c2dc8bbd8b6e1043072718e2a1d))
+* **favicon:** force browser cache bust for new Kaizen favicon ([e310465](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/e3104659154c1a0539e0e311e91c00dd0ad72efd))
+* **favicon:** force browser cache bust for new Kaizen favicon ([e870ecf](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/e870ecf733132194baac831e30749f55b974156b))
+
+
+### Performance Improvements
+
+* **mangal:** add cache and in-flight promise coalescer for search queries ([187e9da](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/187e9da08829422816eea53438f66466fef90bb4))
+* **mangal:** add cache and in-flight promise coalescer for search queries ([5efc25c](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/5efc25c5f90a12a184038ecb98314854f3bbfe31))
+
 ## [1.11.1](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/compare/kaizen-manga-downloader-v1.11.0...kaizen-manga-downloader-v1.11.1) (2026-05-18)
 
 
