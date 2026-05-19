@@ -151,7 +151,7 @@ export default function SettingsPage() {
           <Tabs.Panel value="database">
             <Paper withBorder p="md" radius="md">
               <Title order={4} mb="md">
-                {t('tabs.database', 'Base de Datos')}
+                {t('tabs.database', 'Database')}
               </Title>
               <DatabaseSettings />
             </Paper>

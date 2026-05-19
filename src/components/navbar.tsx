@@ -98,7 +98,7 @@ export function KaizenNavbar({ opened, setOpened }: KaizenNavbarProps) {
     { value: 'downloads', label: tSettings('tabs.downloads'), icon: IconDownload },
     { value: 'accounts', label: tSettings('tabs.accounts'), icon: IconUsers },
     { value: 'developer', label: tSettings('tabs.developer'), icon: IconCode },
-    { value: 'database', label: tSettings('tabs.database', 'Base de Datos'), icon: IconDatabase },
+    { value: 'database', label: tSettings('tabs.database', 'Database'), icon: IconDatabase },
     { value: 'maintenance', label: tSettings('tabs.maintenance'), icon: IconDatabaseImport },
   ];
 
