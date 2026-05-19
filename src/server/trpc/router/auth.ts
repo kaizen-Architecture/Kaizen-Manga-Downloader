@@ -54,6 +54,7 @@ export const authRouter = t.router({
         username: true,
         role: true,
         apiToken: true,
+        lastActiveAt: true,
       },
       orderBy: { id: 'asc' },
     });

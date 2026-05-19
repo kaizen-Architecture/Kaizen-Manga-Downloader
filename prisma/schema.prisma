@@ -131,13 +131,14 @@ model LuaSource {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  username  String    @unique
-  password  String
-  role      String    @default("SUPERADMIN") // "SUPERADMIN", "MANAGER", "READER"
-  apiToken  String?   @unique
-  libraries Library[] @relation("UserLibraries")
+  id           Int       @id @default(autoincrement())
+  createdAt    DateTime  @default(now())
+  username     String    @unique
+  password     String
+  role         String    @default("SUPERADMIN") // "SUPERADMIN", "MANAGER", "READER"
+  apiToken     String?   @unique
+  lastActiveAt DateTime?
+  libraries    Library[] @relation("UserLibraries")
 }
 
 model SourceRepository {

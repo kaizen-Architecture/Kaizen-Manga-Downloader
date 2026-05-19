@@ -21,6 +21,7 @@ import { showNotification } from '@mantine/notifications';
 import {
   IconAlertTriangle,
   IconCheck,
+  IconCopy,
   IconKey,
   IconPlus,
   IconShieldLock,
@@ -69,8 +70,52 @@ export default function UsersPage() {
     },
   });
 
+  const showTokenModal = (token: string) => {
+    modals.openModal({
+      title: t('users.list.tokenModal.title', 'API Token Generado'),
+      centered: true,
+      children: (
+        <Stack spacing="md">
+          <Text size="sm">
+            {t('users.list.tokenModal.description', 'Por favor, copia este token ahora. Por tu seguridad, no se volverá a mostrar.')}
+          </Text>
+          <Paper
+            withBorder
+            p="xs"
+            radius="xs"
+            sx={{
+              background: 'rgba(0, 0, 0, 0.02)',
+              fontFamily: 'monospace',
+              fontSize: 13,
+              wordBreak: 'break-all',
+              userSelect: 'all',
+            }}
+          >
+            {token}
+          </Paper>
+          <Button
+            color="violet"
+            leftIcon={<IconCopy size={16} />}
+            onClick={() => {
+              navigator.clipboard.writeText(token);
+              showNotification({
+                title: t('users.notifications.tokenCopiedTitle', 'Token Copiado'),
+                message: t('users.notifications.tokenCopiedDesc', 'El token se ha copiado al portapapeles.'),
+                color: 'teal',
+                icon: <IconCheck size={18} />,
+              });
+              modals.closeAll();
+            }}
+          >
+            {t('users.list.copyToken', 'Copiar Token')}
+          </Button>
+        </Stack>
+      ),
+    });
+  };
+
   const generateTokenMutation = trpc.auth.generateApiToken.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
       users.refetch();
       showNotification({
         title: t('users.notifications.tokenGeneratedTitle', 'Token Generado'),
@@ -78,6 +123,9 @@ export default function UsersPage() {
         color: 'teal',
         icon: <IconCheck size={18} />,
       });
+      if (data?.apiToken) {
+        showTokenModal(data.apiToken);
+      }
     },
     onError: (err) => {
       showNotification({
@@ -347,6 +395,7 @@ export default function UsersPage() {
                     <th>{t('users.list.username', 'Usuario')}</th>
                     <th>{t('users.list.role', 'Rol Asignado')}</th>
                     <th>{t('users.list.apiToken', 'API Token')}</th>
+                    <th>{t('users.list.lastActiveAt', 'Última Actividad API')}</th>
                     <th style={{ width: 80, textAlign: 'right' }}>{t('users.list.actions', 'Acciones')}</th>
                   </tr>
                 </thead>
@@ -373,6 +422,23 @@ export default function UsersPage() {
                             <Text size="xs" color="dimmed" sx={{ fontFamily: 'monospace' }}>
                               {u.apiToken.substring(0, 8)}...
                             </Text>
+                            <ActionIcon
+                              variant="subtle"
+                              size="xs"
+                              color="violet"
+                              title={t('users.list.copyToken', 'Copiar Token')}
+                              onClick={() => {
+                                navigator.clipboard.writeText(u.apiToken!);
+                                showNotification({
+                                  title: t('users.notifications.tokenCopiedTitle', 'Token Copiado'),
+                                  message: t('users.notifications.tokenCopiedDesc', 'El token se ha copiado al portapapeles.'),
+                                  color: 'teal',
+                                  icon: <IconCheck size={18} />,
+                                });
+                              }}
+                            >
+                              <IconCopy size={14} />
+                            </ActionIcon>
                             <Button
                               variant="subtle"
                               size="xs"
@@ -382,7 +448,7 @@ export default function UsersPage() {
                                   title: t('users.list.regenerateConfirmTitle', 'Regenerate API Token'),
                                   children: (
                                     <Text size="sm">
-                                      {t('users.list.regenerate', 'Are you sure you want to regenerate the API token for this user? Any applications using the old token will lose access.')}
+                                      {t('users.list.regenerateConfirm', 'Are you sure you want to regenerate the API token for this user? Any applications using the old token will lose access.')}
                                     </Text>
                                   ),
                                   labels: { confirm: t('users.list.regenerate', 'Regenerate'), cancel: t('users.delete.cancelButton', 'Cancel') },
@@ -405,6 +471,17 @@ export default function UsersPage() {
                           >
                             {t('users.list.generate', 'Generate Token')}
                           </Button>
+                        )}
+                      </td>
+                      <td>
+                        {u.lastActiveAt ? (
+                          <Text size="xs" sx={{ whiteSpace: 'nowrap' }}>
+                            {new Date(u.lastActiveAt).toLocaleString()}
+                          </Text>
+                        ) : (
+                          <Text size="xs" color="dimmed" italic>
+                            {t('users.list.never', 'Nunca')}
+                          </Text>
                         )}
                       </td>
                       <td style={{ textAlign: 'right' }}>

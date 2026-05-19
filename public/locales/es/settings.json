@@ -91,7 +91,14 @@
       "regenerate": "Regenerar",
       "generate": "Generar Token",
       "regenerateConfirmTitle": "Regenerar API Token",
-      "regenerateConfirm": "¿Estás seguro de que deseas regenerar el API token de este usuario? Cualquier aplicación que use el antiguo perderá el acceso."
+      "regenerateConfirm": "¿Estás seguro de que deseas regenerar el API token de este usuario? Cualquier aplicación que use el antiguo perderá el acceso.",
+      "lastActiveAt": "Última Actividad API",
+      "never": "Nunca",
+      "copyToken": "Copiar Token",
+      "tokenModal": {
+        "title": "API Token Generado",
+        "description": "Por favor, copia este token ahora. Por tu seguridad, no se volverá a mostrar."
+      }
     },
     "delete": {
       "confirmTitle": "Confirmar eliminación de cuenta",
@@ -105,6 +112,8 @@
       "tokenGeneratedTitle": "Token Generado",
       "tokenGeneratedDesc": "El API Token ha sido generado correctamente.",
       "tokenErrorTitle": "Error Generando Token",
+      "tokenCopiedTitle": "Token Copiado",
+      "tokenCopiedDesc": "El token se ha copiado al portapapeles.",
       "userCreatedTitle": "Usuario Creado",
       "userCreatedDesc": "La nueva cuenta de usuario se ha registrado correctamente.",
       "userDeletedTitle": "Cuenta Eliminada",

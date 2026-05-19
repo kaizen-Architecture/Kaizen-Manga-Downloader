@@ -23,6 +23,17 @@ export async function validateApiToken(req: NextApiRequest, res: NextApiResponse
     });
 
     if (user) {
+      // Update last active time asynchronously
+      prisma.user
+        .update({
+          where: { id: user.id },
+          data: { lastActiveAt: new Date() },
+        })
+        .catch((err) => {
+          // eslint-disable-next-line no-console
+          console.error('Failed to update user lastActiveAt:', err);
+        });
+
       return true;
     }
   } catch (e) {
