@@ -41,6 +41,52 @@ export default function UsersPage() {
   const users = trpc.auth.getUsers.useQuery();
   const isDefaultPasswordQuery = trpc.auth.checkAdminDefaultPassword.useQuery();
 
+  const handleCopyToken = (token: string) => {
+    const showSuccess = () => {
+      showNotification({
+        title: t('users.notifications.tokenCopiedTitle', 'Token Copiado'),
+        message: t('users.notifications.tokenCopiedDesc', 'El token se ha copiado al portapapeles.'),
+        color: 'teal',
+        icon: <IconCheck size={18} />,
+      });
+    };
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(token)
+        .then(showSuccess)
+        .catch(() => fallbackCopy(token));
+    } else {
+      fallbackCopy(token);
+    }
+
+    function fallbackCopy(text: string) {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.top = '0';
+      textArea.style.left = '0';
+      textArea.style.position = 'fixed';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          showSuccess();
+        } else {
+          throw new Error('execCommand returned false');
+        }
+      } catch (err) {
+        console.error('Fallback copy failed', err);
+        showNotification({
+          title: t('common.error', 'Error'),
+          message: 'No se pudo copiar el token al portapapeles.',
+          color: 'red',
+        });
+      }
+      document.body.removeChild(textArea);
+    }
+  };
+
   // Formularios de Estado
   const [adminNewPassword, setAdminNewPassword] = useState('');
   const [adminConfirmPassword, setAdminConfirmPassword] = useState('');
@@ -97,13 +143,7 @@ export default function UsersPage() {
             color="violet"
             leftIcon={<IconCopy size={16} />}
             onClick={() => {
-              navigator.clipboard.writeText(token);
-              showNotification({
-                title: t('users.notifications.tokenCopiedTitle', 'Token Copiado'),
-                message: t('users.notifications.tokenCopiedDesc', 'El token se ha copiado al portapapeles.'),
-                color: 'teal',
-                icon: <IconCheck size={18} />,
-              });
+              handleCopyToken(token);
               modals.closeAll();
             }}
           >
@@ -427,15 +467,7 @@ export default function UsersPage() {
                               size="xs"
                               color="violet"
                               title={t('users.list.copyToken', 'Copiar Token')}
-                              onClick={() => {
-                                navigator.clipboard.writeText(u.apiToken!);
-                                showNotification({
-                                  title: t('users.notifications.tokenCopiedTitle', 'Token Copiado'),
-                                  message: t('users.notifications.tokenCopiedDesc', 'El token se ha copiado al portapapeles.'),
-                                  color: 'teal',
-                                  icon: <IconCheck size={18} />,
-                                });
-                              }}
+                              onClick={() => handleCopyToken(u.apiToken!)}
                             >
                               <IconCopy size={14} />
                             </ActionIcon>
