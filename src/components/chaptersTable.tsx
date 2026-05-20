@@ -4,9 +4,9 @@ import { DataTable } from 'mantine-datatable';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
-import { Center, Tooltip, Stack, Paper, Group, Text, Pagination, ActionIcon, Box, Button } from '@mantine/core';
+import { Center, Tooltip, Stack, Paper, Group, Text, Pagination, ActionIcon, Button } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconAlertTriangle, IconCheck, IconTrash, IconEye, IconEyeOff } from '@tabler/icons-react';
+import { IconAlertTriangle, IconCheck, IconTrash, IconEye, IconEyeOff, IconBook, IconStar } from '@tabler/icons-react';
 import prettyBytes from 'pretty-bytes';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -43,6 +43,12 @@ export function ChaptersTable({ manga }: { manga: MangaWithMetadataAndChaptersAn
   const utils = trpc.useContext();
 
   const toggleReadMutation = trpc.manga.toggleChapterRead.useMutation({
+    onSuccess: () => {
+      utils.manga.get.invalidate({ id: manga.id });
+    },
+  });
+
+  const toggleChapterFavoriteMutation = trpc.manga.toggleChapterFavorite.useMutation({
     onSuccess: () => {
       utils.manga.get.invalidate({ id: manga.id });
     },
@@ -121,6 +127,36 @@ export function ChaptersTable({ manga }: { manga: MangaWithMetadataAndChaptersAn
                 </Center>
               </Tooltip>
             )}
+            <Tooltip withArrow label="Favorite Chapter">
+              <ActionIcon
+                color="yellow"
+                variant="light"
+                size="sm"
+                onClick={() =>
+                  toggleChapterFavoriteMutation.mutate({
+                    id,
+                    isFavorite: !manga.chapters.find((c) => c.id === id)?.isFavorite,
+                  })
+                }
+                loading={toggleChapterFavoriteMutation.isLoading && toggleChapterFavoriteMutation.variables?.id === id}
+              >
+                {manga.chapters.find((c) => c.id === id)?.isFavorite ? (
+                  <IconStar fill="gold" size={16} />
+                ) : (
+                  <IconStar size={16} />
+                )}
+              </ActionIcon>
+            </Tooltip>
+            <Tooltip withArrow label="Read Chapter">
+              <ActionIcon
+                color="indigo"
+                variant="light"
+                size="sm"
+                onClick={() => router.push(`/reader/${manga.id}/${id}`)}
+              >
+                <IconBook size={16} />
+              </ActionIcon>
+            </Tooltip>
             <ActionIcon
               color="red"
               variant="light"
@@ -138,7 +174,14 @@ export function ChaptersTable({ manga }: { manga: MangaWithMetadataAndChaptersAn
         ),
       },
     ],
-    [outOfSyncIds, deleteMutation.isLoading, deleteMutation.variables?.id, toggleReadMutation.isLoading, toggleReadMutation.variables?.id, t],
+    [
+      outOfSyncIds,
+      deleteMutation.isLoading,
+      deleteMutation.variables?.id,
+      toggleReadMutation.isLoading,
+      toggleReadMutation.variables?.id,
+      t,
+    ],
   );
 
   const toolbar = (
@@ -211,6 +254,30 @@ export function ChaptersTable({ manga }: { manga: MangaWithMetadataAndChaptersAn
                       <IconCheck color="green" size={20} strokeWidth={3} />
                     </Tooltip>
                   )}
+                  <Tooltip withArrow label="Favorite Chapter">
+                    <ActionIcon
+                      color="yellow"
+                      variant="light"
+                      onClick={() =>
+                        toggleChapterFavoriteMutation.mutate({ id: chapter.id, isFavorite: !chapter.isFavorite })
+                      }
+                      loading={
+                        toggleChapterFavoriteMutation.isLoading &&
+                        toggleChapterFavoriteMutation.variables?.id === chapter.id
+                      }
+                    >
+                      {chapter.isFavorite ? <IconStar fill="gold" size={20} /> : <IconStar size={20} />}
+                    </ActionIcon>
+                  </Tooltip>
+                  <Tooltip withArrow label="Read Chapter">
+                    <ActionIcon
+                      color="indigo"
+                      variant="light"
+                      onClick={() => router.push(`/reader/${manga.id}/${chapter.id}`)}
+                    >
+                      <IconBook size={20} />
+                    </ActionIcon>
+                  </Tooltip>
                   <ActionIcon
                     color="red"
                     variant="light"

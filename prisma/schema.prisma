@@ -25,6 +25,7 @@ model Library {
 
 model Manga {
   id                Int                @id @default(autoincrement())
+  isFavorite        Boolean            @default(false)
   createdAt         DateTime           @default(now())
   title             String             @unique
   interval          String
@@ -53,6 +54,8 @@ model MangaSource {
 
 model Chapter {
   id               Int      @id @default(autoincrement())
+  isFavorite       Boolean  @default(false)
+  favoritePages    Int[]    @default([])
   createdAt        DateTime @default(now())
   index            Int
   fileName         String
