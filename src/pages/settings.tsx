@@ -174,10 +174,12 @@ export default function SettingsPage() {
                 <Stack spacing="sm">
                   <Group position="apart">
                     <div>
-                      <Title order={4}>Refresh All Metadata</Title>
+                      <Title order={4}>{t('maintenance.refreshTitle', 'Refresh All Metadata')}</Title>
                       <Text size="sm" color="dimmed" mt={4}>
-                        Searches all manga missing a cover or summary and fetches their data from Anilist, with
-                        automatic fallback to MangaDex for titles not found.
+                        {t(
+                          'maintenance.refreshDesc',
+                          'Searches all manga missing a cover or summary and fetches their data from Anilist, with automatic fallback to MangaDex for titles not found.',
+                        )}
                       </Text>
                     </div>
                     <Button
@@ -190,13 +192,15 @@ export default function SettingsPage() {
                       variant="light"
                       color="indigo"
                     >
-                      {refreshAll.isLoading ? 'Refreshing…' : 'Refresh All Metadata'}
+                      {refreshAll.isLoading
+                        ? t('maintenance.refreshBtnLoading', 'Refreshing...')
+                        : t('maintenance.refreshBtn', 'Refresh All Metadata')}
                     </Button>
                   </Group>
 
                   {refreshAll.isError && (
                     <Alert icon={<IconAlertCircle size={16} />} color="red" radius="md">
-                      Error: {refreshAll.error?.message}
+                      {t('maintenance.cleanupError', 'Error')}: {refreshAll.error?.message}
                     </Alert>
                   )}
 
@@ -204,26 +208,26 @@ export default function SettingsPage() {
                     <Alert icon={<IconCheck size={16} />} color="teal" radius="md">
                       <Group spacing="xs">
                         <Text size="sm" weight={600}>
-                          Done!
+                          {t('maintenance.refreshSuccess', 'Done!')}
                         </Text>
                         <Badge color="teal" size="sm">
-                          {refreshResult.updated} updated
+                          {t('maintenance.refreshUpdated', '{{count}} updated', { count: refreshResult.updated })}
                         </Badge>
                         <Badge color="gray" size="sm">
-                          {refreshResult.skipped} skipped
+                          {t('maintenance.refreshSkipped', '{{count}} skipped', { count: refreshResult.skipped })}
                         </Badge>
                         {refreshResult.errors.length > 0 && (
                           <Badge color="red" size="sm">
-                            {refreshResult.errors.length} errors
+                            {t('maintenance.refreshErrors', '{{count}} errors', { count: refreshResult.errors.length })}
                           </Badge>
                         )}
                         <Text size="xs" color="dimmed">
-                          out of {refreshResult.total} manga checked
+                          {t('maintenance.refreshChecked', 'out of {{count}} manga checked', { count: refreshResult.total })}
                         </Text>
                       </Group>
                       {refreshResult.errors.length > 0 && (
                         <Text size="xs" color="red" mt={4}>
-                          Failed: {refreshResult.errors.join(', ')}
+                          {t('maintenance.refreshFailed', 'Failed: {{errors}}', { errors: refreshResult.errors.join(', ') })}
                         </Text>
                       )}
                     </Alert>
