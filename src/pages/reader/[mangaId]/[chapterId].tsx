@@ -4,15 +4,24 @@ import { IconArrowLeft, IconStar } from '@tabler/icons-react';
 import { useEffect, useState, useRef } from 'react';
 import { useMediaQuery, useHotkeys } from '@mantine/hooks';
 import Head from 'next/head';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { trpc } from '../../../utils/trpc';
+
+interface Page {
+  index: number;
+  name: string;
+  url: string;
+}
 
 export default function ReaderPage() {
   const router = useRouter();
   const { mangaId, chapterId } = router.query;
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
+  const { t } = useTranslation('common');
 
-  const [pages, setPages] = useState<any[]>([]);
+  const [pages, setPages] = useState<Page[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
@@ -31,7 +40,7 @@ export default function ReaderPage() {
     setLoading(true);
     fetch(`/api/reader/pages?id=${mangaId}&chapterId=${chapterId}`)
       .then((res) => {
-        if (!res.ok) throw new Error('Failed to load pages');
+        if (!res.ok) throw new Error(t('error_loading_pages', 'Failed to load pages'));
         return res.json();
       })
       .then((data) => {
@@ -42,22 +51,37 @@ export default function ReaderPage() {
         setError(err.message);
         setLoading(false);
       });
-  }, [mangaId, chapterId]);
+  }, [mangaId, chapterId, t]);
 
   const goToNextPage = () => {
     if (currentPage < pages.length - 1) {
       setCurrentPage((p) => p + 1);
-    } else {
-      // Potentially go to next chapter
+    } else if (mangaQuery.data?.chapters) {
+      // Go to next chapter
+      const chapters = [...mangaQuery.data.chapters].reverse(); // Sort ASC by index
+      const currentIndex = chapters.findIndex(
+        (c: { id: number; favoritePages: number[] }) => c.id === parseInt(chapterId as string, 10),
+      );
+      if (currentIndex !== -1 && currentIndex < chapters.length - 1) {
+        router.push(`/reader/${mangaId}/${chapters[currentIndex + 1].id}`);
+      }
     }
   };
 
   const goToPrevPage = () => {
     if (currentPage > 0) {
       setCurrentPage((p) => p - 1);
+    } else if (mangaQuery.data?.chapters) {
+      // Go to previous chapter
+      const chapters = [...mangaQuery.data.chapters].reverse(); // Sort ASC by index
+      const currentIndex = chapters.findIndex(
+        (c: { id: number; favoritePages: number[] }) => c.id === parseInt(chapterId as string, 10),
+      );
+      if (currentIndex > 0) {
+        router.push(`/reader/${mangaId}/${chapters[currentIndex - 1].id}`);
+      }
     }
   };
-
   const handleNextAction = readingDirection === 'ltr' ? goToNextPage : goToPrevPage;
   const handlePrevAction = readingDirection === 'ltr' ? goToPrevPage : goToNextPage;
 
@@ -85,7 +109,9 @@ export default function ReaderPage() {
   return (
     <>
       <Head>
-        <title>Reader - {mangaQuery.data?.title || 'Loading...'}</title>
+        <title>
+          {t('reader', 'Reader')} - {mangaQuery.data?.title || t('loading', 'Loading...')}
+        </title>
       </Head>
       <AppShell
         padding={0}
@@ -105,12 +131,14 @@ export default function ReaderPage() {
                 variant="light"
                 onClick={async () => {
                   if (!mangaQuery.data) return;
-                  const ch = mangaQuery.data.chapters.find((c: any) => c.id === parseInt(chapterId as string, 10));
+                  const ch = mangaQuery.data.chapters.find(
+                    (c: { id: number; favoritePages: number[] }) => c.id === parseInt(chapterId as string, 10),
+                  );
                   if (!ch) return;
-                  const isFav = ch.favoritePages.includes(currentPage);
+                  const isFav = ch.favoritePages?.includes(currentPage) || false;
                   const newPages = isFav
                     ? ch.favoritePages.filter((p: number) => p !== currentPage)
-                    : [...ch.favoritePages, currentPage];
+                    : [...(ch.favoritePages || []), currentPage];
                   await fetch(`/api/reader/pages?id=${mangaId}&chapterId=${chapterId}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -120,22 +148,22 @@ export default function ReaderPage() {
                 }}
               >
                 {mangaQuery.data?.chapters
-                  .find((c: any) => c.id === parseInt(chapterId as string, 10))
-                  ?.favoritePages.includes(currentPage) ? (
+                  .find((c: { id: number; favoritePages: number[] }) => c.id === parseInt(chapterId as string, 10))
+                  ?.favoritePages?.includes(currentPage) ? (
                   <IconStar fill="gold" size={20} />
                 ) : (
                   <IconStar size={20} />
                 )}
               </ActionIcon>
               <Text size="sm">
-                Page {currentPage + 1} / {pages.length}
+                {t('page', 'Page')} {currentPage + 1} / {pages.length}
               </Text>
               <Select
                 size="sm"
                 data={[
-                  { value: 'ltr', label: 'Left to Right' },
-                  { value: 'rtl', label: 'Right to Left' },
-                  { value: 'vertical', label: 'Vertical' },
+                  { value: 'ltr', label: t('left_to_right', 'Left to Right') },
+                  { value: 'rtl', label: t('right_to_left', 'Right to Left') },
+                  { value: 'vertical', label: t('vertical', 'Vertical') },
                 ]}
                 value={readingDirection}
                 onChange={(val) => setReadingDirection(val as 'ltr' | 'rtl' | 'vertical')}
@@ -173,7 +201,7 @@ export default function ReaderPage() {
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={pages[currentPage].url}
-              alt={`Page ${currentPage + 1}`}
+              alt={`${t('page', 'Page')} ${currentPage + 1}`}
               style={{
                 maxWidth: '100%',
                 maxHeight: '100%',
@@ -188,7 +216,7 @@ export default function ReaderPage() {
               <img
                 key={page.name}
                 src={page.url}
-                alt={`Page ${index + 1}`}
+                alt={`${t('page', 'Page')} ${index + 1}`}
                 style={{
                   maxWidth: '100%',
                   display: 'block',
@@ -200,4 +228,12 @@ export default function ReaderPage() {
       </AppShell>
     </>
   );
+}
+
+export async function getServerSideProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common', 'manga'])),
+    },
+  };
 }

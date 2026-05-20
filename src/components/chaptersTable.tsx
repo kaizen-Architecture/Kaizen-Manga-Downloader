@@ -29,6 +29,9 @@ export function ChaptersTable({ manga }: { manga: MangaWithMetadataAndChaptersAn
   const { t } = useTranslation('common');
   const router = useRouter();
   const [page, setPage] = useState(1);
+  const settings = trpc.settings.query.useQuery();
+  const readerEnabled = (settings.data?.appConfig as any)?.readerEnabled !== false;
+
   const [records, setRecords] = useState(manga.chapters.slice(0, PAGE_SIZE));
   const queryMobile = useMediaQuery('(max-width: 768px)');
   const [isMobile, setIsMobile] = useState(false);
@@ -73,6 +76,7 @@ export function ChaptersTable({ manga }: { manga: MangaWithMetadataAndChaptersAn
 
   const totalPages = Math.ceil(manga.chapters.length / PAGE_SIZE);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const columns = useMemo(
     () => [
       { accessor: 'index', title: '#', render: ({ index }: { index: number }) => `${index + 1}` },
@@ -147,16 +151,18 @@ export function ChaptersTable({ manga }: { manga: MangaWithMetadataAndChaptersAn
                 )}
               </ActionIcon>
             </Tooltip>
-            <Tooltip withArrow label="Read Chapter">
-              <ActionIcon
-                color="indigo"
-                variant="light"
-                size="sm"
-                onClick={() => router.push(`/reader/${manga.id}/${id}`)}
-              >
-                <IconBook size={16} />
-              </ActionIcon>
-            </Tooltip>
+            {readerEnabled && (
+              <Tooltip withArrow label="Read Chapter">
+                <ActionIcon
+                  color="indigo"
+                  variant="light"
+                  size="sm"
+                  onClick={() => router.push(`/reader/${manga.id}/${id}`)}
+                >
+                  <IconBook size={16} />
+                </ActionIcon>
+              </Tooltip>
+            )}
             <ActionIcon
               color="red"
               variant="light"
@@ -269,15 +275,17 @@ export function ChaptersTable({ manga }: { manga: MangaWithMetadataAndChaptersAn
                       {chapter.isFavorite ? <IconStar fill="gold" size={20} /> : <IconStar size={20} />}
                     </ActionIcon>
                   </Tooltip>
-                  <Tooltip withArrow label="Read Chapter">
-                    <ActionIcon
-                      color="indigo"
-                      variant="light"
-                      onClick={() => router.push(`/reader/${manga.id}/${chapter.id}`)}
-                    >
-                      <IconBook size={20} />
-                    </ActionIcon>
-                  </Tooltip>
+                  {readerEnabled && (
+                    <Tooltip withArrow label="Read Chapter">
+                      <ActionIcon
+                        color="indigo"
+                        variant="light"
+                        onClick={() => router.push(`/reader/${manga.id}/${chapter.id}`)}
+                      >
+                        <IconBook size={20} />
+                      </ActionIcon>
+                    </Tooltip>
+                  )}
                   <ActionIcon
                     color="red"
                     variant="light"

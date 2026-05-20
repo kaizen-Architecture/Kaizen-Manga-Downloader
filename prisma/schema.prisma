@@ -124,6 +124,7 @@ model Settings {
   refreshStatusWindow       String   @default("night")
   authEnabled               Boolean  @default(false)
   apiEnabled                Boolean  @default(false)
+  readerEnabled             Boolean  @default(true)
 }
 
 model LuaSource {

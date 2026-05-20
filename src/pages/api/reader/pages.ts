@@ -9,28 +9,10 @@ import { prisma } from '../../../server/db/client';
 // Cache zip entries to prevent memory spikes
 const zipCache: Record<string, { time: number; entries: any[] }> = {};
 const CACHE_TTL = 1000 * 60 * 5; // 5 minutes
+const MAX_CACHE_SIZE = 20;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    const { id, chapterId } = req.query;
-    const { favoritePages } = req.body;
-
-    if (!id || !chapterId) return res.status(400).json({ error: 'Missing params' });
-
-    const mangaId = parseInt(id as string, 10);
-    const chId = parseInt(chapterId as string, 10);
-
-    if (Number.isNaN(mangaId) || Number.isNaN(chId)) return res.status(400).json({ error: 'Invalid ID' });
-
-    await prisma.chapter.update({
-      where: { id: chId },
-      data: { favoritePages },
-    });
-
-    return res.status(200).json({ success: true });
-  }
-
-  if (req.method !== 'GET') {
+  if (req.method !== 'GET' && req.method !== 'POST') {
     res.setHeader('Allow', ['GET', 'POST']);
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
@@ -52,6 +34,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } catch (e) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
+  }
+
+  if (req.method === 'POST') {
+    const { id, chapterId } = req.query;
+    const { favoritePages } = req.body;
+
+    if (!id || !chapterId) return res.status(400).json({ error: 'Missing params' });
+
+    const mangaId = parseInt(id as string, 10);
+    const chId = parseInt(chapterId as string, 10);
+
+    if (Number.isNaN(mangaId) || Number.isNaN(chId)) return res.status(400).json({ error: 'Invalid ID' });
+
+    await prisma.chapter.update({
+      where: { id: chId },
+      data: { favoritePages },
+    });
+
+    return res.status(200).json({ success: true });
   }
 
   const { id, chapterId, pageIndex } = req.query;
@@ -93,11 +94,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Clean up old cache
     const now = Date.now();
-    Object.keys(zipCache).forEach((key) => {
+    let keys = Object.keys(zipCache);
+    keys.forEach((key) => {
       if (now - zipCache[key].time > CACHE_TTL) {
         delete zipCache[key];
       }
     });
+
+    keys = Object.keys(zipCache);
+    if (keys.length > MAX_CACHE_SIZE) {
+      // delete oldest
+      let oldestKey = keys[0];
+      keys.forEach((k) => {
+        if (zipCache[k].time < zipCache[oldestKey].time) {
+          oldestKey = k;
+        }
+      });
+      delete zipCache[oldestKey];
+    }
 
     if (zipCache[cacheKey]) {
       zipCache[cacheKey].time = now;
