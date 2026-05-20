@@ -1,6 +1,32 @@
 {
   "title": "Ajustes",
   "description": "Configura los ajustes de la aplicación",
+  "integrations": {
+    "paperback": {
+      "connected": "Conectado",
+      "seen": "Visto por última vez",
+      "never": "Nunca conectado",
+      "readProgress": "Progreso de lectura",
+      "mangasRead": "leídos",
+      "apiRequests": "Peticiones API",
+      "lastConnection": "Última conexión"
+    },
+    "auditLog": {
+      "title": "Registro de Auditoría API",
+      "desc": "Llamadas API recientes realizadas por clientes externos como Paperback.",
+      "allUsers": "Todos los usuarios",
+      "filterUser": "Usuario",
+      "filterLimit": "Filas",
+      "refresh": "Actualizar",
+      "empty": "Aún no se han registrado llamadas API.",
+      "colDate": "Fecha",
+      "colMethod": "Método",
+      "colPath": "Endpoint",
+      "colUser": "Usuario",
+      "colAgent": "Cliente",
+      "showing": "Mostrando las últimas {{count}} entradas"
+    }
+  },
   "tabs": {
     "appearance": "Apariencia",
     "notifications": "Notificaciones",

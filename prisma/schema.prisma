@@ -131,15 +131,30 @@ model LuaSource {
 }
 
 model User {
-  id           Int       @id @default(autoincrement())
-  createdAt    DateTime  @default(now())
-  username     String    @unique
-  password     String
-  role         String    @default("SUPERADMIN") // "SUPERADMIN", "MANAGER", "READER", "SERVICE"
-  apiToken     String?   @unique
-  lastActiveAt DateTime?
-  apiCallCount Int       @default(0)
-  libraries    Library[] @relation("UserLibraries")
+  id            Int          @id @default(autoincrement())
+  createdAt     DateTime     @default(now())
+  username      String       @unique
+  password      String
+  role          String       @default("SUPERADMIN") // "SUPERADMIN", "MANAGER", "READER", "SERVICE"
+  apiToken      String?      @unique
+  lastActiveAt  DateTime?
+  lastUserAgent String?
+  apiCallCount  Int          @default(0)
+  libraries     Library[]    @relation("UserLibraries")
+  apiCallLogs   ApiCallLog[]
+}
+
+model ApiCallLog {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  method    String
+  path      String
+  userAgent String?
+
+  @@index([userId])
+  @@index([createdAt])
 }
 
 model SourceRepository {

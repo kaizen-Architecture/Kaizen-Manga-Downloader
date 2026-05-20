@@ -1,6 +1,32 @@
 {
   "title": "Settings",
   "description": "Configure application settings",
+  "integrations": {
+    "paperback": {
+      "connected": "Connected",
+      "seen": "Last seen",
+      "never": "Never connected",
+      "readProgress": "Reading progress",
+      "mangasRead": "read",
+      "apiRequests": "API requests",
+      "lastConnection": "Last connection"
+    },
+    "auditLog": {
+      "title": "API Audit Log",
+      "desc": "Recent API calls made by external clients like Paperback.",
+      "allUsers": "All users",
+      "filterUser": "User",
+      "filterLimit": "Rows",
+      "refresh": "Refresh",
+      "empty": "No API calls recorded yet.",
+      "colDate": "Date",
+      "colMethod": "Method",
+      "colPath": "Endpoint",
+      "colUser": "User",
+      "colAgent": "Client",
+      "showing": "Showing last {{count}} entries"
+    }
+  },
   "tabs": {
     "appearance": "Appearance",
     "notifications": "Notifications",
