@@ -30,7 +30,6 @@ import { AuthSettings } from '../components/kaizen/AuthSettings';
 import { DeveloperSettings } from '../components/kaizen/DeveloperSettings';
 import { DatabaseSettings } from '../components/kaizen/DatabaseSettings';
 import ServerLogViewer from '../components/kaizen/ServerLogViewer';
-import { ApiAuditLog } from '../components/kaizen/ApiAuditLog';
 import { trpc } from '../utils/trpc';
 
 export default function SettingsPage() {
@@ -162,9 +161,6 @@ export default function SettingsPage() {
             <Stack spacing="md">
               <Paper withBorder p="md" radius="md">
                 <StatusAuditSettings />
-              </Paper>
-              <Paper withBorder p="md" radius="md">
-                <ApiAuditLog />
               </Paper>
               <Paper withBorder p="md" radius="md">
                 <MetadataSettings />
