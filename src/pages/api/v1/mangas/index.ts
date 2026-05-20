@@ -54,11 +54,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
 
+    const host = req.headers.host;
+    const protocol = req.headers['x-forwarded-proto'] || 'http';
+
     const response = mangas.map((manga) => {
       const totalChapters = manga.chapters.length;
       const readChapters = manga.chapters.filter((c) => c.isRead).length;
 
       const { chapters, ...mangaWithoutChapters } = manga;
+      
+      const coverUrl = manga.metadata?.cover ? `${protocol}://${host}/api/v1/mangas/${manga.id}/cover` : null;
+      if (mangaWithoutChapters.metadata) {
+        mangaWithoutChapters.metadata.cover = coverUrl || '';
+      }
+
       return {
         ...mangaWithoutChapters,
         readingStatus: {
