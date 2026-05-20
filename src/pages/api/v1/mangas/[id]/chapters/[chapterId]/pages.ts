@@ -107,6 +107,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // 7. CASO B: Retornar el índice de páginas en formato JSON
+    if (!chapter.isRead) {
+      await prisma.chapter.update({
+        where: { id: chId },
+        data: {
+          isRead: true,
+          lastReadAt: new Date(),
+        },
+      });
+    }
+
     const baseUrl = `/api/v1/mangas/${mangaId}/chapters/${chId}/pages`;
     const pages = entries.map((entry, idx) => ({
       index: idx,

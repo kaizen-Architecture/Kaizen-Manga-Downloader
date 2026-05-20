@@ -80,7 +80,8 @@
     "roles": {
       "superadmin": "Admin",
       "manager": "Manager",
-      "reader": "Reader"
+      "reader": "Reader",
+      "service": "Service"
     },
     "list": {
       "title": "Active Registered Users",
@@ -96,6 +97,11 @@
       "lastActiveAt": "Last API Activity",
       "never": "Never",
       "copyToken": "Copy Token",
+      "apiRequests": "requests",
+      "readProgress": "Reading progress",
+      "mangasRead": "read",
+      "apiRequestsTitle": "Requests received",
+      "lastConnection": "Last connection",
       "tokenModal": {
         "title": "API Token Generated",
         "description": "Please copy this token now. For security reasons, it will not be shown again."
@@ -115,6 +121,8 @@
       "tokenErrorTitle": "Error Generating Token",
       "tokenCopiedTitle": "Token Copied",
       "tokenCopiedDesc": "The token has been copied to the clipboard.",
+      "roleUpdatedTitle": "Role Updated",
+      "roleUpdatedDesc": "User role has been successfully updated.",
       "userCreatedTitle": "User Created",
       "userCreatedDesc": "The new user account has been successfully registered.",
       "userDeletedTitle": "Account Deleted",

@@ -4,9 +4,9 @@ import { DataTable } from 'mantine-datatable';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
-import { Center, Tooltip, Stack, Paper, Group, Text, Pagination, ActionIcon, Box } from '@mantine/core';
+import { Center, Tooltip, Stack, Paper, Group, Text, Pagination, ActionIcon, Box, Button } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconAlertTriangle, IconCheck, IconTrash } from '@tabler/icons-react';
+import { IconAlertTriangle, IconCheck, IconTrash, IconEye, IconEyeOff } from '@tabler/icons-react';
 import prettyBytes from 'pretty-bytes';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -40,6 +40,20 @@ export function ChaptersTable({ manga }: { manga: MangaWithMetadataAndChaptersAn
     },
   });
 
+  const utils = trpc.useContext();
+
+  const toggleReadMutation = trpc.manga.toggleChapterRead.useMutation({
+    onSuccess: () => {
+      utils.manga.get.invalidate({ id: manga.id });
+    },
+  });
+
+  const toggleMangaReadMutation = trpc.manga.toggleMangaRead.useMutation({
+    onSuccess: () => {
+      utils.manga.get.invalidate({ id: manga.id });
+    },
+  });
+
   // Fix hydration mismatch
   useEffect(() => {
     setIsMobile(queryMobile);
@@ -56,6 +70,23 @@ export function ChaptersTable({ manga }: { manga: MangaWithMetadataAndChaptersAn
   const columns = useMemo(
     () => [
       { accessor: 'index', title: '#', render: ({ index }: { index: number }) => `${index + 1}` },
+      {
+        accessor: 'isRead',
+        title: t('read'),
+        width: 70,
+        render: ({ id, isRead }: { id: number; isRead: boolean }) => (
+          <Center>
+            <ActionIcon
+              variant="subtle"
+              color={isRead ? 'teal' : 'gray'}
+              onClick={() => toggleReadMutation.mutate({ id, isRead: !isRead })}
+              loading={toggleReadMutation.isLoading && toggleReadMutation.variables?.id === id}
+            >
+              {isRead ? <IconEye size={18} /> : <IconEyeOff size={18} />}
+            </ActionIcon>
+          </Center>
+        ),
+      },
       {
         accessor: 'createdAt',
         title: t('download_date'),
@@ -107,12 +138,40 @@ export function ChaptersTable({ manga }: { manga: MangaWithMetadataAndChaptersAn
         ),
       },
     ],
-    [outOfSyncIds, deleteMutation.isLoading, deleteMutation.variables?.id, t],
+    [outOfSyncIds, deleteMutation.isLoading, deleteMutation.variables?.id, toggleReadMutation.isLoading, toggleReadMutation.variables?.id, t],
+  );
+
+  const toolbar = (
+    <Group position="apart" mb="xs">
+      <Text weight={600} size="md">
+        {t('chapters_list')} ({manga.chapters.length})
+      </Text>
+      <Group spacing="xs">
+        <Button
+          size="xs"
+          variant="light"
+          onClick={() => toggleMangaReadMutation.mutate({ id: manga.id, isRead: true })}
+          loading={toggleMangaReadMutation.isLoading}
+        >
+          {t('mark_all_read')}
+        </Button>
+        <Button
+          size="xs"
+          variant="light"
+          color="gray"
+          onClick={() => toggleMangaReadMutation.mutate({ id: manga.id, isRead: false })}
+          loading={toggleMangaReadMutation.isLoading}
+        >
+          {t('mark_all_unread')}
+        </Button>
+      </Group>
+    </Group>
   );
 
   if (isMobile) {
     return (
       <Stack spacing="xs">
+        {toolbar}
         {records.map((chapter) => {
           const isOutOfSync = outOfSyncIds.has(chapter.id);
           return (
@@ -135,6 +194,14 @@ export function ChaptersTable({ manga }: { manga: MangaWithMetadataAndChaptersAn
                   </Group>
                 </Stack>
                 <Group spacing="xs" noWrap>
+                  <ActionIcon
+                    variant="subtle"
+                    color={chapter.isRead ? 'teal' : 'gray'}
+                    onClick={() => toggleReadMutation.mutate({ id: chapter.id, isRead: !chapter.isRead })}
+                    loading={toggleReadMutation.isLoading && toggleReadMutation.variables?.id === chapter.id}
+                  >
+                    {chapter.isRead ? <IconEye size={20} /> : <IconEyeOff size={20} />}
+                  </ActionIcon>
                   {isOutOfSync ? (
                     <Tooltip withArrow label={t('chapter_out_of_sync')}>
                       <IconAlertTriangle color="red" size={20} strokeWidth={2} />
@@ -171,22 +238,25 @@ export function ChaptersTable({ manga }: { manga: MangaWithMetadataAndChaptersAn
   }
 
   return (
-    <DataTable
-      withBorder
-      withColumnBorders
-      striped
-      highlightOnHover
-      records={records}
-      recordsPerPage={PAGE_SIZE}
-      sx={(themes) => ({
-        '*': {
-          fontSize: `${themes.fontSizes.xs}px !important`,
-        },
-      })}
-      page={page}
-      totalRecords={manga.chapters.length}
-      onPageChange={(p) => setPage(p)}
-      columns={columns as any}
-    />
+    <Stack spacing="xs">
+      {toolbar}
+      <DataTable
+        withBorder
+        withColumnBorders
+        striped
+        highlightOnHover
+        records={records}
+        recordsPerPage={PAGE_SIZE}
+        sx={(themes) => ({
+          '*': {
+            fontSize: `${themes.fontSizes.xs}px !important`,
+          },
+        })}
+        page={page}
+        totalRecords={manga.chapters.length}
+        onPageChange={(p) => setPage(p)}
+        columns={columns as any}
+      />
+    </Stack>
   );
 }

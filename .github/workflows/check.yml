@@ -65,6 +65,7 @@ jobs:
         run: |
           echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
           echo "build_date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+          echo "app_version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -107,7 +108,7 @@ jobs:
             BUILD_DATE=${{ steps.vars.outputs.build_date }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:staging-latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:staging-v1.7.0
+            ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:staging-v${{ steps.vars.outputs.app_version }}
 
       - name: Move cache
         run: |

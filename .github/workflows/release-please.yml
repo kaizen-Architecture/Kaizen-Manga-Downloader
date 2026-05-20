@@ -59,9 +59,17 @@ jobs:
       release_minor: ${{ steps.release.outputs.minor }}
       release_patch: ${{ steps.release.outputs.patch }}
       release_created: ${{ steps.release.outputs.release_created }}
+      app_version: ${{ steps.pkg.outputs.version }}
     needs: check
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Read version from package.json
+        id: pkg
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
       - name: Release
         uses: google-github-actions/release-please-action@v3
         id: release
@@ -73,6 +81,8 @@ jobs:
     needs: release-please
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+    env:
+      APP_VERSION: ${{ needs.release-please.outputs.app_version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -125,7 +135,7 @@ jobs:
             BUILD_DATE=${{ steps.vars.outputs.build_date }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:staging-latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:staging-v1.7.0
+            ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:staging-v${{ env.APP_VERSION }}
 
       - name: Build Production Images
         uses: docker/build-push-action@v4
@@ -142,8 +152,8 @@ jobs:
             BUILD_DATE=${{ steps.vars.outputs.build_date }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:v1.7.0
-            ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:v25-kaizen
+            ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:v${{ env.APP_VERSION }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/kaizen-manga-downloader:v${{ env.APP_VERSION }}-kaizen
 
       - name: Move cache
         run: |

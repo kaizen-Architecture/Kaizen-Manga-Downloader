@@ -105,7 +105,10 @@ const mangaWithLibraryAndMetadataAndOutOfSyncChapters = Prisma.validator<Prisma.
 
 type MangaWithLibraryAndMetadataAndOutOfSyncChapters = Prisma.MangaGetPayload<
   typeof mangaWithLibraryAndMetadataAndOutOfSyncChapters
->;
+> & {
+  readChaptersCount?: number;
+  isFullyRead?: boolean;
+};
 
 interface MangaCardProps {
   manga: MangaWithLibraryAndMetadataAndOutOfSyncChapters;
@@ -232,7 +235,13 @@ function MangaCardContent({
   title,
   classes,
   integrationStatus,
-}: MangaCardContentProps & { integrationStatus?: 'ready' | 'pending' | 'error' }) {
+  isFullyRead,
+  status,
+}: MangaCardContentProps & {
+  integrationStatus?: 'ready' | 'pending' | 'error';
+  isFullyRead?: boolean;
+  status?: string;
+}) {
   return (
     <div>
       <Group spacing={5} mb={5}>
@@ -246,7 +255,12 @@ function MangaCardContent({
         <Badge color="indigo" size="xs" variant="filled">
           <Box className="h-3">{chaptersCount} chapters</Box>
         </Badge>
-        {integrationStatus && (
+        {isFullyRead && status === 'FINISHED' && (
+          <Badge color="green" size="xs" variant="filled">
+            <Box className="h-3">Read</Box>
+          </Badge>
+        )}
+        {integrationStatus && !isFullyRead && (
           <Tooltip label={`Integration Status: ${integrationStatus}`} withinPortal>
             <ThemeIcon
               size="xs"
@@ -291,6 +305,25 @@ export function MangaCard({ manga, onRemove, onUpdate, onRefresh, onClick }: Man
     >
       <MangaCardActions onRemove={removeModal} onRefresh={refreshModal} onUpdate={updateModal} classes={classes} />
 
+      {manga.isFullyRead && manga.metadata?.status === 'FINISHED' && (
+        <Badge
+          color="green"
+          variant="filled"
+          size="xs"
+          sx={{
+            position: 'absolute',
+            left: 10,
+            top: 10,
+            zIndex: 2,
+            textTransform: 'uppercase',
+            fontWeight: 800,
+            boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+          }}
+        >
+          ✓ Leído
+        </Badge>
+      )}
+
       <MangaCardStatus outOfSyncChapters={manga._count?.outOfSyncChapters} classes={classes} />
 
       <MangaCardContent
@@ -301,6 +334,8 @@ export function MangaCard({ manga, onRemove, onUpdate, onRefresh, onClick }: Man
         integrationStatus={
           manga._count?.chapters > 0 && manga.chapters?.length === 0 ? 'ready' : 'pending'
         }
+        isFullyRead={manga.isFullyRead}
+        status={manga.metadata?.status}
       />
     </Paper>
   );

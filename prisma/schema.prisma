@@ -135,9 +135,10 @@ model User {
   createdAt    DateTime  @default(now())
   username     String    @unique
   password     String
-  role         String    @default("SUPERADMIN") // "SUPERADMIN", "MANAGER", "READER"
+  role         String    @default("SUPERADMIN") // "SUPERADMIN", "MANAGER", "READER", "SERVICE"
   apiToken     String?   @unique
   lastActiveAt DateTime?
+  apiCallCount Int       @default(0)
   libraries    Library[] @relation("UserLibraries")
 }
 

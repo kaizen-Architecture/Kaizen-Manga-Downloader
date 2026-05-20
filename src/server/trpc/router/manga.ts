@@ -41,11 +41,12 @@ let staggerProgress = {
 
 export const mangaRouter = t.router({
   query: t.procedure.query(async ({ ctx }) => {
-    return ctx.prisma.manga.findMany({
+    const mangas = await ctx.prisma.manga.findMany({
       include: {
         metadata: {
           select: {
             cover: true,
+            status: true,
           },
         },
         library: true,
@@ -61,6 +62,28 @@ export const mangaRouter = t.router({
           select: { chapters: true, outOfSyncChapters: true },
         },
       },
+    });
+
+    const readCounts = await ctx.prisma.chapter.groupBy({
+      by: ['mangaId'],
+      where: {
+        isRead: true,
+      },
+      _count: {
+        id: true,
+      },
+    });
+
+    const readCountMap = new Map(readCounts.map((c) => [c.mangaId, c._count.id]));
+
+    return mangas.map((manga) => {
+      const readCount = readCountMap.get(manga.id) || 0;
+      const totalCount = manga._count.chapters;
+      return {
+        ...manga,
+        readChaptersCount: readCount,
+        isFullyRead: totalCount > 0 && readCount === totalCount,
+      };
     });
   }),
   scanLibrary: t.procedure.mutation(async () => {
@@ -197,6 +220,8 @@ export const mangaRouter = t.router({
               createdAt: true,
               fileName: true,
               size: true,
+              isRead: true,
+              lastReadAt: true,
             },
             orderBy: {
               index: 'desc',
@@ -216,6 +241,30 @@ export const mangaRouter = t.router({
           },
         },
         where: { id },
+      });
+    }),
+  toggleChapterRead: t.procedure
+    .input(z.object({ id: z.number(), isRead: z.boolean() }))
+    .mutation(async ({ input, ctx }) => {
+      const { id, isRead } = input;
+      return ctx.prisma.chapter.update({
+        where: { id },
+        data: {
+          isRead,
+          lastReadAt: isRead ? new Date() : null,
+        },
+      });
+    }),
+  toggleMangaRead: t.procedure
+    .input(z.object({ id: z.number(), isRead: z.boolean() }))
+    .mutation(async ({ input, ctx }) => {
+      const { id, isRead } = input;
+      return ctx.prisma.chapter.updateMany({
+        where: { mangaId: id },
+        data: {
+          isRead,
+          lastReadAt: isRead ? new Date() : null,
+        },
       });
     }),
   search: t.procedure

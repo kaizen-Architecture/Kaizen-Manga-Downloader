@@ -55,6 +55,7 @@ export const authRouter = t.router({
         role: true,
         apiToken: true,
         lastActiveAt: true,
+        apiCallCount: true,
       },
       orderBy: { id: 'asc' },
     });
@@ -77,7 +78,7 @@ export const authRouter = t.router({
       z.object({
         username: z.string().min(2),
         password: z.string().min(3),
-        role: z.enum(['SUPERADMIN', 'MANAGER', 'READER']),
+        role: z.enum(['SUPERADMIN', 'MANAGER', 'READER', 'SERVICE']),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -105,6 +106,38 @@ export const authRouter = t.router({
         where: { id: input.id },
         data: { password: input.newPassword },
         select: { id: true, username: true },
+      });
+    }),
+
+  updateUserRole: t.procedure
+    .input(
+      z.object({
+        id: z.number(),
+        role: z.enum(['SUPERADMIN', 'MANAGER', 'READER', 'SERVICE']),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, role } = input;
+      const targetUser = await ctx.prisma.user.findUniqueOrThrow({
+        where: { id },
+      });
+
+      if (targetUser.role === 'SUPERADMIN' && role !== 'SUPERADMIN') {
+        const adminCount = await ctx.prisma.user.count({
+          where: { role: 'SUPERADMIN' },
+        });
+        if (adminCount <= 1) {
+          throw new TRPCError({
+            code: 'PRECONDITION_FAILED',
+            message: 'Cannot demote the last remaining SUPERADMIN user account.',
+          });
+        }
+      }
+
+      return ctx.prisma.user.update({
+        where: { id },
+        data: { role },
+        select: { id: true, username: true, role: true },
       });
     }),
 

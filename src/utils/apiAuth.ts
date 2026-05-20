@@ -27,7 +27,12 @@ export async function validateApiToken(req: NextApiRequest, res: NextApiResponse
       prisma.user
         .update({
           where: { id: user.id },
-          data: { lastActiveAt: new Date() },
+          data: {
+            lastActiveAt: new Date(),
+            apiCallCount: {
+              increment: 1,
+            },
+          },
         })
         .catch((err) => {
           // eslint-disable-next-line no-console

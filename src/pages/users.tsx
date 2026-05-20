@@ -15,6 +15,7 @@ import {
   Text,
   TextInput,
   Title,
+  Select,
 } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import { showNotification } from '@mantine/notifications';
@@ -51,15 +52,7 @@ export default function UsersPage() {
       });
     };
 
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(token)
-        .then(showSuccess)
-        .catch(() => fallbackCopy(token));
-    } else {
-      fallbackCopy(token);
-    }
-
-    function fallbackCopy(text: string) {
+    const fallbackCopy = (text: string) => {
       const textArea = document.createElement('textarea');
       textArea.value = text;
       textArea.style.top = '0';
@@ -84,6 +77,15 @@ export default function UsersPage() {
         });
       }
       document.body.removeChild(textArea);
+    };
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard
+        .writeText(token)
+        .then(showSuccess)
+        .catch(() => fallbackCopy(token));
+    } else {
+      fallbackCopy(token);
     }
   };
 
@@ -93,14 +95,36 @@ export default function UsersPage() {
 
   const [newUsername, setNewUsername] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [newRole, setNewRole] = useState<'SUPERADMIN' | 'MANAGER' | 'READER'>('MANAGER');
+  const [newRole, setNewRole] = useState<'SUPERADMIN' | 'MANAGER' | 'READER' | 'SERVICE'>('MANAGER');
+
+  const updateRoleMutation = trpc.auth.updateUserRole.useMutation({
+    onSuccess: () => {
+      users.refetch();
+      showNotification({
+        title: t('users.notifications.roleUpdatedTitle', 'Rol Actualizado'),
+        message: t('users.notifications.roleUpdatedDesc', 'El rol del usuario ha sido actualizado correctamente.'),
+        color: 'teal',
+        icon: <IconCheck size={18} />,
+      });
+    },
+    onError: (err) => {
+      showNotification({
+        title: t('common.error', 'Error'),
+        message: err.message,
+        color: 'red',
+      });
+    },
+  });
 
   const updatePasswordMutation = trpc.auth.updateUserPassword.useMutation({
     onSuccess: () => {
       isDefaultPasswordQuery.refetch();
       showNotification({
         title: t('users.notifications.passwordUpdatedTitle', 'Contraseña Actualizada'),
-        message: t('users.notifications.passwordUpdatedDesc', 'La contraseña del administrador ha sido cambiada exitosamente.'),
+        message: t(
+          'users.notifications.passwordUpdatedDesc',
+          'La contraseña del administrador ha sido cambiada exitosamente.',
+        ),
         color: 'teal',
         icon: <IconCheck size={18} />,
       });
@@ -123,7 +147,10 @@ export default function UsersPage() {
       children: (
         <Stack spacing="md">
           <Text size="sm">
-            {t('users.list.tokenModal.description', 'Por favor, copia este token ahora. Por tu seguridad, no se volverá a mostrar.')}
+            {t(
+              'users.list.tokenModal.description',
+              'Por favor, copia este token ahora. Por tu seguridad, no se volverá a mostrar.',
+            )}
           </Text>
           <Paper
             withBorder
@@ -222,7 +249,10 @@ export default function UsersPage() {
     if (adminNewPassword !== adminConfirmPassword) {
       showNotification({
         title: t('users.adminPassword.mismatchTitle', 'Contraseñas no coinciden'),
-        message: t('users.adminPassword.mismatchDesc', 'Por favor, asegúrate de escribir exactamente la misma contraseña en ambos campos.'),
+        message: t(
+          'users.adminPassword.mismatchDesc',
+          'Por favor, asegúrate de escribir exactamente la misma contraseña en ambos campos.',
+        ),
         color: 'orange',
       });
       return;
@@ -252,10 +282,18 @@ export default function UsersPage() {
       title: t('users.delete.confirmTitle', 'Confirmar eliminación de cuenta'),
       children: (
         <Text size="sm">
-          {t('users.delete.confirmDesc', '¿Estás completamente seguro de que deseas revocar y eliminar el acceso para el usuario ', { username })} <b>{username}</b>?
+          {t(
+            'users.delete.confirmDesc',
+            '¿Estás completamente seguro de que deseas revocar y eliminar el acceso para el usuario ',
+            { username },
+          )}{' '}
+          <b>{username}</b>?
         </Text>
       ),
-      labels: { confirm: t('users.delete.confirmButton', 'Eliminar'), cancel: t('users.delete.cancelButton', 'Cancelar') },
+      labels: {
+        confirm: t('users.delete.confirmButton', 'Eliminar'),
+        cancel: t('users.delete.cancelButton', 'Cancelar'),
+      },
       confirmProps: { color: 'red' },
       onConfirm: () => deleteUser.mutate({ id: userId }),
     });
@@ -270,7 +308,10 @@ export default function UsersPage() {
             <Title order={2}>{t('users.title', 'Centro de Cuentas y Control de Acceso')}</Title>
           </Group>
           <Text size="sm" color="dimmed">
-            {t('users.description', 'Gestiona la seguridad y los niveles de autorización de todos los usuarios de la plataforma Kaizen.')}
+            {t(
+              'users.description',
+              'Gestiona la seguridad y los niveles de autorización de todos los usuarios de la plataforma Kaizen.',
+            )}
           </Text>
         </Stack>
       </motion.div>
@@ -286,7 +327,10 @@ export default function UsersPage() {
               {t('users.defaultPasswordAlert.title', '¡Atención! Contraseña Predeterminada de Administrador Activa')}
             </Text>
             <Text size="xs" mt={2}>
-              {t('users.defaultPasswordAlert.desc', 'Hemos detectado que tu cuenta principal admin sigue configurada con la contraseña de fábrica. Por tu absoluta privacidad y seguridad web, es de suma importancia que la modifiques en este momento utilizando el panel inferior.')}
+              {t(
+                'users.defaultPasswordAlert.desc',
+                'Hemos detectado que tu cuenta principal admin sigue configurada con la contraseña de fábrica. Por tu absoluta privacidad y seguridad web, es de suma importancia que la modifiques en este momento utilizando el panel inferior.',
+              )}
               importancia que la modifiques en este momento utilizando el panel inferior.
             </Text>
           </Alert>
@@ -304,10 +348,15 @@ export default function UsersPage() {
           >
             <Group spacing="sm" mb="md">
               <IconKey size={20} style={{ color: '#8B5CF6' }} />
-              <Title order={4}>{t('users.adminPassword.title', 'Actualizar Contraseña del Administrador Principal')}</Title>
+              <Title order={4}>
+                {t('users.adminPassword.title', 'Actualizar Contraseña del Administrador Principal')}
+              </Title>
             </Group>
             <Text size="xs" color="dimmed" mb="md">
-              {t('users.adminPassword.desc', 'Cambia la contraseña de la cuenta raíz admin para salvaguardar la configuración del descargador.')}
+              {t(
+                'users.adminPassword.desc',
+                'Cambia la contraseña de la cuenta raíz admin para salvaguardar la configuración del descargador.',
+              )}
             </Text>
 
             <form onSubmit={handlePasswordSubmit}>
@@ -333,13 +382,7 @@ export default function UsersPage() {
                   />
                 </Grid.Col>
                 <Grid.Col xs={12} md={4}>
-                  <Button
-                    type="submit"
-                    size="sm"
-                    fullWidth
-                    color="violet"
-                    loading={updatePasswordMutation.isLoading}
-                  >
+                  <Button type="submit" size="sm" fullWidth color="violet" loading={updatePasswordMutation.isLoading}>
                     {t('users.adminPassword.saveButton', 'Guardar Contraseña')}
                   </Button>
                 </Grid.Col>
@@ -355,7 +398,10 @@ export default function UsersPage() {
               <Title order={4}>{t('users.management.title', 'Gestión y Creación de Usuarios Locales')}</Title>
             </Group>
             <Text size="xs" color="dimmed" mb="md">
-              {t('users.management.desc', 'Crea sub-cuentas con roles específicos de acceso: Admin (control total), Gestor (descargas y series) o Lector (sólo lectura de la biblioteca).')}
+              {t(
+                'users.management.desc',
+                'Crea sub-cuentas con roles específicos de acceso: Admin (control total), Gestor (descargas y series) o Lector (sólo lectura de la biblioteca).',
+              )}
             </Text>
 
             <Box
@@ -405,6 +451,7 @@ export default function UsersPage() {
                         { value: 'SUPERADMIN', label: t('users.roles.superadmin', 'Admin') },
                         { value: 'MANAGER', label: t('users.roles.manager', 'Gestor') },
                         { value: 'READER', label: t('users.roles.reader', 'Lector') },
+                        { value: 'SERVICE', label: t('users.roles.service', 'Servicio') },
                       ]}
                     />
                   </Grid.Col>
@@ -445,16 +492,72 @@ export default function UsersPage() {
                       <td>{u.id}</td>
                       <td style={{ fontWeight: 600 }}>{u.username}</td>
                       <td>
-                        <Badge
-                          color={u.role === 'SUPERADMIN' ? 'violet' : u.role === 'MANAGER' ? 'teal' : 'gray'}
-                          variant="light"
-                        >
-                          {u.role === 'SUPERADMIN'
-                            ? t('users.roles.superadmin', 'Admin')
-                            : u.role === 'MANAGER'
-                            ? t('users.roles.manager', 'Gestor')
-                            : t('users.roles.reader', 'Lector')}
-                        </Badge>
+                        {u.username === 'admin' ? (
+                          <Badge color="violet" variant="light">
+                            {t('users.roles.superadmin', 'Admin')}
+                          </Badge>
+                        ) : (
+                          <Select
+                            size="xs"
+                            value={u.role}
+                            onChange={(val: any) => {
+                              if (val) {
+                                updateRoleMutation.mutate({ id: u.id, role: val });
+                              }
+                            }}
+                            disabled={updateRoleMutation.isLoading}
+                            data={[
+                              { value: 'SUPERADMIN', label: t('users.roles.superadmin', 'Admin') },
+                              { value: 'MANAGER', label: t('users.roles.manager', 'Gestor') },
+                              { value: 'READER', label: t('users.roles.reader', 'Lector') },
+                              { value: 'SERVICE', label: t('users.roles.service', 'Servicio') },
+                            ]}
+                            styles={(theme) => ({
+                              input: {
+                                fontSize: 11,
+                                height: '24px',
+                                minHeight: '24px',
+                                fontWeight: 700,
+                                backgroundColor:
+                                  u.role === 'SUPERADMIN'
+                                    ? theme.colorScheme === 'dark'
+                                      ? 'rgba(139, 92, 246, 0.15)'
+                                      : 'rgba(139, 92, 246, 0.1)'
+                                    : u.role === 'MANAGER'
+                                    ? theme.colorScheme === 'dark'
+                                      ? 'rgba(20, 184, 166, 0.15)'
+                                      : 'rgba(20, 184, 166, 0.1)'
+                                    : u.role === 'READER'
+                                    ? theme.colorScheme === 'dark'
+                                      ? 'rgba(107, 114, 128, 0.15)'
+                                      : 'rgba(107, 114, 128, 0.1)'
+                                    : theme.colorScheme === 'dark'
+                                    ? 'rgba(249, 115, 22, 0.15)'
+                                    : 'rgba(249, 115, 22, 0.1)',
+                                color:
+                                  u.role === 'SUPERADMIN'
+                                    ? '#8B5CF6'
+                                    : u.role === 'MANAGER'
+                                    ? '#14B8A6'
+                                    : u.role === 'READER'
+                                    ? '#6B7280'
+                                    : '#F97316',
+                                borderColor: 'transparent',
+                                borderRadius: '4px',
+                                width: 120,
+                                textAlign: 'center',
+                                paddingRight: '14px',
+                              },
+                              rightSection: {
+                                pointerEvents: 'none',
+                                svg: {
+                                  width: '10px',
+                                  height: '10px',
+                                },
+                              },
+                            })}
+                          />
+                        )}
                       </td>
                       <td>
                         {u.apiToken ? (
@@ -480,10 +583,16 @@ export default function UsersPage() {
                                   title: t('users.list.regenerateConfirmTitle', 'Regenerate API Token'),
                                   children: (
                                     <Text size="sm">
-                                      {t('users.list.regenerateConfirm', 'Are you sure you want to regenerate the API token for this user? Any applications using the old token will lose access.')}
+                                      {t(
+                                        'users.list.regenerateConfirm',
+                                        'Are you sure you want to regenerate the API token for this user? Any applications using the old token will lose access.',
+                                      )}
                                     </Text>
                                   ),
-                                  labels: { confirm: t('users.list.regenerate', 'Regenerate'), cancel: t('users.delete.cancelButton', 'Cancel') },
+                                  labels: {
+                                    confirm: t('users.list.regenerate', 'Regenerate'),
+                                    cancel: t('users.delete.cancelButton', 'Cancel'),
+                                  },
                                   confirmProps: { color: 'red' },
                                   onConfirm: () => {
                                     generateTokenMutation.mutate({ id: u.id });
@@ -507,9 +616,14 @@ export default function UsersPage() {
                       </td>
                       <td>
                         {u.lastActiveAt ? (
-                          <Text size="xs" sx={{ whiteSpace: 'nowrap' }}>
-                            {new Date(u.lastActiveAt).toLocaleString()}
-                          </Text>
+                          <Stack spacing={2}>
+                            <Text size="xs" sx={{ whiteSpace: 'nowrap' }}>
+                              {new Date(u.lastActiveAt).toLocaleString()}
+                            </Text>
+                            <Text size="xs" color="dimmed">
+                              {u.apiCallCount || 0} {t('users.list.apiRequests', 'peticiones')}
+                            </Text>
+                          </Stack>
                         ) : (
                           <Text size="xs" color="dimmed" italic>
                             {t('users.list.never', 'Nunca')}

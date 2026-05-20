@@ -14,6 +14,7 @@ import {
   Box,
   Table,
   Button,
+  Badge,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
@@ -314,9 +315,16 @@ export default function LibraryPage() {
                   >
                     <Group position="apart" noWrap>
                       <Box sx={{ flex: 1, overflow: 'hidden' }}>
-                        <Text weight={500} lineClamp={1}>
-                          {manga.title}
-                        </Text>
+                        <Group spacing={6} noWrap>
+                          <Text weight={500} lineClamp={1} sx={{ flexShrink: 1 }}>
+                            {manga.title}
+                          </Text>
+                          {manga.isFullyRead && manga.metadata?.status === 'FINISHED' && (
+                            <Badge color="green" size="xs" variant="filled" sx={{ flexShrink: 0 }}>
+                              ✓ Leído
+                            </Badge>
+                          )}
+                        </Group>
                         <Text size="xs" color="dimmed">
                           {manga.source}
                         </Text>
@@ -347,13 +355,20 @@ export default function LibraryPage() {
                     <tbody>
                       {filtered?.map((manga) => (
                         <Box
-                          component="tr"
-                          key={manga.id}
-                          onClick={() => router.push(`/manga/${manga.id}`)}
-                          sx={{ cursor: 'pointer' }}
+                           component="tr"
+                           key={manga.id}
+                           onClick={() => router.push(`/manga/${manga.id}`)}
+                           sx={{ cursor: 'pointer' }}
                         >
                           <td>
-                            <Text weight={500}>{manga.title}</Text>
+                            <Group spacing="xs">
+                              <Text weight={500}>{manga.title}</Text>
+                              {manga.isFullyRead && manga.metadata?.status === 'FINISHED' && (
+                                <Badge color="green" size="xs" variant="filled">
+                                  ✓ Leído
+                                </Badge>
+                              )}
+                            </Group>
                           </td>
                           <td>
                             <Text size="sm" color="dimmed">
