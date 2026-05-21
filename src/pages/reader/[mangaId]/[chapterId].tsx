@@ -38,7 +38,7 @@ export default function ReaderPage() {
     if (!mangaId || !chapterId) return;
 
     setLoading(true);
-    fetch(`/api/reader/pages?id=${mangaId}&chapterId=${chapterId}`)
+    fetch(`/api/v1/mangas/${mangaId}/chapters/${chapterId}/pages`)
       .then((res) => {
         if (!res.ok) throw new Error(t('error_loading_pages', 'Failed to load pages'));
         return res.json();
@@ -139,7 +139,7 @@ export default function ReaderPage() {
                   const newPages = isFav
                     ? ch.favoritePages.filter((p: number) => p !== currentPage)
                     : [...(ch.favoritePages || []), currentPage];
-                  await fetch(`/api/reader/pages?id=${mangaId}&chapterId=${chapterId}`, {
+                  await fetch(`/api/v1/mangas/${mangaId}/chapters/${chapterId}/pages`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ favoritePages: newPages }),
