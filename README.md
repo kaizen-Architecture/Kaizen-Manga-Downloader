@@ -41,9 +41,12 @@ curl -H "Authorization: Bearer YOUR_USER_API_TOKEN" http://localhost:3000/api/v1
 
 You can view the full interactive OpenAPI (Swagger) documentation, test endpoints, and explore the schema by navigating to `/api-docs` on your Kaizen instance (e.g., `http://localhost:3000/api-docs`).
 
-### 📖 Direct Reading & Page Streaming (e.g. Paperback Integration)
+### 📖 Direct Reading & Page Streaming (Paperback Integration)
 
-Kaizen supports extracting pages on-the-fly directly from downloaded `.cbz` files in local storage without extracting them to disk. This is ideal for lightweight mobile reader integrations like **Paperback** (iOS):
+Kaizen supports extracting pages on-the-fly directly from downloaded `.cbz` files in local storage without extracting them to disk. 
+
+📱 **Paperback (iOS) Extension:** You can connect your library directly to the Paperback app on iOS using our official source extension:
+👉 **[Kaizen Manga Paperback Integration](https://github.com/kaizen-Architecture/Kaizen-Manga-Paperback-Integration)**
 
 * **List Pages (JSON):**
   `GET /api/v1/mangas/{id}/chapters/{chapterId}/pages`
