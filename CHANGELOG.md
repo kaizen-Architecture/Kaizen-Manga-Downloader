@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.13.0](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/compare/kaizen-manga-downloader-v1.12.0...kaizen-manga-downloader-v1.13.0) (2026-05-21)
+
+
+### Features
+
+* add SERVICE role, role editing, Paperback dashboard stats, api call tracking and fix dynamic staging tags ([9c2cbd4](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/9c2cbd46227233a85be094909aa6e2c6f454b479))
+* Paperback UA detection, API audit log in maintenance, fix integration card visibility and status ([716bd72](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/716bd7263bac5b293d859029c1b54138944a4465))
+
+
+### Bug Fixes
+
+* **ci:** remove Docker staging-latest push from feature branches in check.yml ([aecb962](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/aecb962a0692905415c090cca23c4ec9ba26e1e7))
+* serve manga covers via secure proxy URL instead of raw Base64 payload in REST API ([2c7e8ec](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/2c7e8ec4ffcaa9c56f6606c968b1c297dddca4e7))
+* translate all hardcoded strings in maintenance tab for EN/ES locales ([fb916cb](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/commit/fb916cbe464ba80ed681077aa238408d69da2009))
+
 ## [1.12.0](https://github.com/kaizen-Architecture/Kaizen-Manga-Downloader/compare/kaizen-manga-downloader-v1.11.1...kaizen-manga-downloader-v1.12.0) (2026-05-19)
 
 
