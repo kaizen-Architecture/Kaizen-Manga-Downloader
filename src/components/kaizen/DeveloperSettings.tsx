@@ -11,10 +11,9 @@ import {
   Collapse,
   Paper,
 } from '@mantine/core';
-import { IconAlertCircle, IconCode, IconExternalLink, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
+import { IconAlertCircle, IconCode, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { useTranslation } from 'next-i18next';
 import { useState } from 'react';
-import { setCookie } from 'cookies-next';
 import dynamic from 'next/dynamic';
 import { trpc } from '../../utils/trpc';
 import { ApiAuditLog } from './ApiAuditLog';

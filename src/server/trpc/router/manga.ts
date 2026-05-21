@@ -243,6 +243,24 @@ export const mangaRouter = t.router({
         where: { id },
       });
     }),
+  toggleChapterFavorite: t.procedure
+    .input(z.object({ id: z.number(), isFavorite: z.boolean() }))
+    .mutation(async ({ input, ctx }) => {
+      const { id, isFavorite } = input;
+      return ctx.prisma.chapter.update({
+        where: { id },
+        data: { isFavorite },
+      });
+    }),
+  toggleMangaFavorite: t.procedure
+    .input(z.object({ id: z.number(), isFavorite: z.boolean() }))
+    .mutation(async ({ input, ctx }) => {
+      const { id, isFavorite } = input;
+      return ctx.prisma.manga.update({
+        where: { id },
+        data: { isFavorite },
+      });
+    }),
   toggleChapterRead: t.procedure
     .input(z.object({ id: z.number(), isRead: z.boolean() }))
     .mutation(async ({ input, ctx }) => {

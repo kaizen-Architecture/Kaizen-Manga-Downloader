@@ -3,6 +3,24 @@ import { prisma } from '../server/db/client';
 
 export async function validateApiToken(req: NextApiRequest, res: NextApiResponse): Promise<boolean> {
   const authHeader = req.headers.authorization;
+  const sessionCookie = req.cookies['kaizen-session'];
+
+  const settings = await prisma.settings.findFirst();
+
+  if (sessionCookie) {
+    const authEnabled = (settings?.appConfig as any)?.authEnabled === true;
+    if (!authEnabled) return true;
+
+    try {
+      const userObj = JSON.parse(sessionCookie);
+      const user = await prisma.user.findUnique({ where: { id: userObj.id } });
+      if (user && user.username === userObj.username && user.password === userObj.password) {
+        return true;
+      }
+    } catch (e) {
+      // Fallback to Bearer Token
+    }
+  }
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     res.status(401).json({ error: 'Unauthorized: Missing or invalid token' });
@@ -15,7 +33,6 @@ export async function validateApiToken(req: NextApiRequest, res: NextApiResponse
   const path = req.url || '/';
 
   try {
-    const settings = await prisma.settings.findFirst();
     if (!settings || !settings.apiEnabled) {
       res.status(403).json({ error: 'Forbidden: API is disabled' });
       return false;
